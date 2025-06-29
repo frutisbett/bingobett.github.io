@@ -272,7 +272,15 @@
       tgUser = Telegram.WebApp.initDataUnsafe.user;
     }
   }
+   // Проверяем момент регистрации и количество фриспинов
+	const registrationTimestamp = localStorage.getItem('registrationTimestamp');
+	const freeSpinsLeft = Number(localStorage.getItem('freeSpins'));
 
+	// Если пользователь впервые регистрируется
+	if (!registrationTimestamp) {
+  localStorage.setItem('registrationTimestamp', Date.now());
+  localStorage.setItem('freeSpins', 55);
+}
   // --- Пользователь ---
   let username = localStorage.getItem('slotUsername') || '';
   function setUsername(name) {
@@ -280,7 +288,18 @@
     localStorage.setItem('slotUsername', name);
     document.getElementById('username').textContent = name;
   }
-  // Если есть Telegram user — используем его имя
+  // Проверка, истек ли срок действия фриспинов
+function isFreeSpinsExpired() {
+  const registrationTime = Number(localStorage.getItem('registrationTimestamp'));
+  const currentTime = Date.now();
+  const expirationPeriod = 23 * 60 * 60 * 1000; // 23 часа в миллисекундах
+  return (currentTime - registrationTime) > expirationPeriod;
+}// Проверка, есть ли действующие фриспины
+function hasAvailableFreeSpins() {
+  const remainingSpins = Number(localStorage.getItem('freeSpins'));
+  return remainingSpins > 0 && !isFreeSpinsExpired();
+}
+// Если есть Telegram user — используем его имя
   if (tgUser && tgUser.first_name) {
     setUsername(tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : ""));
   } else if (!username) {
@@ -647,8 +666,22 @@
   scheduleNextBotMessage();
 
   // --- Вращение по кнопке ---
-  spinButton.onclick = function() { spinWithAnimation(); };
+ spinButton.onclick = function() {
+  // ✅ Проверка наличия фриспинов
+  if (!hasAvailableFreeSpins()) {
+    alert('Все ваши фриспины потрачены или истекли. Чтобы играть дальше, пополните баланс.');
+    return; // прерываем выполнение функции
+  }
 
+  // ✅ Учет использованного фриспина
+  if (hasAvailableFreeSpins()) {
+    const remainingSpins = Number(localStorage.getItem('freeSpins')) - 1;
+    localStorage.setItem('freeSpins', remainingSpins);
+  }
+
+  // Далее стандартная логика вращения
+  spinWithAnimation();
+};
   // --- Депозит и вывод средств ---
   depositBtn.onclick = () => {
     const amount = parseFloat(depositInput.value);
