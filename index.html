@@ -251,7 +251,7 @@
   </div>
 </div>
 
-<h1>BingoBett</h1>
+<h1>BingoBett/h1>
 <div class="info-bar">
   <div>Пользователь: <span id="username"></span></div>
   <div>Баланс: <span id="balanceDisplay">100 ₽</span></div>
@@ -388,7 +388,11 @@ function hasAvailableFreeSpins() {
   ];
 
   // --- Состояния ---
-  let balance = +localStorage.getItem('slotBalance') || 100;
+  let savedBalance = localStorage.getItem('slotBalance');
+  let balance = 100;
+  if (savedBalance !== null && !isNaN(Number(savedBalance))) {
+  balance = Number(savedBalance);
+ }
   let betAmount = +localStorage.getItem('slotBet') || MIN_BET;
   let lastWin = 0;
   let jackpot = +localStorage.getItem('slotJackpot') || 2200453;
@@ -419,16 +423,17 @@ function hasAvailableFreeSpins() {
     return n.toLocaleString('ru-RU') + " ₽";
   }
 
-  function updateUI() {
-    balanceDisplay.textContent = `${balance.toFixed(2)} ₽`;
-    betAmountSpan.textContent = betAmount;
-    jackpotDisplay.textContent = formatJackpot(jackpot);
-    localStorage.setItem('slotBalance', balance);
-    localStorage.setItem('slotBet', betAmount);
-    localStorage.setItem('slotJackpot', jackpot);
-    localStorage.setItem('slotTotalWin', totalWinSum);
-    spinButton.disabled = balance < betAmount; // Блокировка кнопки "Вращать", если баланс меньше ставки
-  }
+ function updateUI() {
+  if (isNaN(balance) || balance === null) balance = 100;
+  balanceDisplay.textContent = `${balance.toFixed(2)} ₽`;
+  betAmountSpan.textContent = betAmount;
+  jackpotDisplay.textContent = formatJackpot(jackpot);
+  localStorage.setItem('slotBalance', balance);
+  localStorage.setItem('slotBet', betAmount);
+  localStorage.setItem('slotJackpot', jackpot);
+  localStorage.setItem('slotTotalWin', totalWinSum);
+  spinButton.disabled = balance < betAmount;
+}
   updateUI();
 
   function createSlots() {
