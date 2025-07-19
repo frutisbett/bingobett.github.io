@@ -143,6 +143,25 @@
     padding: 2px;
     border-bottom: 1px dotted #0f03;
   }
+.replenish-buttons {
+  margin: 15px 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.replenish-btn {
+  padding: 10px 20px;
+  font-size: 4vw;
+  background: #e62117;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.replenish-btn:hover {
+  background: #cc1f15;
+}
   /* Мини-игра */
   .mini-game-overlay {
     position: absolute;
@@ -258,18 +277,20 @@
   <div>Ставка: <button id="betMinus">-</button> <span id="betAmount">10</span> ₽ <button id="betPlus">+</button></div>
 </div>
 
-<div class="balance-actions">
-  <input type="number" id="depositInput" min="1" placeholder="Сумма пополнения">
-  <button id="depositBtn">Пополнить</button>
-  <button id="withdrawBtn">Вывести</button>
-</div>
+
 <div id="withdrawMsg"></div>
 
 <div class="bank-jackpot">
   Джекпот: <span id="jackpotDisplay">2 200 453 ₽</span>   |  
   </div>
-
-<div class="slot-machine" id="slotMachine"></div>
+<div class="replenish-buttons">
+  <button class="replenish-btn" data-amount="50">50 ₽</button>
+  <button class="replenish-btn" data-amount="300">300 ₽</button>
+  <button class="replenish-btn" data-amount="500">500 ₽</button>
+  <button class="replenish-btn" data-amount="800">800 ₽</button>
+  <a id="replenishLink" href="#" target="_blank" style="display: none;">Оплатить</a>
+</div>
+  <div class="slot-machine" id="slotMachine"></div>
 <div class="controls">
   <button id="spinButton">Вращать 🎰</button>
   <button id="autoSpinButton">Автоспин ▶️</button>
@@ -351,6 +372,22 @@ function hasAvailableFreeSpins() {
   } else {
     setUsername(username);
   }
+document.querySelectorAll('.replenish-btn').forEach(btn => {
+  btn.onclick = function () {
+    const amount = this.dataset.amount;
+    const receiver = 'ВАШ_КОШЕЛЕК'; // Заменить на свой
+    const paymentUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=${receiver}&quickpay-form=small&sum=${amount}&paymentType=AC`;
+
+    window.open(paymentUrl, '_blank');
+
+    // Эмуляция пополнения через 10 секунд
+    setTimeout(() => {
+      balance += parseFloat(amount);
+      updateUI();
+      alert("Платёж успешно принят. Баланс пополнен.");
+    }, 10000);
+  };
+});
 
   // --- Параметры игры ---
   const columns = 5;
@@ -393,6 +430,32 @@ function hasAvailableFreeSpins() {
   if (savedBalance !== null && !isNaN(Number(savedBalance))) {
   balance = Number(savedBalance);
  }
+// --- Проверка URL на наличие платежа ---
+const urlParams = new URLSearchParams(window.location.search);
+const amountToReplenish = urlParams.get('replenish');
+
+if (amountToReplenish && !localStorage.getItem('processedReplenish')) {
+  balance += parseFloat(amountToReplenish);
+  updateUI();
+  localStorage.setItem('processedReplenish', 'true');
+  alert(`Баланс пополнен на ${amountToReplenish} ₽`);
+}
+
+window.addEventListener('beforeunload', () => {
+  localStorage.removeItem('processedReplenish');
+});
+document.querySelectorAll('.replenish-btn').forEach(btn => {
+  btn.onclick = function () {
+    const amount = this.dataset.amount;
+    const receiver = '4100118182998706'; // ваш кошелёк
+    const redirectUrl = encodeURIComponent(`https://t.me/frutis_bingo_bett_bot/startapp?replenish=${amount}`);
+    const paymentUrl = ` https://yoomoney.ru/quickpay/confirm.xml?receiver=${receiver}&quickpay-form=small&sum=${amount}&paymentType=AC&successURL=${redirectUrl}`;
+    
+    const link = document.getElementById('replenishLink');
+    link.href = paymentUrl;
+    link.click(); // Открытие ссылки в новом окне
+  };
+});
   let betAmount = +localStorage.getItem('slotBet') || MIN_BET;
   let lastWin = 0;
   let jackpot = +localStorage.getItem('slotJackpot') || 2200453;
@@ -414,11 +477,6 @@ function hasAvailableFreeSpins() {
   const message = document.getElementById('message');
   const jackpotDisplay = document.getElementById('jackpotDisplay');
   const bankDisplay = document.getElementById('bankDisplay');
-  const depositInput = document.getElementById('depositInput');
-  const depositBtn = document.getElementById('depositBtn');
-  const withdrawBtn = document.getElementById('withdrawBtn');
-  const withdrawMsg = document.getElementById('withdrawMsg');
-
   function formatJackpot(n) {
     return n.toLocaleString('ru-RU') + " ₽";
   }
@@ -720,25 +778,7 @@ function hasAvailableFreeSpins() {
   spinWithAnimation();
 };
   // --- Депозит и вывод средств ---
-  depositBtn.onclick = () => {
-    const amount = parseFloat(depositInput.value);
-    if (amount <= 0) {
-      alert("Минимальная сумма пополнения должна быть больше нуля!");
-      return;
-    }
-    balance += amount;
-    updateUI();
-  };
-
-  withdrawBtn.onclick = () => {
-    const amountToWithdraw = parseFloat(withdrawInput.value);
-    if (isNaN(amountToWithdraw) || amountToWithdraw <= 0 || amountToWithdraw > balance) {
-      alert("Невозможно вывести указанную сумму.");
-      return;
-    }
-    balance -= amountToWithdraw;
-    updateUI();
-  };
+  
 
   // Настройка авто-спина
   autoSpinButton.onclick = () => {
