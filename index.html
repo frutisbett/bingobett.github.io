@@ -492,6 +492,23 @@ document.querySelectorAll('.replenish-btn').forEach(btn => {
   localStorage.setItem('slotTotalWin', totalWinSum);
   spinButton.disabled = balance < betAmount;
 }
+  function updateFreeSpinsDisplay() {
+  const remainingSpins = Number(localStorage.getItem('freeSpins')) || 0;
+  const display = document.getElementById('freeSpinsDisplay');
+  if (display) display.textContent = `Фриспины: ${remainingSpins}`;
+}
+  spinButton.onclick = function () {
+  if (!hasAvailableFreeSpins()) {
+    alert('Все фриспины истекли. Пополните баланс.');
+    return;
+  }
+
+  const remainingSpins = Number(localStorage.getItem('freeSpins')) - 1;
+  localStorage.setItem('freeSpins', remainingSpins);
+  updateFreeSpinsDisplay(); // ← обновление счётчика фриспинов
+
+  spinWithAnimation();
+};
   updateUI();
 
   function createSlots() {
