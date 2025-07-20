@@ -276,6 +276,7 @@
   <div>Баланс: <span id="balanceDisplay">100 ₽</span></div>
   <div>Ставка: <button id="betMinus">-</button> <span id="betAmount">10</span> ₽ <button id="betPlus">+</button></div>
 </div>
+<div id="freeSpinsDisplay">Фриспины: 55</div>
 
 
 <div id="withdrawMsg"></div>
@@ -331,6 +332,7 @@
 
 	// Если пользователь впервые регистрируется
 	if (!registrationTimestamp) {
+  localStorage.setItem('freeSpins', 55);
   localStorage.setItem('registrationTimestamp', Date.now());
   localStorage.setItem('freeSpins', 55);
 }
@@ -343,12 +345,26 @@
   }
   // Проверка, истек ли срок действия фриспинов
 function isFreeSpinsExpired() {
+function updateFreeSpinsDisplay() {
+  const remainingSpins = Number(localStorage.getItem('freeSpins')) || 0;
+  const display = document.getElementById('freeSpinsDisplay');
+  if (display) {
+    display.textContent = `Фриспины: ${remainingSpins}`;
+  }
+}
   const registrationTime = Number(localStorage.getItem('registrationTimestamp'));
   const currentTime = Date.now();
   const expirationPeriod = 23 * 60 * 60 * 1000; // 23 часа в миллисекундах
   return (currentTime - registrationTime) > expirationPeriod;
 }// Проверка, есть ли действующие фриспины
 function hasAvailableFreeSpins() {
+function updateFreeSpinsDisplay() {
+  const remainingSpins = Number(localStorage.getItem('freeSpins')) || 0;
+  const display = document.getElementById('freeSpinsDisplay');
+  if (display) {
+    display.textContent = `Фриспины: ${remainingSpins}`;
+  }
+}
   const remainingSpins = Number(localStorage.getItem('freeSpins'));
   return remainingSpins > 0 && !isFreeSpinsExpired();
 }
@@ -384,6 +400,7 @@ document.querySelectorAll('.replenish-btn').forEach(btn => {
     setTimeout(() => {
       balance += parseFloat(amount);
       updateUI();
+      updateFreeSpinsDisplay();
       alert("Платёж успешно принят. Баланс пополнен.");
     }, 10000);
   };
