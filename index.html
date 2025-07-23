@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BingoBett</title>
-<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=GSSrfiSffx0kH7sW4myJ8MM6WVBQeRaifiOyZTd7q3V0DyBg9bNHwTh3v39YezmzSfAw3b2bnMIMZRYpp_-0BjA3ZCdhriSqo0D62TqJQ-Q" charset="UTF-8"></script>
+<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=7ebII8iazCFmgOCAv4_83suT-WrIwxKHeljjm-cU6y5OqpZge1U-lViPdYqbPTBo_Re1HfawevBmdpqTiqWo22ZcNBL72Clk7DYY91pwWPof2L4UA3my_p0sOeVInZ_L" charset="UTF-8"></script><script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=GSSrfiSffx0kH7sW4myJ8MM6WVBQeRaifiOyZTd7q3V0DyBg9bNHwTh3v39YezmzSfAw3b2bnMIMZRYpp_-0BjA3ZCdhriSqo0D62TqJQ-Q" charset="UTF-8"></script>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -440,64 +440,96 @@
     setUsername(username);
   }
 
-  // --- Free Spins Management ---
-  function initializeFreeSpins() {
-    const registrationTimestamp = localStorage.getItem('registrationTimestamp');
-    if (!registrationTimestamp) {
-      localStorage.setItem('freeSpins', 55);
-      localStorage.setItem('registrationTimestamp', Date.now());
+  // --- Free Spins Management (Centralized) ---
+  class FreeSpinsManager {
+    constructor() {
+      this.initializeFreeSpins();
+    }
+
+    initializeFreeSpins() {
+      const registrationTimestamp = localStorage.getItem('registrationTimestamp');
+      if (!registrationTimestamp) {
+        localStorage.setItem('freeSpins', 55);
+        localStorage.setItem('registrationTimestamp', Date.now());
+      }
+    }
+
+    isFreeSpinsExpired() {
+      const registrationTime = Number(localStorage.getItem('registrationTimestamp'));
+      const currentTime = Date.now();
+      const expirationPeriod = 23 * 60 * 60 * 1000;
+      return (currentTime - registrationTime) > expirationPeriod;
+    }
+
+    updateDisplay() {
+      const remainingSpins = Number(localStorage.getItem('freeSpins')) || 0;
+      const display = document.getElementById('freeSpinsDisplay');
+      if (display) {
+        display.textContent = `Фриспины: ${remainingSpins}`;
+      }
+    }
+
+    hasAvailable() {
+      const remainingSpins = Number(localStorage.getItem('freeSpins'));
+      return remainingSpins > 0 && !this.isFreeSpinsExpired();
+    }
+
+    use() {
+      const currentSpins = Number(localStorage.getItem('freeSpins')) || 0;
+      if (currentSpins > 0) {
+        localStorage.setItem('freeSpins', currentSpins - 1);
+        this.updateDisplay();
+        return true;
+      }
+      return false;
     }
   }
 
-  function isFreeSpinsExpired() {
-    const registrationTime = Number(localStorage.getItem('registrationTimestamp'));
-    const currentTime = Date.now();
-    const expirationPeriod = 23 * 60 * 60 * 1000;
-    return (currentTime - registrationTime) > expirationPeriod;
-  }
+  const freeSpinsManager = new FreeSpinsManager();
 
-  function updateFreeSpinsDisplay() {
-    const remainingSpins = Number(localStorage.getItem('freeSpins')) || 0;
-    const display = document.getElementById('freeSpinsDisplay');
-    if (display) {
-      display.textContent = `Фриспины: ${remainingSpins}`;
+  // --- Payment Integration (Centralized) ---
+  class PaymentManager {
+    constructor() {
+      this.initializeButtons();
+      this.checkURLForReplenishment();
+    }
+
+    initializeButtons() {
+      document.querySelectorAll('.replenish-btn').forEach(btn => {
+        btn.onclick = () => this.handlePayment(btn.dataset.amount);
+      });
+    }
+
+    handlePayment(amount) {
+      const receiver = '4100118182998706';
+      const redirectUrl = encodeURIComponent(`https://t.me/frutis_bingo_bett_bot/startapp?replenish=${amount}`);
+      const paymentUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=${receiver}&quickpay-form=small&sum=${amount}&paymentType=AC&successURL=${redirectUrl}`;
+      
+      window.open(paymentUrl, '_blank');
+      
+      // Demo simulation
+      setTimeout(() => {
+        balance += parseFloat(amount);
+        updateUI();
+        freeSpinsManager.updateDisplay();
+        alert("Платёж успешно принят. Баланс пополнен.");
+      }, 10000);
+    }
+
+    checkURLForReplenishment() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const amountToReplenish = urlParams.get('replenish');
+      
+      if (amountToReplenish && !localStorage.getItem('processedReplenish')) {
+        balance += parseFloat(amountToReplenish);
+        updateUI();
+        localStorage.setItem('processedReplenish', 'true');
+        alert(`Баланс пополнен на ${amountToReplenish} ₽`);
+      }
     }
   }
 
-  function hasAvailableFreeSpins() {
-    const remainingSpins = Number(localStorage.getItem('freeSpins'));
-    return remainingSpins > 0 && !isFreeSpinsExpired();
-  }
-
-  function useFreeSpins() {
-    const currentSpins = Number(localStorage.getItem('freeSpins')) || 0;
-    if (currentSpins > 0) {
-      localStorage.setItem('freeSpins', currentSpins - 1);
-      updateFreeSpinsDisplay();
-      return true;
-    }
-    return false;
-  }
-
-  // --- Payment Integration ---
-  function initializePaymentButtons() {
-    document.querySelectorAll('.replenish-btn').forEach(btn => {
-      btn.onclick = function () {
-        const amount = this.dataset.amount;
-        const receiver = process.env.YOOMONEY_WALLET || 'ВАШ_КОШЕЛЕК';
-        const paymentUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=${receiver}&quickpay-form=small&sum=${amount}&paymentType=AC`;
-        
-        window.open(paymentUrl, '_blank');
-        
-        // Simulate payment success after 10 seconds (in real app, use webhooks)
-        setTimeout(() => {
-          balance += parseFloat(amount);
-          updateUI();
-          alert("Платёж успешно принят. Баланс пополнен.");
-        }, 10000);
-      };
-    });
-  }
+  const paymentManager = new PaymentManager();
 
   // --- Slot Machine Creation ---
   function createSlotMachine() {
@@ -700,7 +732,7 @@
   async function spin() {
     if (isSpinning) return;
     
-    const canUseFreeSpins = hasAvailableFreeSpins();
+    const canUseFreeSpins = freeSpinsManager.hasAvailable();
     
     if (!canUseFreeSpins && balance < bet) {
       document.getElementById('message').textContent = 'Недостаточно средств для ставки!';
@@ -713,7 +745,7 @@
     
     // Deduct bet or use free spin
     if (canUseFreeSpins) {
-      useFreeSpins();
+      freeSpinsManager.use();
     } else {
       balance -= bet;
     }
@@ -768,7 +800,7 @@
     document.getElementById('stopAutoSpinButton').style.display = 'inline-block';
     
     autoSpinInterval = setInterval(() => {
-      if (!isSpinning && (hasAvailableFreeSpins() || balance >= bet)) {
+      if (!isSpinning && (freeSpinsManager.hasAvailable() || balance >= bet)) {
         spin();
       } else {
         stopAutoSpin();
@@ -809,7 +841,7 @@
     document.getElementById('betAmount').textContent = bet;
     document.getElementById('jackpotDisplay').textContent = jackpot.toLocaleString('ru-RU') + ' ₽';
     localStorage.setItem('slotBalance', balance);
-    updateFreeSpinsDisplay();
+    freeSpinsManager.updateDisplay();
   }
 
   // --- Event Listeners ---
@@ -824,9 +856,7 @@
 
   // --- Initialization ---
   function initialize() {
-    initializeFreeSpins();
     createSlotMachine();
-    initializePaymentButtons();
     initializeEventListeners();
     updateUI();
     
