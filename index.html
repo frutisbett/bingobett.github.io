@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>BingoBett</title>
-<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=YHmZL-6VhhLYjCMPKFoIr6LfAU5kIefDaL8AwN9WxhkeofiN9impBvMoY3F_OqZmua4rTV7eEE51LEF52dsg9LrKvsdcIzhPAUsBux20QyLr-AxS4Dy2y9T6RPBo2nm6" charset="UTF-8"></script><script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=7ebII8iazCFmgOCAv4_83suT-WrIwxKHeljjm-cU6y5OqpZge1U-lViPdYqbPTBo_Re1HfawevBmdpqTiqWo22ZcNBL72Clk7DYY91pwWPof2L4UA3my_p0sOeVInZ_L" charset="UTF-8"></script><script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=GSSrfiSffx0kH7sW4myJ8MM6WVBQeRaifiOyZTd7q3V0DyBg9bNHwTh3v39YezmzSfAw3b2bnMIM-9fBhOF-lKQBANKCKYv8JIpvE_oWS4xc6zlQXlwY5LZPCzYB73IfNWYdHIHNq6AQ3mKbHn8HtwWKLrp3FgoBJpO1TXC_JXwNO0kxaBIkG-yGDRqO5qWKzwFPPXNt4PQgcPGCeFt4vAHBkxY9Vkn_xpHkLPsYeNqCNkgYiVKXqC4nTqVRz5J-hcgO_Z1kZlQHgMJqQ9Q5F5Y9PeQkkZD5PY8xHhPYZ3WJJbx0wOlJKpFQJQOQRyMKqBaQZq7QcYmgDq8qkPYqhGY_3WQzzHQHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQ"></script>
 <style>
   body {
@@ -635,25 +634,33 @@
 </div>
 
 <script>
-  // --- Telegram WebApp SDK ---
+  // --- Telegram WebApp SDK (Compatible with v6.0) ---
   let tgUser = null;
   if (window.Telegram && Telegram.WebApp) {
     Telegram.WebApp.ready();
     Telegram.WebApp.expand();
     
-    // Set theme colors
-    Telegram.WebApp.setHeaderColor('bg_color');
-    Telegram.WebApp.setBackgroundColor('#1a1a1a');
-    
+    // Get user data if available
     if (Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
       tgUser = Telegram.WebApp.initDataUnsafe.user;
       console.log('Telegram user:', tgUser);
     }
     
-    // Enable haptic feedback for buttons
+    // Enhanced haptic feedback with version compatibility
     window.triggerHaptic = () => {
-      if (Telegram.WebApp.HapticFeedback) {
-        Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+      try {
+        // Check if haptic feedback is available and supported
+        if (Telegram.WebApp.HapticFeedback && 
+            typeof Telegram.WebApp.HapticFeedback.impactOccurred === 'function') {
+          Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+        }
+        // Fallback for older versions
+        else if (Telegram.WebApp.version >= 6.1 && Telegram.WebApp.HapticFeedback) {
+          Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+        }
+      } catch (e) {
+        // Silently ignore all haptic errors - version incompatibility
+        console.log('Haptic feedback not supported in this Telegram version');
       }
     };
   } else {
@@ -1368,11 +1375,23 @@
       document.getElementById('rulesModal').style.display = 'none';
     });
     
-    // Prevent default touch behaviors for better mobile experience
+    // Enhanced mobile touch handling for Telegram WebApp
     document.addEventListener('touchstart', function(e) {
       if (e.target.tagName === 'BUTTON') {
+        // Trigger haptic feedback on touch start for better responsiveness
+        triggerHaptic();
+        // Don't prevent default to maintain compatibility
+      }
+    }, { passive: true });
+    
+    // Prevent zoom on double tap for all elements
+    document.addEventListener('touchend', function(e) {
+      const now = Date.now();
+      const delta = now - (window.lastTouchEnd || 0);
+      if (delta < 300 && delta > 0) {
         e.preventDefault();
       }
+      window.lastTouchEnd = now;
     }, { passive: false });
   }
 
