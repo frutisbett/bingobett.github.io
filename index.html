@@ -237,7 +237,7 @@
         }
         
         .replenish-btn {
-            background: #e74c3c;
+            background: #8B4CF7;
             color: white;
             border: none;
             border-radius: 6px;
@@ -245,10 +245,17 @@
             font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .replenish-btn:active {
             transform: scale(0.95);
+        }
+        
+        .replenish-btn:hover {
+            background: #7C3AED;
         }
         
         .bot-chat {
@@ -368,6 +375,102 @@
             border-color: #dc3545;
         }
         
+        /* Стили для окна оплаты */
+        .payment-modal {
+            max-width: 400px;
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border: 2px solid #444;
+            border-radius: 8px;
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .payment-method:hover {
+            border-color: #8B4CF7;
+            background: rgba(139, 76, 247, 0.1);
+        }
+        
+        .payment-method.selected {
+            border-color: #8B4CF7;
+            background: rgba(139, 76, 247, 0.2);
+        }
+        
+        .payment-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .yoomoney-icon {
+            background: #8B4CF7;
+            color: white;
+        }
+        
+        .payment-info {
+            flex: 1;
+            text-align: left;
+        }
+        
+        .payment-title {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .payment-desc {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+        }
+        
+        .payment-status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .payment-status.processing {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid #ffc107;
+            color: #ffc107;
+        }
+        
+        .payment-status.success {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28a745;
+            color: #28a745;
+        }
+        
+        .payment-status.error {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+        
+        .payment-amount {
+            font-size: 20px;
+            font-weight: bold;
+            color: #8B4CF7;
+            margin: 10px 0;
+        }
+        
+        .payment-timer {
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+        }
+        
         @media (max-width: 480px) {
             body {
                 padding: 5px;
@@ -430,11 +533,11 @@
         </div>
         
         <div class="replenish-section">
-            <button class="replenish-btn" data-amount="50">+50₽</button>
-            <button class="replenish-btn" data-amount="300">+300₽</button>
-            <button class="replenish-btn" data-amount="500">+500₽</button>
-            <button class="replenish-btn" data-amount="800">+800₽</button>
-            <button class="btn warning" id="withdrawBtn">💳 Вывести</button>
+            <button class="replenish-btn" data-amount="50">💳 50₽</button>
+            <button class="replenish-btn" data-amount="300">💳 300₽</button>
+            <button class="replenish-btn" data-amount="500">💳 500₽</button>
+            <button class="replenish-btn" data-amount="800">💳 800₽</button>
+            <button class="btn warning" id="withdrawBtn">💸 Вывести</button>
         </div>
         
         <div class="slot-machine" id="slotMachine">
@@ -465,6 +568,40 @@
             <input type="text" id="usernameInput" placeholder="Ваше имя" maxlength="20">
             <div class="modal-buttons">
                 <button class="btn" id="usernameOk">Начать игру</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно оплаты -->
+    <div class="modal-overlay hidden" id="paymentModal">
+        <div class="modal payment-modal">
+            <h3>💳 Пополнение баланса</h3>
+            
+            <div class="payment-amount">
+                <span id="paymentAmount">50</span> ₽
+            </div>
+            
+            <div class="payment-method selected" id="yoomoneyMethod">
+                <div class="payment-icon yoomoney-icon">Ю</div>
+                <div class="payment-info">
+                    <div class="payment-title">ЮMoney</div>
+                    <div class="payment-desc">Быстрая и безопасная оплата</div>
+                </div>
+            </div>
+            
+            <div class="payment-status processing hidden" id="paymentStatus">
+                <div>⏳ Обработка платежа...</div>
+                <div class="payment-timer" id="paymentTimer">Ожидание: 30 сек</div>
+            </div>
+            
+            <div class="modal-buttons" id="paymentButtons">
+                <button class="btn" id="payBtn">Оплатить</button>
+                <button class="btn secondary" id="cancelPayBtn">Отмена</button>
+            </div>
+            
+            <div class="modal-buttons hidden" id="paymentCompleteButtons">
+                <button class="btn success" id="checkPaymentBtn">✓ Проверить платеж</button>
+                <button class="btn secondary" id="closePaymentBtn">Закрыть</button>
             </div>
         </div>
     </div>
@@ -539,6 +676,14 @@
                 <li>Обработка: до 24 часов</li>
             </ul>
             
+            <h4>💸 Пополнение через ЮMoney:</h4>
+            <ul>
+                <li>Мгновенное зачисление средств</li>
+                <li>Комиссия: 0%</li>
+                <li>Поддержка карт всех банков</li>
+                <li>Безопасные платежи</li>
+            </ul>
+            
             <div style="text-align: center; margin-top: 15px;">
                 <button class="btn" id="closeRules">Понятно</button>
             </div>
@@ -551,6 +696,15 @@
         // Глобальные переменные
         let tg = null;
         let isTelegram = false;
+        
+        // Конфигурация ЮMoney
+        const YOOMONEY_CONFIG = {
+            receiver: '4100118182998706', // Ваш номер кошелька ЮMoney
+            quickpayForm: 'shop',
+            targets: 'Пополнение BingoBett',
+            paymentType: 'PC', // PC - с любой карты, AC - с кошелька ЮMoney
+            successURL: window.location.href
+        };
         
         // Инициализация Telegram WebApp
         try {
@@ -679,11 +833,213 @@
                 rulesBtn: document.getElementById('rulesBtn'),
                 
                 usernameModal: document.getElementById('usernameModal'),
+                paymentModal: document.getElementById('paymentModal'),
                 withdrawModal: document.getElementById('withdrawModal'),
                 miniGameModal: document.getElementById('miniGameModal'),
                 rulesModal: document.getElementById('rulesModal')
             };
         }
+        
+        // ЮMoney интеграция
+        class YooMoneyPayment {
+            constructor() {
+                this.currentPayment = null;
+                this.paymentTimer = null;
+            }
+            
+            generatePaymentURL(amount) {
+                const label = `bingobett_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                const params = new URLSearchParams({
+                    receiver: YOOMONEY_CONFIG.receiver,
+                    'quickpay-form': YOOMONEY_CONFIG.quickpayForm,
+                    targets: `${YOOMONEY_CONFIG.targets} ${amount}₽`,
+                    'paymentType': YOOMONEY_CONFIG.paymentType,
+                    sum: amount.toString(),
+                    label: label,
+                    successURL: YOOMONEY_CONFIG.successURL
+                });
+                
+                return {
+                    url: `https://yoomoney.ru/quickpay/confirm.xml?${params.toString()}`,
+                    label: label
+                };
+            }
+            
+            async processPayment(amount) {
+                console.log('Обработка платежа:', amount, '₽');
+                
+                const paymentData = this.generatePaymentURL(amount);
+                this.currentPayment = {
+                    amount: amount,
+                    label: paymentData.label,
+                    timestamp: Date.now(),
+                    status: 'pending'
+                };
+                
+                // Показываем статус обработки
+                this.showPaymentStatus('processing');
+                
+                // Открываем страницу оплаты
+                try {
+                    if (isTelegram && tg && tg.openLink) {
+                        tg.openLink(paymentData.url);
+                    } else {
+                        window.open(paymentData.url, '_blank');
+                    }
+                } catch (e) {
+                    console.error('Ошибка открытия ссылки:', e);
+                    window.open(paymentData.url, '_blank');
+                }
+                
+                // Запускаем таймер ожидания
+                this.startPaymentTimer();
+            }
+            
+            showPaymentStatus(status) {
+                const paymentStatus = document.getElementById('paymentStatus');
+                const paymentButtons = document.getElementById('paymentButtons');
+                const paymentCompleteButtons = document.getElementById('paymentCompleteButtons');
+                
+                if (!paymentStatus) return;
+                
+                paymentStatus.className = `payment-status ${status}`;
+                paymentStatus.classList.remove('hidden');
+                
+                if (paymentButtons) paymentButtons.classList.add('hidden');
+                if (paymentCompleteButtons) paymentCompleteButtons.classList.remove('hidden');
+                
+                switch (status) {
+                    case 'processing':
+                        paymentStatus.innerHTML = `
+                            <div>⏳ Ожидание оплаты...</div>
+                            <div class="payment-timer">После оплаты нажмите "Проверить платеж"</div>
+                        `;
+                        break;
+                    case 'success':
+                        paymentStatus.innerHTML = `
+                            <div>✅ Платеж успешно обработан!</div>
+                            <div>Средства зачислены на ваш баланс</div>
+                        `;
+                        break;
+                    case 'error':
+                        paymentStatus.innerHTML = `
+                            <div>❌ Ошибка обработки платежа</div>
+                            <div>Попробуйте еще раз или обратитесь в поддержку</div>
+                        `;
+                        break;
+                }
+            }
+            
+            startPaymentTimer() {
+                let timeLeft = 300; // 5 минут
+                const timerEl = document.querySelector('.payment-timer');
+                
+                this.paymentTimer = setInterval(() => {
+                    timeLeft--;
+                    if (timerEl) {
+                        const minutes = Math.floor(timeLeft / 60);
+                        const seconds = timeLeft % 60;
+                        timerEl.textContent = `Время на оплату: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    }
+                    
+                    if (timeLeft <= 0) {
+                        this.stopPaymentTimer();
+                        this.showPaymentStatus('error');
+                    }
+                }, 1000);
+            }
+            
+            stopPaymentTimer() {
+                if (this.paymentTimer) {
+                    clearInterval(this.paymentTimer);
+                    this.paymentTimer = null;
+                }
+            }
+            
+            async checkPayment() {
+                if (!this.currentPayment) return false;
+                
+                console.log('Проверка платежа:', this.currentPayment.label);
+                
+                // Имитация проверки платежа (в реальном приложении здесь будет запрос к серверу)
+                return new Promise((resolve) => {
+                    // Показываем процесс проверки
+                    const paymentStatus = document.getElementById('paymentStatus');
+                    if (paymentStatus) {
+                        paymentStatus.innerHTML = `
+                            <div>🔍 Проверка платежа...</div>
+                            <div class="payment-timer">Подождите несколько секунд</div>
+                        `;
+                    }
+                    
+                    setTimeout(() => {
+                        // В 80% случаев платеж считается успешным (для демо)
+                        const success = Math.random() > 0.2;
+                        
+                        if (success) {
+                            this.completePayment();
+                            resolve(true);
+                        } else {
+                            this.showPaymentStatus('error');
+                            resolve(false);
+                        }
+                    }, 2000);
+                });
+            }
+            
+            completePayment() {
+                if (!this.currentPayment) return;
+                
+                const amount = this.currentPayment.amount;
+                
+                // Зачисляем средства
+                gameState.balance += amount;
+                updateUI();
+                
+                // Показываем успех
+                this.showPaymentStatus('success');
+                this.stopPaymentTimer();
+                
+                // Добавляем в чат
+                addBotMessage(`${gameState.username} пополнил баланс на ${amount} ₽ через ЮMoney`);
+                
+                // Показываем сообщение
+                showMessage(`💰 Баланс успешно пополнен на ${amount} ₽!`);
+                
+                // Вибрация
+                vibrate();
+                
+                // Закрываем через 3 секунды
+                setTimeout(() => {
+                    this.closePayment();
+                }, 3000);
+                
+                console.log('Платеж завершен:', amount, '₽');
+            }
+            
+            closePayment() {
+                const paymentModal = document.getElementById('paymentModal');
+                if (paymentModal) {
+                    paymentModal.classList.add('hidden');
+                }
+                
+                // Сбрасываем состояние
+                this.currentPayment = null;
+                this.stopPaymentTimer();
+                
+                // Сбрасываем UI
+                const paymentStatus = document.getElementById('paymentStatus');
+                const paymentButtons = document.getElementById('paymentButtons');
+                const paymentCompleteButtons = document.getElementById('paymentCompleteButtons');
+                
+                if (paymentStatus) paymentStatus.classList.add('hidden');
+                if (paymentButtons) paymentButtons.classList.remove('hidden');
+                if (paymentCompleteButtons) paymentCompleteButtons.classList.add('hidden');
+            }
+        }
+        
+        // Создаем экземпляр платежной системы
+        const yooMoney = new YooMoneyPayment();
         
         // Создание слотов
         function createSlots() {
@@ -746,6 +1102,23 @@
             while (botChat.children.length > 15) {
                 botChat.removeChild(botChat.children[1]);
             }
+        }
+        
+        // Функция пополнения баланса
+        function initiatePayment(amount) {
+            const paymentModal = document.getElementById('paymentModal');
+            const paymentAmount = document.getElementById('paymentAmount');
+            
+            if (!paymentModal) return;
+            
+            if (paymentAmount) {
+                paymentAmount.textContent = amount;
+            }
+            
+            paymentModal.classList.remove('hidden');
+            vibrate();
+            
+            console.log('Инициализация платежа на сумму:', amount, '₽');
         }
         
         // Проверка выигрышей
@@ -989,24 +1362,12 @@
             vibrate();
         }
         
-        // Пополнение баланса
-        function replenish(amount) {
-            setTimeout(() => {
-                gameState.balance += amount;
-                updateUI();
-                showMessage(`✅ Баланс пополнен на ${amount} ₽`);
-                addBotMessage(`${gameState.username} пополнил баланс на ${amount} ₽`);
-            }, 1000);
-            
-            showMessage('💳 Обработка платежа...');
-            vibrate();
-        }
-        
         // Случайные сообщения
         const BOT_MESSAGES = [
             'выиграл 450 ₽!', 'сорвал джекпот 15,000 ₽!', 'выиграла 820 ₽!',
             'получил бонус 1,200 ₽!', 'выиграла 650 ₽ в бонусной игре!',
-            'сорвал куш 3,400 ₽!', 'выиграла 780 ₽!', 'получил 2,100 ₽!'
+            'сорвал куш 3,400 ₽!', 'выиграла 780 ₽!', 'получил 2,100 ₽!',
+            'пополнил баланс через ЮMoney', 'выиграл в автоспине 1,800 ₽!'
         ];
         
         const NAMES = ['Анна К.', 'Максим Р.', 'Елена В.', 'Игорь С.', 'Мария П.', 'Алексей К.', 'Ольга Н.', 'Дмитрий Л.'];
@@ -1101,9 +1462,45 @@
             // Пополнение
             document.querySelectorAll('.replenish-btn').forEach(btn => {
                 btn.onclick = () => {
-                    replenish(parseInt(btn.dataset.amount));
+                    const amount = parseInt(btn.dataset.amount);
+                    initiatePayment(amount);
+                    vibrate();
                 };
             });
+            
+            // Платежная система
+            const payBtn = document.getElementById('payBtn');
+            const cancelPayBtn = document.getElementById('cancelPayBtn');
+            const checkPaymentBtn = document.getElementById('checkPaymentBtn');
+            const closePaymentBtn = document.getElementById('closePaymentBtn');
+            
+            if (payBtn) {
+                payBtn.onclick = () => {
+                    const amount = parseInt(document.getElementById('paymentAmount').textContent);
+                    yooMoney.processPayment(amount);
+                };
+            }
+            
+            if (cancelPayBtn) {
+                cancelPayBtn.onclick = () => {
+                    yooMoney.closePayment();
+                };
+            }
+            
+            if (checkPaymentBtn) {
+                checkPaymentBtn.onclick = async () => {
+                    const success = await yooMoney.checkPayment();
+                    if (!success) {
+                        showMessage('❌ Платеж не найден. Попробуйте еще раз или обратитесь в поддержку.');
+                    }
+                };
+            }
+            
+            if (closePaymentBtn) {
+                closePaymentBtn.onclick = () => {
+                    yooMoney.closePayment();
+                };
+            }
             
             // Модальные окна
             const usernameOk = document.getElementById('usernameOk');
@@ -1120,10 +1517,10 @@
                 };
             }
             
-            const confirmWithdraw = document.getElementById('confirmWithdraw');
+            const confirmWithdrawBtn = document.getElementById('confirmWithdraw');
             const cancelWithdraw = document.getElementById('cancelWithdraw');
             
-            if (confirmWithdraw) confirmWithdraw.onclick = confirmWithdraw;
+            if (confirmWithdrawBtn) confirmWithdrawBtn.onclick = confirmWithdraw;
             if (cancelWithdraw) {
                 cancelWithdraw.onclick = () => {
                     const withdrawModal = document.getElementById('withdrawModal');
