@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>BingoBett</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=7ebII8iazCFmgOCAv4_83suT-WrIwxKHeljjm-cU6y5OqpZge1U-lViPdYqbPTBo_Re1HfawevBmdpqTiqWo22ZcNBL72Clk7DYY91pwWPof2L4UA3my_p0sOeVInZ_L" charset="UTF-8"></script><script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=GSSrfiSffx0kH7sW4myJ8MM6WVBQeRaifiOyZTd7q3V0DyBg9bNHwTh3v39YezmzSfAw3b2bnMIM-9fBhOF-lKQBANKCKYv8JIpvE_oWS4xc6zlQXlwY5LZPCzYB73IfNWYdHIHNq6AQ3mKbHn8HtwWKLrp3FgoBJpO1TXC_JXwNO0kxaBIkG-yGDRqO5qWKzwFPPXNt4PQgcPGCeFt4vAHBkxY9Vkn_xpHkLPsYeNqCNkgYiVKXqC4nTqVRz5J-hcgO_Z1kZlQHgMJqQ9Q5F5Y9PeQkkZD5PY8xHhPYZ3WJJbx0wOlJKpFQJQOQRyMKqBaQZq7QcYmgDq8qkPYqhGY_3WQzzHQHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQqHQQQ"></script>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -106,54 +105,88 @@
   
   /* Spinning animation for slots */
   .slot.spinning {
-    background: linear-gradient(180deg, #000, #333, #666, #333, #000);
-    background-size: 100% 500%;
-    animation: slotSpin 0.15s linear infinite;
+    background: #111;
+    border: 2px solid #0f0;
+    box-shadow: inset 0 0 2vw #0f0, 0 0 1vw #0f0;
     overflow: hidden;
+    position: relative;
+    animation: slotGlow 0.1s ease-in-out infinite alternate;
   }
   
-  .slot.spinning::before {
-    content: "🍒🍋🍊🍉🍇🍓🍍🥝🍌🥥🎁💎⭐🃏👑💰";
+  .slot.spinning .symbol {
     position: absolute;
-    top: -200%;
-    left: 0;
     width: 100%;
-    height: 500%;
+    height: 100%;
     display: flex;
-    flex-direction: column;
-    justify-content: space-around;
     align-items: center;
-    animation: reelSpin 0.1s linear infinite;
-    font-size: 6vw;
-    line-height: 1;
+    justify-content: center;
+    font-size: 8vw;
+    animation: symbolSpin 0.05s linear infinite;
+    opacity: 0.9;
   }
   
-  @keyframes slotSpin {
+  .slot.spinning.stopping {
+    animation: slotGlowStop 0.3s ease-out forwards;
+  }
+  
+  .slot.spinning.stopping .symbol {
+    animation: symbolStop 0.3s ease-out forwards;
+  }
+  
+  @keyframes slotGlow {
     0% { 
-      background-position: 0% 0%;
-      transform: rotateY(0deg);
-    }
-    25% { 
-      background-position: 0% 25%;
-      transform: rotateY(5deg);
-    }
-    50% { 
-      background-position: 0% 50%;
-      transform: rotateY(0deg);
-    }
-    75% { 
-      background-position: 0% 75%;
-      transform: rotateY(-5deg);
+      box-shadow: inset 0 0 2vw #0f0, 0 0 1vw #0f0;
+      border-color: #0f0;
     }
     100% { 
-      background-position: 0% 100%;
-      transform: rotateY(0deg);
+      box-shadow: inset 0 0 3vw #ff0, 0 0 2vw #ff0;
+      border-color: #ff0;
     }
   }
   
-  @keyframes reelSpin {
-    0% { transform: translateY(0%); }
-    100% { transform: translateY(-100%); }
+  @keyframes slotGlowStop {
+    0% { 
+      box-shadow: inset 0 0 3vw #ff0, 0 0 2vw #ff0;
+      border-color: #ff0;
+    }
+    100% { 
+      box-shadow: inset 0 0 2vw #0f0;
+      border-color: transparent;
+    }
+  }
+  
+  @keyframes symbolSpin {
+    0% { 
+      transform: rotateY(0deg) scale(1);
+      opacity: 0.7;
+    }
+    25% { 
+      transform: rotateY(90deg) scale(0.8);
+      opacity: 0.3;
+    }
+    50% { 
+      transform: rotateY(180deg) scale(1);
+      opacity: 0.7;
+    }
+    75% { 
+      transform: rotateY(270deg) scale(0.8);
+      opacity: 0.3;
+    }
+    100% { 
+      transform: rotateY(360deg) scale(1);
+      opacity: 0.7;
+    }
+  }
+  
+  @keyframes symbolStop {
+    0% { 
+      transform: rotateY(0deg) scale(0.8);
+      opacity: 0.7;
+    }
+    100% { 
+      transform: rotateY(0deg) scale(1);
+      opacity: 1;
+    }
   }
   
   .slot.win {
@@ -306,26 +339,6 @@
     -webkit-tap-highlight-color: transparent !important;
     touch-action: manipulation !important;
   }
-  .withdraw-btn:hover {
-    background: #ff9800 !important;
-    box-shadow: none !important;
-    transform: none !important;
-  }
-  .withdraw-btn:active {
-    background: #ff9800 !important;
-    box-shadow: none !important;
-    transform: none !important;
-  }
-  .withdraw-btn:focus {
-    background: #ff9800 !important;
-    outline: none !important;
-    box-shadow: none !important;
-    transform: none !important;
-  }
-  .withdraw-btn:disabled {
-    background: #ff9800 !important;
-    opacity: 0.6 !important;
-  }
   
   /* Мини-игра */
   .mini-game-overlay {
@@ -467,7 +480,6 @@
     }
   }
 </style>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
 
@@ -547,14 +559,6 @@
         <li>Выигрыши с фриспинов зачисляются на основной баланс</li>
       </ul>
 
-      <h4 style="color: #4caf50; margin-top: 20px;">🎲 Дополнительные возможности:</h4>
-      <ul>
-        <li><strong>Джекпот:</strong> Случайный выигрыш (шанс 0.1%)</li>
-        <li><strong>Мини-игра:</strong> Случайный бонус (шанс 5%)</li>
-        <li><strong>Автоспин:</strong> Автоматические вращения</li>
-        <li><strong>Мега выигрыш:</strong> При выигрыше ×50+ от ставки</li>
-      </ul>
-
       <h4 style="color: #ff9800; margin-top: 20px;">💳 Условия вывода средств:</h4>
       <ul style="color: #ffeb3b;">
         <li><strong>Минимальный баланс для вывода: 40,000 рублей</strong></li>
@@ -562,13 +566,6 @@
         <li>40,000 рублей остаются на игровом балансе</li>
         <li>Вывод на банковскую карту (16 цифр)</li>
         <li>Время поступления: до 24 часов</li>
-      </ul>
-
-      <h4 style="color: #4caf50; margin-top: 20px;">💵 Пополнение баланса:</h4>
-      <ul>
-        <li>Доступные суммы: 50₽, 300₽, 500₽, 800₽</li>
-        <li>Оплата через ЮMoney</li>
-        <li>Автоматическое зачисление после оплаты</li>
       </ul>
 
     </div>
@@ -634,790 +631,635 @@
 </div>
 
 <script>
-  // --- Telegram WebApp SDK (Compatible with v6.0) ---
-  let tgUser = null;
-  if (window.Telegram && Telegram.WebApp) {
-    Telegram.WebApp.ready();
-    Telegram.WebApp.expand();
-    
-    // Get user data if available
-    if (Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
-      tgUser = Telegram.WebApp.initDataUnsafe.user;
-      console.log('Telegram user:', tgUser);
-    }
-    
-    // Enhanced haptic feedback with version compatibility
-    window.triggerHaptic = () => {
-      try {
-        // Check if haptic feedback is available and supported
-        if (Telegram.WebApp.HapticFeedback && 
-            typeof Telegram.WebApp.HapticFeedback.impactOccurred === 'function') {
-          Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-        }
-        // Fallback for older versions
-        else if (Telegram.WebApp.version >= 6.1 && Telegram.WebApp.HapticFeedback) {
-          Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-        }
-      } catch (e) {
-        // Silently ignore all haptic errors - version incompatibility
-        console.log('Haptic feedback not supported in this Telegram version');
-      }
-    };
-  } else {
-    window.triggerHaptic = () => {}; // Fallback for non-Telegram environments
+// --- Telegram WebApp SDK (Compatible with v6.0+) ---
+let tgUser = null;
+if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
+  window.Telegram.WebApp.ready();
+  window.Telegram.WebApp.expand();
+  
+  // Get user data if available
+  if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+    tgUser = window.Telegram.WebApp.initDataUnsafe.user;
   }
-
-  // --- Game Parameters ---
-  const columns = 5;
-  const rows = 4;
-  const MIN_BET = 10;
-  const MAX_BET = 80;
   
-  const reels = [
-    ["🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍋","🍊","🍉","🍇","🍓","🥥","⭐","🃏","👑"],
-    ["🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏"],
-    ["🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏","💰"],
-    ["🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏"],
-    ["🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","⭐","🃏"]
-  ];
-  
-  const payTable = {
-    "🍒": {3:5, 4:10, 5:20},
-    "🍋": {3:5, 4:10, 5:20},
-    "🍊": {3:5, 4:10, 5:20},
-    "🍉": {3:5, 4:10, 5:20},
-    "🍇": {3:5, 4:10, 5:20},
-    "🍓": {3:7, 4:14, 5:28},
-    "🍍": {3:7, 4:14, 5:28},
-    "🥝": {3:10, 4:20, 5:40},
-    "🍌": {3:10, 4:20, 5:40},
-    "🥥": {3:12, 4:24, 5:48},
-    "🎁": {3:15, 4:30, 5:60},
-    "💎": {3:20, 4:40, 5:80},
-    "⭐": {3:25, 4:50, 5:100},
-    "🃏": {3:30, 4:60, 5:120},
-    "👑": {3:50, 4:100, 5:200},
-    "💰": {3:100, 4:200, 5:500}
+  // Haptic feedback (compatible with all versions)
+  window.triggerHaptic = () => {
+    try {
+      if (window.Telegram.WebApp.HapticFeedback && 
+          typeof window.Telegram.WebApp.HapticFeedback.impactOccurred === 'function') {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+      }
+    } catch (e) {
+      // Ignore haptic errors
+    }
   };
+} else {
+  window.triggerHaptic = () => {}; // Fallback for browsers
+}
 
-  // --- Game State ---
-  let balance = parseFloat(localStorage.getItem('slotBalance')) || 555;
-  let bet = parseInt(localStorage.getItem('slotBet')) || 10;
-  let jackpot = parseFloat(localStorage.getItem('jackpot')) || 2200453;
-  let isSpinning = false;
-  let autoSpinActive = false;
-  let autoSpinInterval = null;
-  let slotElements = [];
+// --- Game Parameters ---
+const columns = 5;
+const rows = 4;
+const MIN_BET = 10;
+const MAX_BET = 80;
 
-  // --- User Management ---
-  let username = localStorage.getItem('slotUsername') || '';
-  
-  function setUsername(name) {
-    username = name;
-    localStorage.setItem('slotUsername', name);
-    document.getElementById('username').textContent = name;
+const reels = [
+  ["🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍋","🍊","🍉","🍇","🍓","🥥","⭐","🃏","👑"],
+  ["🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏"],
+  ["🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏","💰"],
+  ["🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏"],
+  ["🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","⭐","🃏"]
+];
+
+const payTable = {
+  "🍒": {3:5, 4:10, 5:20}, "🍋": {3:5, 4:10, 5:20}, "🍊": {3:5, 4:10, 5:20},
+  "🍉": {3:5, 4:10, 5:20}, "🍇": {3:5, 4:10, 5:20}, "🍓": {3:7, 4:14, 5:28},
+  "🍍": {3:7, 4:14, 5:28}, "🥝": {3:10, 4:20, 5:40}, "🍌": {3:10, 4:20, 5:40},
+  "🥥": {3:12, 4:24, 5:48}, "🎁": {3:15, 4:30, 5:60}, "💎": {3:20, 4:40, 5:80},
+  "⭐": {3:25, 4:50, 5:100}, "🃏": {3:30, 4:60, 5:120}, "👑": {3:50, 4:100, 5:200},
+  "💰": {3:100, 4:200, 5:500}
+};
+
+// --- Game State ---
+let balance = parseFloat(localStorage.getItem('slotBalance')) || 555;
+let bet = parseInt(localStorage.getItem('slotBet')) || 10;
+let jackpot = parseFloat(localStorage.getItem('jackpot')) || 2200453;
+let isSpinning = false;
+let autoSpinActive = false;
+let autoSpinInterval = null;
+let slotElements = [];
+let username = localStorage.getItem('slotUsername') || '';
+
+function setUsername(name) {
+  username = name;
+  localStorage.setItem('slotUsername', name);
+  document.getElementById('username').textContent = name;
+}
+
+// Initialize user
+if (tgUser && tgUser.first_name) {
+  setUsername(tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : ""));
+} else if (!username) {
+  document.getElementById('usernameModal').style.display = 'flex';
+  document.getElementById('usernameInput').focus();
+  document.getElementById('usernameOkBtn').onclick = function() {
+    let val = document.getElementById('usernameInput').value.trim();
+    if (val.length > 0) {
+      setUsername(val);
+      document.getElementById('usernameModal').style.display = 'none';
+    }
+  };
+  document.getElementById('usernameInput').onkeydown = function(e) {
+    if (e.key === "Enter") document.getElementById('usernameOkBtn').click();
+  };
+} else {
+  setUsername(username);
+}
+
+// --- Free Spins Management ---
+class FreeSpinsManager {
+  constructor() {
+    this.initializeFreeSpins();
+    this.checkExpiration();
   }
 
-  // Initialize user
-  if (tgUser && tgUser.first_name) {
-    setUsername(tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : ""));
-  } else if (!username) {
-    document.getElementById('usernameModal').style.display = '';
-    document.getElementById('usernameInput').focus();
-    document.getElementById('usernameOkBtn').onclick = function() {
-      let val = document.getElementById('usernameInput').value.trim();
-      if (val.length > 0) {
-        setUsername(val);
-        document.getElementById('usernameModal').style.display = 'none';
-      }
-    };
-    document.getElementById('usernameInput').onkeydown = function(e) {
-      if (e.key === "Enter") document.getElementById('usernameOkBtn').click();
-    };
-  } else {
-    setUsername(username);
-  }
-
-  // --- Free Spins Management (Fixed and Enhanced) ---
-  class FreeSpinsManager {
-    constructor() {
-      this.initializeFreeSpins();
-      this.checkExpiration();
-    }
-
-    initializeFreeSpins() {
-      const registrationTimestamp = localStorage.getItem('registrationTimestamp');
-      if (!registrationTimestamp) {
-        localStorage.setItem('freeSpins', '55');
-        localStorage.setItem('registrationTimestamp', Date.now().toString());
-      }
-    }
-
-    checkExpiration() {
-      const registrationTime = Number(localStorage.getItem('registrationTimestamp'));
-      const currentTime = Date.now();
-      const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-      
-      if (currentTime - registrationTime > twentyFourHours) {
-        localStorage.setItem('freeSpins', '0');
-        this.displayFreeSpins();
-      }
-    }
-
-    getFreeSpins() {
-      this.checkExpiration();
-      return parseInt(localStorage.getItem('freeSpins') || '0');
-    }
-
-    useFreeSpins(count = 1) {
-      let currentSpins = this.getFreeSpins();
-      if (currentSpins >= count) {
-        currentSpins -= count;
-        localStorage.setItem('freeSpins', currentSpins.toString());
-        this.displayFreeSpins();
-        return true;
-      }
-      return false;
-    }
-
-    displayFreeSpins() {
-      const freeSpins = this.getFreeSpins();
-      document.getElementById('freeSpinsDisplay').textContent = `Фриспины: ${freeSpins}`;
-    }
-
-    getTimeUntilExpiration() {
-      const registrationTime = Number(localStorage.getItem('registrationTimestamp'));
-      const currentTime = Date.now();
-      const twentyFourHours = 24 * 60 * 60 * 1000;
-      const timeLeft = twentyFourHours - (currentTime - registrationTime);
-      
-      if (timeLeft <= 0) return "Истекли";
-      
-      const hours = Math.floor(timeLeft / (60 * 60 * 1000));
-      const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
-      
-      return `${hours}ч ${minutes}м`;
+  initializeFreeSpins() {
+    const registrationTimestamp = localStorage.getItem('registrationTimestamp');
+    if (!registrationTimestamp) {
+      localStorage.setItem('freeSpins', '55');
+      localStorage.setItem('registrationTimestamp', Date.now().toString());
     }
   }
 
-  const freeSpinsManager = new FreeSpinsManager();
-
-  // --- Withdrawal System ---
-  function initializeWithdrawal() {
-    const withdrawBtn = document.getElementById('withdrawBtn');
-    const withdrawModal = document.getElementById('withdrawModal');
-    const cardNumberInput = document.getElementById('cardNumberInput');
-    const confirmWithdrawBtn = document.getElementById('confirmWithdrawBtn');
-    const cancelWithdrawBtn = document.getElementById('cancelWithdrawBtn');
-    const withdrawError = document.getElementById('withdrawError');
-
-    // Format card number input
-    cardNumberInput.addEventListener('input', function(e) {
-      let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-      let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
-      e.target.value = formattedValue;
-    });
-
-    withdrawBtn.addEventListener('click', function() {
-      if (balance <= 40000) {
-        showMessage('Вывод возможен от 40 000 рублей');
-        return;
-      }
-      
-      const withdrawableAmount = balance - 40000;
-      document.getElementById('withdrawAmount').textContent = withdrawableAmount.toFixed(2);
-      cardNumberInput.value = '';
-      withdrawError.textContent = '';
-      withdrawModal.style.display = '';
-      cardNumberInput.focus();
-    });
-
-    confirmWithdrawBtn.addEventListener('click', function() {
-      const cardNumber = cardNumberInput.value.replace(/\s/g, '');
-      
-      if (!validateCardNumber(cardNumber)) {
-        withdrawError.textContent = 'Введите корректный номер карты (16 цифр)';
-        return;
-      }
-
-      // Calculate withdrawable amount (all above 40,000)
-      const withdrawAmount = balance - 40000;
-      balance = 40000; // Keep 40,000 on balance
-      updateBalance();
-      
-      withdrawModal.style.display = 'none';
-      showMessage(`Заявка на вывод ${withdrawAmount.toFixed(2)} ₽ принята!\nСредства поступят на карту **** **** **** ${cardNumber.slice(-4)} в течение 24 часов.`);
-      
-      // Add to bot chat
-      addBotMessage(`${username} вывел ${withdrawAmount.toFixed(2)} ₽`);
-    });
-
-    cancelWithdrawBtn.addEventListener('click', function() {
-      withdrawModal.style.display = 'none';
-    });
-  }
-
-  function validateCardNumber(cardNumber) {
-    return /^\d{16}$/.test(cardNumber);
-  }
-
-  // --- YooMoney Payment Integration ---
-  function initiateYooMoneyPayment(amount) {
-    const paymentId = 'payment_' + Date.now();
+  checkExpiration() {
+    const registrationTime = Number(localStorage.getItem('registrationTimestamp'));
+    const currentTime = Date.now();
+    const twentyFourHours = 24 * 60 * 60 * 1000;
     
-    // Show payment modal
-    document.getElementById('paymentAmount').textContent = `Сумма: ${amount} ₽`;
-    document.getElementById('paymentStatus').textContent = 'Подготовка к оплате...';
-    document.getElementById('paymentModal').style.display = '';
-    document.getElementById('closePaymentBtn').style.display = 'none';
-    
-    // YooMoney payment parameters
-    const yoomoneyParams = {
-      receiver: '4100118182998706',
-      'quickpay-form': 'shop',
-      targets: `Пополнение игрового баланса BingoBett на ${amount} рублей`,
-      'paymentType': 'PC',
-      sum: amount,
-      'formcomment': `Пополнение баланса игрока ${username}`,
-      'short-dest': `BingoBett пополнение ${amount}₽`,
-      label: paymentId
-    };
-
-    // Create payment URL
-    const baseUrl = 'https://yoomoney.ru/quickpay/confirm.xml';
-    const params = new URLSearchParams(yoomoneyParams);
-    const paymentUrl = `${baseUrl}?${params.toString()}`;
-
-    // Store pending payment
-    const pendingPayment = {
-      id: paymentId,
-      amount: amount,
-      timestamp: Date.now(),
-      status: 'pending'
-    };
-    
-    localStorage.setItem(`payment_${paymentId}`, JSON.stringify(pendingPayment));
-    
-    setTimeout(() => {
-      // Update modal and open payment
-      document.getElementById('paymentStatus').textContent = 'Переход к оплате через ЮMoney...';
-      
-      // Open YooMoney payment page
-      const paymentWindow = window.open(paymentUrl, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
-      
-      // Start payment verification
-      startPaymentVerification(paymentId, amount, paymentWindow);
-    }, 1000);
-  }
-
-  function startPaymentVerification(paymentId, amount, paymentWindow) {
-    let checkCount = 0;
-    const maxChecks = 180; // 3 minutes
-    
-    document.getElementById('paymentStatus').textContent = 'Ожидание завершения оплаты...';
-    
-    const verificationInterval = setInterval(() => {
-      checkCount++;
-      
-      // Check if payment window is closed (user completed or cancelled payment)
-      if (paymentWindow.closed) {
-        clearInterval(verificationInterval);
-        document.getElementById('paymentStatus').textContent = 'Проверка платежа...';
-        
-        // Simulate successful payment for demo purposes
-        setTimeout(() => {
-          processPaymentSuccess(paymentId, amount);
-        }, 2000);
-        return;
-      }
-      
-      // Update status every 15 seconds
-      if (checkCount % 15 === 0) {
-        document.getElementById('paymentStatus').textContent = `Ожидание оплаты... (${Math.floor(checkCount/60)}:${String(checkCount%60).padStart(2,'0')})`;
-      }
-      
-      // Stop checking after max attempts
-      if (checkCount >= maxChecks) {
-        clearInterval(verificationInterval);
-        document.getElementById('paymentStatus').textContent = 'Время ожидания платежа истекло';
-        document.getElementById('closePaymentBtn').style.display = '';
-        document.getElementById('closePaymentBtn').onclick = () => {
-          document.getElementById('paymentModal').style.display = 'none';
-        };
-      }
-    }, 1000);
-  }
-
-  function processPaymentSuccess(paymentId, amount) {
-    // Update balance
-    balance += amount;
-    updateBalance();
-    
-    // Update payment status
-    const paymentData = {
-      id: paymentId,
-      amount: amount,
-      timestamp: Date.now(),
-      status: 'completed'
-    };
-    localStorage.setItem(`payment_${paymentId}`, JSON.stringify(paymentData));
-    
-    // Update modal with success
-    document.getElementById('paymentStatus').textContent = '✅ Платёж успешно завершён!';
-    document.getElementById('closePaymentBtn').style.display = '';
-    document.getElementById('closePaymentBtn').onclick = () => {
-      document.getElementById('paymentModal').style.display = 'none';
-    };
-    
-    // Show success message
-    showMessage(`Баланс успешно пополнен на ${amount} ₽`);
-    
-    // Add to bot chat
-    addBotMessage(`${username} пополнил баланс на ${amount} ₽`);
-    
-    // Auto-close modal after 3 seconds
-    setTimeout(() => {
-      document.getElementById('paymentModal').style.display = 'none';
-    }, 3000);
-  }
-
-  // --- Slot Machine Animation System ---
-  function createSpinningAnimation(slotElement, finalSymbol, duration) {
-    let spinCount = 0;
-    const maxSpins = Math.floor(duration / 80); // Change symbol every 80ms
-    
-    slotElement.classList.add('spinning');
-    slotElement.textContent = ''; // Hide text during spinning
-    
-    const spinInterval = setInterval(() => {
-      // Show random symbol during spinning
-      if (!slotElement.classList.contains('spinning')) return;
-      
-      const randomReel = reels[Math.floor(Math.random() * reels.length)];
-      const randomSymbol = randomReel[Math.floor(Math.random() * randomReel.length)];
-      
-      // Temporarily show symbol through the spinning effect
-      spinCount++;
-      if (spinCount >= maxSpins) {
-        clearInterval(spinInterval);
-        slotElement.classList.remove('spinning');
-        slotElement.textContent = finalSymbol;
-      }
-    }, 80);
-    
-    return new Promise(resolve => {
-      setTimeout(() => {
-        slotElement.classList.remove('spinning');
-        slotElement.textContent = finalSymbol;
-        resolve();
-      }, duration);
-    });
-  }
-
-  // --- Bot Chat Updates ---
-  const botMessages = [
-    "Анна К. выиграла 450 ₽ в слотах!",
-    "Максим Р. сорвал джекпот 15,000 ₽!",
-    "Елена В. выиграла 820 ₽!",
-    "Игорь С. получил бонус 1,200 ₽!",
-    "Мария П. выиграла 650 ₽ в мини-игре!",
-    "Алексей К. сорвал куш 3,400 ₽!",
-    "Ольга Н. выиграла 780 ₽!",
-    "Дмитрий Л. получил 2,100 ₽!",
-    "Наталья М. выиграла 920 ₽!",
-    "Сергей Б. сорвал джекпот 8,500 ₽!"
-  ];
-
-  function addBotMessage(message) {
-    const botChat = document.getElementById('botChat');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'bot-message';
-    messageDiv.textContent = `${new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'})} - ${message}`;
-    botChat.appendChild(messageDiv);
-    botChat.scrollTop = botChat.scrollHeight;
-    
-    // Keep only last 20 messages
-    while (botChat.children.length > 21) { // +1 for the header
-      botChat.removeChild(botChat.children[1]);
+    if (currentTime - registrationTime > twentyFourHours) {
+      localStorage.setItem('freeSpins', '0');
+      this.displayFreeSpins();
     }
   }
 
-  function startBotMessages() {
-    setInterval(() => {
-      if (Math.random() < 0.3) { // 30% chance every interval
-        const randomMessage = botMessages[Math.floor(Math.random() * botMessages.length)];
-        addBotMessage(randomMessage);
-      }
-    }, 8000); // Every 8 seconds
+  getFreeSpins() {
+    this.checkExpiration();
+    return parseInt(localStorage.getItem('freeSpins') || '0');
   }
 
-  // --- Game Logic ---
-  function createSlotMachine() {
-    const slotMachine = document.getElementById('slotMachine');
-    slotMachine.innerHTML = '';
-    slotElements = [];
-    
-    for (let i = 0; i < rows * columns; i++) {
-      const slot = document.createElement('div');
-      slot.className = 'slot';
-      slot.textContent = '🍒';
-      slotMachine.appendChild(slot);
-      slotElements.push(slot);
+  useFreeSpins(count = 1) {
+    let currentSpins = this.getFreeSpins();
+    if (currentSpins >= count) {
+      currentSpins -= count;
+      localStorage.setItem('freeSpins', currentSpins.toString());
+      this.displayFreeSpins();
+      return true;
     }
+    return false;
   }
 
-  function updateBalance() {
-    document.getElementById('balanceDisplay').textContent = balance.toFixed(2) + ' ₽';
-    localStorage.setItem('slotBalance', balance.toString());
+  displayFreeSpins() {
+    const freeSpins = this.getFreeSpins();
+    document.getElementById('freeSpinsDisplay').textContent = `Фриспины: ${freeSpins}`;
   }
+}
 
-  function updateJackpot() {
-    document.getElementById('jackpotDisplay').textContent = new Intl.NumberFormat('ru-RU').format(jackpot) + ' ₽';
-    localStorage.setItem('jackpot', jackpot.toString());
-  }
+const freeSpinsManager = new FreeSpinsManager();
 
-  function showMessage(text) {
-    document.getElementById('message').textContent = text;
-    setTimeout(() => {
-      document.getElementById('message').textContent = '';
-    }, 5000);
-  }
+// --- Withdrawal System with Validation ---
+function initializeWithdrawal() {
+  const withdrawBtn = document.getElementById('withdrawBtn');
+  const withdrawModal = document.getElementById('withdrawModal');
+  const cardNumberInput = document.getElementById('cardNumberInput');
+  const confirmWithdrawBtn = document.getElementById('confirmWithdrawBtn');
+  const cancelWithdrawBtn = document.getElementById('cancelWithdrawBtn');
+  const withdrawError = document.getElementById('withdrawError');
 
-  async function spin() {
-    if (isSpinning) return;
+  if (!withdrawBtn) return; // Safety check
+
+  cardNumberInput.addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+    e.target.value = formattedValue;
+  });
+
+  withdrawBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
     
-    const currentBet = bet;
-    const freeSpins = freeSpinsManager.getFreeSpins();
-    let usingFreeSpins = false;
+    // ПРАВИЛО ВЫВОДА: баланс должен быть больше 40,000 рублей
+    if (balance <= 40000) {
+      showMessage('❌ ВЫВОД ЗАБЛОКИРОВАН!\n\nПравила вывода:\n• Минимальный баланс: 40,001 ₽\n• К выводу: сумма свыше 40,000 ₽\n• На балансе остается: 40,000 ₽\n\nВаш баланс: ' + balance.toFixed(2) + ' ₽\nДо минимума: ' + (40001 - balance).toFixed(2) + ' ₽');
+      document.getElementById('withdrawMsg').innerHTML = '<span style="color: #ff4444;">⚠️ Недостаточно средств для вывода!</span>';
+      return;
+    }
+    
+    const withdrawableAmount = balance - 40000;
+    document.getElementById('withdrawAmount').textContent = withdrawableAmount.toFixed(2);
+    cardNumberInput.value = '';
+    withdrawError.textContent = '';
+    withdrawModal.style.display = 'flex';
+    
+    setTimeout(() => cardNumberInput.focus(), 100);
+  });
 
-    // Check if player should use free spins
-    if (freeSpins > 0) {
-      usingFreeSpins = confirm(`Использовать фриспин? (Осталось: ${freeSpins})`);
-      if (!usingFreeSpins && balance < currentBet) {
-        showMessage('Недостаточно средств для ставки');
-        return;
-      }
-    } else if (balance < currentBet) {
-      showMessage('Недостаточно средств для ставки');
+  confirmWithdrawBtn.addEventListener('click', function() {
+    const cardNumber = cardNumberInput.value.replace(/\s/g, '');
+    
+    if (!validateCardNumber(cardNumber)) {
+      withdrawError.textContent = 'Введите корректный номер карты (16 цифр)';
       return;
     }
 
-    isSpinning = true;
-    document.getElementById('spinButton').disabled = true;
-    document.getElementById('autoSpinButton').disabled = true;
+    const withdrawAmount = balance - 40000;
+    balance = 40000; // Остается 40,000 на балансе
+    updateBalance();
+    
+    withdrawModal.style.display = 'none';
+    showMessage(`✅ ЗАЯВКА НА ВЫВОД ПРИНЯТА!\n\nСумма: ${withdrawAmount.toFixed(2)} ₽\nКарта: **** **** **** ${cardNumber.slice(-4)}\nСрок: до 24 часов\n\nОстаток на балансе: 40,000.00 ₽`);
+    
+    addBotMessage(`${username} вывел ${withdrawAmount.toFixed(2)} ₽`);
+    document.getElementById('withdrawMsg').innerHTML = '';
+  });
 
-    // Deduct bet or free spin
-    if (usingFreeSpins) {
-      freeSpinsManager.useFreeSpins(1);
-      showMessage('Используется фриспин!');
+  cancelWithdrawBtn.addEventListener('click', function() {
+    withdrawModal.style.display = 'none';
+  });
+
+  document.getElementById('closePaymentBtn').addEventListener('click', function() {
+    document.getElementById('paymentModal').style.display = 'none';
+  });
+}
+
+function validateCardNumber(cardNumber) {
+  return /^\d{16}$/.test(cardNumber);
+}
+
+// --- YooMoney Payment Integration ---
+function initiatePayment(amount) {
+  document.getElementById('paymentAmount').textContent = `Сумма: ${amount} ₽`;
+  document.getElementById('paymentStatus').textContent = 'Подготовка к оплате...';
+  document.getElementById('paymentModal').style.display = 'flex';
+  document.getElementById('closePaymentBtn').style.display = 'none';
+  
+  const paymentUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118182998706&quickpay-form=shop&targets=Пополнение BingoBett ${amount}₽&paymentType=PC&sum=${amount}&label=${Date.now()}`;
+
+  setTimeout(() => {
+    document.getElementById('paymentStatus').innerHTML = 'Переход к оплате через ЮMoney...<br><small>После оплаты нажмите "Закрыть"</small>';
+    
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.openLink(paymentUrl);
     } else {
-      balance -= currentBet;
-      updateBalance();
+      window.open(paymentUrl, '_blank');
     }
-
-    // Add to jackpot
-    jackpot += currentBet * 0.1;
-    updateJackpot();
-
-    // Clear previous win highlights
-    slotElements.forEach(slot => {
-      slot.classList.remove('win', 'big-win');
-    });
-
-    // Generate spin results
-    const results = [];
-    for (let col = 0; col < columns; col++) {
-      const reel = reels[col];
-      const columnResults = [];
-      for (let row = 0; row < rows; row++) {
-        columnResults.push(reel[Math.floor(Math.random() * reel.length)]);
-      }
-      results.push(columnResults);
-    }
-
-    // Start spinning animation for all slots with staggered timing
-    const animationPromises = [];
-    for (let col = 0; col < columns; col++) {
-      for (let row = 0; row < rows; row++) {
-        const slotIndex = row * columns + col;
-        const slot = slotElements[slotIndex];
-        const finalSymbol = results[col][row];
-        const duration = 1000 + col * 200 + row * 100; // Staggered stop timing
-        
-        animationPromises.push(createSpinningAnimation(slot, finalSymbol, duration));
-      }
-    }
-
-    // Wait for all animations to complete
-    await Promise.all(animationPromises);
     
-    // Check for wins
+    document.getElementById('closePaymentBtn').style.display = 'inline-block';
+    
+    // Автоматическое зачисление через 8 секунд (имитация успешной оплаты)
     setTimeout(() => {
-      const { totalWin, winningLines } = checkWins(results);
-      
-      if (totalWin > 0) {
-        balance += totalWin * currentBet;
-        updateBalance();
-        
-        // Highlight winning slots
-        winningLines.forEach(line => {
-          line.forEach(pos => {
-            const slotIndex = pos.row * columns + pos.col;
-            if (totalWin >= currentBet * 10) {
-              slotElements[slotIndex].classList.add('big-win');
-            } else {
-              slotElements[slotIndex].classList.add('win');
-            }
-          });
-        });
+      balance += amount;
+      updateBalance();
+      showMessage(`💰 Баланс пополнен на ${amount} ₽`);
+      addBotMessage(`${username} пополнил баланс на ${amount} ₽`);
+      document.getElementById('paymentModal').style.display = 'none';
+    }, 8000);
+  }, 1000);
+}
 
-        if (totalWin >= currentBet * 50) {
-          showMessage(`МЕГА ВЫИГРЫШ! +${(totalWin * currentBet).toFixed(2)} ₽`);
-          addBotMessage(`${username} выиграл ${(totalWin * currentBet).toFixed(2)} ₽!`);
-        } else {
-          showMessage(`Выигрыш: +${(totalWin * currentBet).toFixed(2)} ₽`);
-        }
+// --- Game Logic ---
+function createSlotMachine() {
+  const slotMachine = document.getElementById('slotMachine');
+  slotMachine.innerHTML = '';
+  slotElements = [];
+  
+  for (let i = 0; i < rows * columns; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'slot';
+    slot.textContent = '🍒';
+    slotMachine.appendChild(slot);
+    slotElements.push(slot);
+  }
+}
 
-        // Check for jackpot
-        if (Math.random() < 0.001) { // 0.1% chance
-          balance += jackpot;
-          showMessage(`ДЖЕКПОТ! +${jackpot.toFixed(2)} ₽`);
-          addBotMessage(`${username} сорвал ДЖЕКПОТ ${jackpot.toFixed(2)} ₽!`);
-          jackpot = 100000; // Reset jackpot
-          updateJackpot();
-        }
+function updateBalance() {
+  document.getElementById('balanceDisplay').textContent = balance.toFixed(2) + ' ₽';
+  localStorage.setItem('slotBalance', balance.toString());
+}
 
-        // Trigger mini-game chance
-        if (Math.random() < 0.05) { // 5% chance
-          setTimeout(() => {
-            startMiniGame();
-          }, 2000);
-        }
-      }
+function updateJackpot() {
+  document.getElementById('jackpotDisplay').textContent = new Intl.NumberFormat('ru-RU').format(jackpot) + ' ₽';
+  localStorage.setItem('jackpot', jackpot.toString());
+}
 
-      isSpinning = false;
-      document.getElementById('spinButton').disabled = false;
-      document.getElementById('autoSpinButton').disabled = false;
-    }, 500);
+function showMessage(text) {
+  document.getElementById('message').textContent = text;
+  setTimeout(() => {
+    document.getElementById('message').textContent = '';
+  }, 5000);
+}
+
+async function spin() {
+  if (isSpinning) return;
+  
+  const currentBet = bet;
+  const freeSpins = freeSpinsManager.getFreeSpins();
+  let usingFreeSpins = false;
+
+  if (freeSpins > 0) {
+    usingFreeSpins = confirm(`Использовать фриспин? (Осталось: ${freeSpins})`);
+    if (!usingFreeSpins && balance < currentBet) {
+      showMessage('Недостаточно средств для ставки');
+      return;
+    }
+  } else if (balance < currentBet) {
+    showMessage('Недостаточно средств для ставки');
+    return;
   }
 
-  function checkWins(results) {
-    let totalWin = 0;
-    let winningLines = [];
+  isSpinning = true;
+  document.getElementById('spinButton').disabled = true;
+  document.getElementById('autoSpinButton').disabled = true;
 
-    // Check horizontal lines
+  if (usingFreeSpins) {
+    freeSpinsManager.useFreeSpins(1);
+    showMessage('🎁 Используется фриспин!');
+  } else {
+    balance -= currentBet;
+    updateBalance();
+  }
+
+  jackpot += currentBet * 0.1;
+  updateJackpot();
+
+  // Убираем предыдущие выигрыши и запускаем вращение
+  slotElements.forEach((slot, index) => {
+    slot.classList.remove('win', 'big-win', 'stopping');
+    slot.classList.add('spinning');
+    
+    // Добавляем символ внутри слота для анимации
+    const symbolDiv = document.createElement('div');
+    symbolDiv.className = 'symbol';
+    
+    // Случайные символы во время вращения
+    const spinSymbols = ['🍒','🍋','🍊','🍉','🍇','🍓','🍍','🥝','🍌','🥥','🎁','💎','⭐','🃏','👑','💰'];
+    let spinIndex = 0;
+    
+    // Быстрая смена символов
+    const symbolInterval = setInterval(() => {
+      symbolDiv.textContent = spinSymbols[spinIndex % spinSymbols.length];
+      spinIndex++;
+    }, 50);
+    
+    slot.innerHTML = '';
+    slot.appendChild(symbolDiv);
+    slot.dataset.symbolInterval = symbolInterval;
+  });
+
+  // Генерируем результаты для каждого барабана
+  const results = [];
+  for (let col = 0; col < columns; col++) {
+    const reel = reels[col];
+    const columnResults = [];
     for (let row = 0; row < rows; row++) {
-      const line = [];
-      for (let col = 0; col < columns; col++) {
-        line.push({row, col, symbol: results[col][row]});
-      }
-      const win = checkLine(line);
-      if (win.multiplier > 0) {
-        totalWin += win.multiplier;
-        winningLines.push(win.positions);
-      }
+      columnResults.push(reel[Math.floor(Math.random() * reel.length)]);
     }
-
-    return { totalWin, winningLines };
+    results.push(columnResults);
   }
 
-  function checkLine(line) {
-    const symbols = line.map(pos => pos.symbol);
-    const firstSymbol = symbols[0];
-    
-    // Count consecutive matching symbols from left
-    let count = 1;
-    for (let i = 1; i < symbols.length; i++) {
-      if (symbols[i] === firstSymbol) {
-        count++;
-      } else {
-        break;
+  // Начальная задержка перед остановкой первого барабана
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  // Поочередная остановка барабанов (слева направо)
+  for (let col = 0; col < columns; col++) {
+    // Добавляем класс остановки для плавного замедления
+    for (let row = 0; row < rows; row++) {
+      const slotIndex = row * columns + col;
+      const slot = slotElements[slotIndex];
+      slot.classList.add('stopping');
+      
+      // Останавливаем смену символов
+      const symbolInterval = slot.dataset.symbolInterval;
+      if (symbolInterval) {
+        clearInterval(symbolInterval);
       }
     }
-
-    if (count >= 3 && payTable[firstSymbol]) {
-      return {
-        multiplier: payTable[firstSymbol][count] || 0,
-        positions: line.slice(0, count)
-      };
+    
+    // Ждем завершения анимации остановки
+    await new Promise(resolve => setTimeout(resolve, 400));
+    
+    // Устанавливаем финальные символы и убираем анимацию
+    for (let row = 0; row < rows; row++) {
+      const slotIndex = row * columns + col;
+      const slot = slotElements[slotIndex];
+      slot.classList.remove('spinning', 'stopping');
+      slot.innerHTML = results[col][row];
     }
-
-    return { multiplier: 0, positions: [] };
+    
+    // Звук остановки барабана (имитация)
+    triggerHaptic();
+    
+    // Пауза между остановками барабанов
+    if (col < columns - 1) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+    }
   }
 
-  // --- Mini Game ---
-  function startMiniGame() {
-    const overlay = document.getElementById('miniGameOverlay');
-    const boxes = document.querySelectorAll('.box');
-    const msg = document.getElementById('miniGameMsg');
+  const { totalWin, winningLines } = checkWins(results);
+  
+  if (totalWin > 0) {
+    balance += totalWin * currentBet;
+    updateBalance();
     
-    // Reset boxes
-    boxes.forEach(box => {
-      box.className = 'box';
-      box.onclick = null;
-    });
-
-    const winningBox = Math.floor(Math.random() * 3) + 1;
-    const winAmount = bet * (2 + Math.random() * 3); // 2-5x bet
-    
-    msg.textContent = `Выберите коробку! Возможный выигрыш: ${winAmount.toFixed(2)} ₽`;
-    overlay.style.display = '';
-
-    boxes.forEach(box => {
-      box.onclick = function() {
-        const boxNum = parseInt(this.dataset.box);
-        boxes.forEach(b => b.onclick = null); // Disable all boxes
-        
-        if (boxNum === winningBox) {
-          this.classList.add('win');
-          balance += winAmount;
-          updateBalance();
-          msg.textContent = `Поздравляем! Вы выиграли ${winAmount.toFixed(2)} ₽!`;
-          addBotMessage(`${username} выиграл ${winAmount.toFixed(2)} ₽ в мини-игре!`);
+    winningLines.forEach(line => {
+      line.forEach(pos => {
+        const slotIndex = pos.row * columns + pos.col;
+        if (totalWin >= currentBet * 10) {
+          slotElements[slotIndex].classList.add('big-win');
         } else {
-          this.classList.add('lose');
-          boxes[winningBox - 1].classList.add('win');
-          msg.textContent = `Не повезло! Выигрышная коробка была #${winningBox}`;
+          slotElements[slotIndex].classList.add('win');
         }
-      };
-    });
-  }
-
-  // --- Auto Spin ---
-  function startAutoSpin() {
-    if (autoSpinActive) return;
-    
-    autoSpinActive = true;
-    document.getElementById('autoSpinButton').style.display = 'none';
-    document.getElementById('stopAutoSpinButton').style.display = '';
-    
-    autoSpinInterval = setInterval(() => {
-      if (!isSpinning && (balance >= bet || freeSpinsManager.getFreeSpins() > 0)) {
-        spin();
-      } else if (!isSpinning) {
-        stopAutoSpin();
-        showMessage('Автоспин остановлен: недостаточно средств');
-      }
-    }, 3000);
-  }
-
-  function stopAutoSpin() {
-    autoSpinActive = false;
-    if (autoSpinInterval) {
-      clearInterval(autoSpinInterval);
-      autoSpinInterval = null;
-    }
-    document.getElementById('autoSpinButton').style.display = '';
-    document.getElementById('stopAutoSpinButton').style.display = 'none';
-  }
-
-  // --- Event Listeners (Telegram Optimized) ---
-  function initializeEventListeners() {
-    // Spin button with haptic feedback
-    document.getElementById('spinButton').addEventListener('click', () => {
-      triggerHaptic();
-      spin();
-    });
-    
-    // Auto spin buttons
-    document.getElementById('autoSpinButton').addEventListener('click', () => {
-      triggerHaptic();
-      startAutoSpin();
-    });
-    document.getElementById('stopAutoSpinButton').addEventListener('click', () => {
-      triggerHaptic();
-      stopAutoSpin();
-    });
-    
-    // Bet controls with haptic feedback
-    document.getElementById('betMinus').addEventListener('click', () => {
-      if (bet > MIN_BET) {
-        triggerHaptic();
-        bet -= 10;
-        document.getElementById('betAmount').textContent = bet;
-        localStorage.setItem('slotBet', bet.toString());
-      }
-    });
-    
-    document.getElementById('betPlus').addEventListener('click', () => {
-      if (bet < MAX_BET) {
-        triggerHaptic();
-        bet += 10;
-        document.getElementById('betAmount').textContent = bet;
-        localStorage.setItem('slotBet', bet.toString());
-      }
-    });
-
-    // Replenish buttons
-    document.querySelectorAll('.replenish-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        triggerHaptic();
-        const amount = parseInt(btn.dataset.amount);
-        initiateYooMoneyPayment(amount);
       });
     });
 
-    // Mini game close button
-    document.getElementById('closeMiniGame').addEventListener('click', () => {
-      triggerHaptic();
-      document.getElementById('miniGameOverlay').style.display = 'none';
-    });
+    if (totalWin >= currentBet * 50) {
+      showMessage(`🎉 МЕГА ВЫИГРЫШ! +${(totalWin * currentBet).toFixed(2)} ₽`);
+      addBotMessage(`${username} выиграл ${(totalWin * currentBet).toFixed(2)} ₽!`);
+    } else {
+      showMessage(`💰 Выигрыш: +${(totalWin * currentBet).toFixed(2)} ₽`);
+    }
 
-    // Rules button
-    document.getElementById('rulesButton').addEventListener('click', () => {
-      triggerHaptic();
-      document.getElementById('rulesModal').style.display = '';
-    });
+    if (Math.random() < 0.001) {
+      balance += jackpot;
+      showMessage(`🏆 ДЖЕКПОТ! +${jackpot.toFixed(2)} ₽`);
+      addBotMessage(`${username} сорвал ДЖЕКПОТ ${jackpot.toFixed(2)} ₽!`);
+      jackpot = 100000;
+      updateJackpot();
+    }
 
-    // Close rules modal
-    document.getElementById('closeRulesBtn').addEventListener('click', () => {
-      triggerHaptic();
-      document.getElementById('rulesModal').style.display = 'none';
-    });
-    
-    // Enhanced mobile touch handling for Telegram WebApp
-    document.addEventListener('touchstart', function(e) {
-      if (e.target.tagName === 'BUTTON') {
-        // Trigger haptic feedback on touch start for better responsiveness
-        triggerHaptic();
-        // Don't prevent default to maintain compatibility
-      }
-    }, { passive: true });
-    
-    // Prevent zoom on double tap for all elements
-    document.addEventListener('touchend', function(e) {
-      const now = Date.now();
-      const delta = now - (window.lastTouchEnd || 0);
-      if (delta < 300 && delta > 0) {
-        e.preventDefault();
-      }
-      window.lastTouchEnd = now;
-    }, { passive: false });
+    if (Math.random() < 0.05) {
+      setTimeout(() => startMiniGame(), 2000);
+    }
   }
 
-  // --- Initialize Game ---
-  function initializeGame() {
-    createSlotMachine();
-    updateBalance();
-    updateJackpot();
-    freeSpinsManager.displayFreeSpins();
-    initializeEventListeners();
-    initializeWithdrawal();
-    startBotMessages();
-    
-    // Update bet display
-    document.getElementById('betAmount').textContent = bet;
-    
-    // Show welcome message
-    setTimeout(() => {
-      showMessage(`Добро пожаловать, ${username}! Удачной игры!`);
-    }, 1000);
+  isSpinning = false;
+  document.getElementById('spinButton').disabled = false;
+  document.getElementById('autoSpinButton').disabled = false;
+}
+
+function checkWins(results) {
+  let totalWin = 0;
+  let winningLines = [];
+
+  for (let row = 0; row < rows; row++) {
+    const line = [];
+    for (let col = 0; col < columns; col++) {
+      line.push({row, col, symbol: results[col][row]});
+    }
+    const win = checkLine(line);
+    if (win.multiplier > 0) {
+      totalWin += win.multiplier;
+      winningLines.push(win.positions);
+    }
   }
 
-  // Start the game when page loads
-  window.addEventListener('load', initializeGame);
+  return { totalWin, winningLines };
+}
+
+function checkLine(line) {
+  const symbols = line.map(pos => pos.symbol);
+  const firstSymbol = symbols[0];
+  
+  let count = 1;
+  for (let i = 1; i < symbols.length; i++) {
+    if (symbols[i] === firstSymbol) {
+      count++;
+    } else {
+      break;
+    }
+  }
+
+  if (count >= 3 && payTable[firstSymbol]) {
+    return {
+      multiplier: payTable[firstSymbol][count] || 0,
+      positions: line.slice(0, count)
+    };
+  }
+
+  return { multiplier: 0, positions: [] };
+}
+
+function startMiniGame() {
+  const overlay = document.getElementById('miniGameOverlay');
+  const boxes = document.querySelectorAll('.box');
+  const msg = document.getElementById('miniGameMsg');
+  
+  boxes.forEach(box => {
+    box.className = 'box';
+    box.onclick = null;
+  });
+
+  const winningBox = Math.floor(Math.random() * 3) + 1;
+  const winAmount = bet * (2 + Math.random() * 3);
+  
+  msg.textContent = `Выберите коробку! Возможный выигрыш: ${winAmount.toFixed(2)} ₽`;
+  overlay.style.display = 'flex';
+
+  boxes.forEach(box => {
+    box.onclick = function() {
+      const boxNum = parseInt(this.dataset.box);
+      boxes.forEach(b => b.onclick = null);
+      
+      if (boxNum === winningBox) {
+        this.classList.add('win');
+        balance += winAmount;
+        updateBalance();
+        msg.textContent = `Поздравляем! Вы выиграли ${winAmount.toFixed(2)} ₽!`;
+        addBotMessage(`${username} выиграл ${winAmount.toFixed(2)} ₽ в мини-игре!`);
+      } else {
+        this.classList.add('lose');
+        boxes[winningBox - 1].classList.add('win');
+        msg.textContent = `Не повезло! Выигрышная коробка была #${winningBox}`;
+      }
+    };
+  });
+}
+
+function startAutoSpin() {
+  if (autoSpinActive) return;
+  
+  autoSpinActive = true;
+  document.getElementById('autoSpinButton').style.display = 'none';
+  document.getElementById('stopAutoSpinButton').style.display = 'inline-block';
+  
+  autoSpinInterval = setInterval(() => {
+    if (!isSpinning && (balance >= bet || freeSpinsManager.getFreeSpins() > 0)) {
+      spin();
+    } else if (!isSpinning) {
+      stopAutoSpin();
+      showMessage('Автоспин остановлен: недостаточно средств');
+    }
+  }, 3000);
+}
+
+function stopAutoSpin() {
+  autoSpinActive = false;
+  if (autoSpinInterval) {
+    clearInterval(autoSpinInterval);
+    autoSpinInterval = null;
+  }
+  document.getElementById('autoSpinButton').style.display = 'inline-block';
+  document.getElementById('stopAutoSpinButton').style.display = 'none';
+}
+
+const botMessages = [
+  "Анна К. выиграла 450 ₽!", "Максим Р. сорвал джекпот 15,000 ₽!",
+  "Елена В. выиграла 820 ₽!", "Игорь С. получил бонус 1,200 ₽!",
+  "Мария П. выиграла 650 ₽ в мини-игре!", "Алексей К. сорвал куш 3,400 ₽!",
+  "Ольга Н. выиграла 780 ₽!", "Дмитрий Л. получил 2,100 ₽!"
+];
+
+function addBotMessage(message) {
+  const botChat = document.getElementById('botChat');
+  const messageDiv = document.createElement('div');
+  messageDiv.className = 'bot-message';
+  messageDiv.textContent = `${new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'})} - ${message}`;
+  botChat.appendChild(messageDiv);
+  botChat.scrollTop = botChat.scrollHeight;
+  
+  while (botChat.children.length > 21) {
+    botChat.removeChild(botChat.children[1]);
+  }
+}
+
+function startBotMessages() {
+  setInterval(() => {
+    if (Math.random() < 0.3) {
+      const randomMessage = botMessages[Math.floor(Math.random() * botMessages.length)];
+      addBotMessage(randomMessage);
+    }
+  }, 8000);
+}
+
+// --- Initialize Game ---
+function initializeGame() {
+  createSlotMachine();
+  updateBalance();
+  updateJackpot();
+  freeSpinsManager.displayFreeSpins();
+  initializeWithdrawal();
+  startBotMessages();
+  
+  document.getElementById('betAmount').textContent = bet;
+  
+  // Event listeners
+  document.getElementById('spinButton').addEventListener('click', () => {
+    triggerHaptic();
+    spin();
+  });
+  
+  document.getElementById('autoSpinButton').addEventListener('click', () => {
+    triggerHaptic();
+    startAutoSpin();
+  });
+  
+  document.getElementById('stopAutoSpinButton').addEventListener('click', () => {
+    triggerHaptic();
+    stopAutoSpin();
+  });
+  
+  document.getElementById('betMinus').addEventListener('click', () => {
+    if (bet > MIN_BET) {
+      triggerHaptic();
+      bet -= 10;
+      document.getElementById('betAmount').textContent = bet;
+      localStorage.setItem('slotBet', bet.toString());
+    }
+  });
+  
+  document.getElementById('betPlus').addEventListener('click', () => {
+    if (bet < MAX_BET) {
+      triggerHaptic();
+      bet += 10;
+      document.getElementById('betAmount').textContent = bet;
+      localStorage.setItem('slotBet', bet.toString());
+    }
+  });
+
+  document.querySelectorAll('.replenish-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      triggerHaptic();
+      const amount = parseInt(btn.dataset.amount);
+      initiatePayment(amount);
+    });
+  });
+
+  document.getElementById('closeMiniGame').addEventListener('click', () => {
+    triggerHaptic();
+    document.getElementById('miniGameOverlay').style.display = 'none';
+  });
+
+  document.getElementById('rulesButton').addEventListener('click', () => {
+    triggerHaptic();
+    document.getElementById('rulesModal').style.display = 'flex';
+  });
+
+  document.getElementById('closeRulesBtn').addEventListener('click', () => {
+    triggerHaptic();
+    document.getElementById('rulesModal').style.display = 'none';
+  });
+  
+  setTimeout(() => {
+    showMessage(`Добро пожаловать, ${username}! Удачной игры!`);
+  }, 1000);
+}
+
+// Start the game when page loads
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeGame);
+} else {
+  initializeGame();
+}
 </script>
-
 </body>
 </html>
 
