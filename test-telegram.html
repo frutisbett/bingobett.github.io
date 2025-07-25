@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Telegram Mini App Test</title>
+    <script src="https://telegram.org/js/telegram-web-app.js?v=6.0"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--tg-theme-bg-color, #1a1a1a);
+            color: var(--tg-theme-text-color, #fff);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .test-info {
+            background: var(--tg-theme-secondary-bg-color, #333);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+        .status {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .success { color: #4caf50; }
+        .error { color: #f44336; }
+        .warning { color: #ff9800; }
+        .detail {
+            font-size: 14px;
+            margin: 5px 0;
+            word-break: break-all;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            background: var(--tg-theme-button-color, #4caf50);
+            color: var(--tg-theme-button-text-color, white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Telegram Mini App Test</h1>
+    
+    <div class="test-info">
+        <div id="sdkStatus" class="status">⏳ Проверка SDK...</div>
+        <div id="sdkDetails"></div>
+    </div>
+
+    <div class="test-info">
+        <div class="status">📱 Информация о среде:</div>
+        <div class="detail">User Agent: <span id="userAgent"></span></div>
+        <div class="detail">URL: <span id="currentUrl"></span></div>
+        <div class="detail">Platform: <span id="platform"></span></div>
+        <div class="detail">Время загрузки: <span id="loadTime"></span></div>
+    </div>
+
+    <div class="test-info">
+        <div class="status">👤 Данные пользователя:</div>
+        <div id="userData"></div>
+    </div>
+
+    <button onclick="testFeatures()">🧪 Тест функций</button>
+    <button onclick="location.href='index.html'">🎰 Открыть игру</button>
+
+    <script>
+        const startTime = Date.now();
+        
+        function updateStatus(element, text, className) {
+            element.textContent = text;
+            element.className = `status ${className}`;
+        }
+        
+        function addDetail(container, text) {
+            const div = document.createElement('div');
+            div.className = 'detail';
+            div.textContent = text;
+            container.appendChild(div);
+        }
+        
+        function checkTelegramSDK() {
+            const sdkStatus = document.getElementById('sdkStatus');
+            const sdkDetails = document.getElementById('sdkDetails');
+            
+            if (typeof window.Telegram === 'undefined') {
+                updateStatus(sdkStatus, '❌ Telegram SDK не найден', 'error');
+                addDetail(sdkDetails, 'Возможно, игра открыта не в Telegram');
+                addDetail(sdkDetails, 'Или проблемы с загрузкой SDK');
+                return false;
+            }
+            
+            if (!window.Telegram.WebApp) {
+                updateStatus(sdkStatus, '⚠️ WebApp объект не найден', 'warning');
+                addDetail(sdkDetails, 'SDK загружен, но WebApp недоступен');
+                return false;
+            }
+            
+            updateStatus(sdkStatus, '✅ Telegram SDK работает', 'success');
+            addDetail(sdkDetails, `Версия: ${window.Telegram.WebApp.version || 'неизвестно'}`);
+            addDetail(sdkDetails, `Платформа: ${window.Telegram.WebApp.platform || 'неизвестно'}`);
+            addDetail(sdkDetails, `Цветовая схема: ${window.Telegram.WebApp.colorScheme || 'неизвестно'}`);
+            
+            return true;
+        }
+        
+        function initializeApp() {
+            // Основная информация
+            document.getElementById('userAgent').textContent = navigator.userAgent;
+            document.getElementById('currentUrl').textContent = window.location.href;
+            document.getElementById('platform').textContent = navigator.platform;
+            document.getElementById('loadTime').textContent = `${Date.now() - startTime}ms`;
+            
+            // Проверка SDK
+            if (checkTelegramSDK()) {
+                // Инициализация Telegram WebApp
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+                
+                // Данные пользователя
+                const userData = document.getElementById('userData');
+                if (window.Telegram.WebApp.initDataUnsafe?.user) {
+                    const user = window.Telegram.WebApp.initDataUnsafe.user;
+                    addDetail(userData, `ID: ${user.id}`);
+                    addDetail(userData, `Имя: ${user.first_name} ${user.last_name || ''}`);
+                    addDetail(userData, `Username: @${user.username || 'не указан'}`);
+                    addDetail(userData, `Язык: ${user.language_code || 'не указан'}`);
+                } else {
+                    addDetail(userData, 'Данные пользователя недоступны');
+                }
+            }
+        }
+        
+        function testFeatures() {
+            let results = [];
+            
+            if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
+                // Тест Haptic Feedback
+                try {
+                    if (window.Telegram.WebApp.HapticFeedback?.impactOccurred) {
+                        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+                        results.push('✅ Haptic Feedback работает');
+                    } else {
+                        results.push('⚠️ Haptic Feedback недоступен');
+                    }
+                } catch (e) {
+                    results.push('❌ Ошибка Haptic Feedback: ' + e.message);
+                }
+                
+                // Тест тем
+                try {
+                    const bgColor = getComputedStyle(document.body).backgroundColor;
+                    results.push(`🎨 Цвет фона: ${bgColor}`);
+                } catch (e) {
+                    results.push('❌ Ошибка получения темы: ' + e.message);
+                }
+                
+                // Тест MainButton
+                try {
+                    window.Telegram.WebApp.MainButton.setText('Test Button');
+                    window.Telegram.WebApp.MainButton.show();
+                    setTimeout(() => {
+                        window.Telegram.WebApp.MainButton.hide();
+                    }, 2000);
+                    results.push('✅ MainButton работает');
+                } catch (e) {
+                    results.push('❌ Ошибка MainButton: ' + e.message);
+                }
+            } else {
+                results.push('❌ Telegram WebApp недоступен для тестирования');
+            }
+            
+            alert('Результаты тестов:\n\n' + results.join('\n'));
+        }
+        
+        // Запуск когда DOM готов
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
+        
+        // Дополнительная проверка через 1 секунду на случай асинхронной загрузки
+        setTimeout(() => {
+            if (typeof window.Telegram === 'undefined') {
+                console.error('SDK все еще не загружен через 1 секунду');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
