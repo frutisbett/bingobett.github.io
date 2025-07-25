@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>BingoBett</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://telegram.org/js/telegram-web-app.js?v=6.0" async></script>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -595,11 +595,35 @@
   </div>
 </div>
 <script>
+// --- DEBUG: Telegram WebApp Diagnostics ---
+console.log('🔍 BingoBett Debug Info:');
+console.log('User Agent:', navigator.userAgent);
+console.log('Location:', window.location.href);
+console.log('Telegram Object exists:', typeof window.Telegram !== 'undefined');
+console.log('WebApp Object:', window.Telegram?.WebApp);
+console.log('Platform:', window.Telegram?.WebApp?.platform);
+console.log('Version:', window.Telegram?.WebApp?.version);
+
+// Проверка загрузки SDK
+if (typeof window.Telegram === 'undefined') {
+    console.error('❌ Telegram WebApp SDK не загружен!');
+    // Показываем сообщение пользователю только в режиме разработки
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        alert('Telegram SDK не найден. Возможно, вы открыли игру в обычном браузере.');
+    }
+}
+
 // --- Telegram WebApp SDK (Compatible with v6.0+) ---
 let tgUser = null;
 if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
+  console.log('✅ Telegram WebApp SDK загружен успешно');
   window.Telegram.WebApp.ready();
   window.Telegram.WebApp.expand();
+  
+  // Дополнительные настройки для лучшей совместимости
+  if (typeof window.Telegram.WebApp.enableClosingConfirmation === 'function') {
+    window.Telegram.WebApp.enableClosingConfirmation();
+  }
   // Get user data if available
   if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
     tgUser = window.Telegram.WebApp.initDataUnsafe.user;
@@ -1153,10 +1177,21 @@ function initializeGame() {
 }
 
 // Start the game when page loads
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeGame);
-} else {
+function startGame() {
+  // Ждем загрузки Telegram SDK если он асинхронный
+  if (typeof window.Telegram === 'undefined') {
+    console.log('⏳ Ожидание загрузки Telegram SDK...');
+    setTimeout(startGame, 100);
+    return;
+  }
+  console.log('🚀 Запуск игры...');
   initializeGame();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startGame);
+} else {
+  startGame();
 }
 </script>
 </body>
