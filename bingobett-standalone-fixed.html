@@ -1001,7 +1001,8 @@
                     }
 
                     // Запуск мини-игры
-                    if (Math.random() < 0.08 || totalWin >= betAmount * 20) {
+                    // *** ИЗМЕНЕНО: Увеличен шанс с 8% до 13% (+5%) ***
+        if (Math.random() < 0.13 || totalWin >= betAmount * 20) {
                         setTimeout(() => startMiniGame(totalWin), 2000);
                     }
                 } else {
