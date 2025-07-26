@@ -723,22 +723,22 @@
                 }
             }
 
-            // - DOM Элементы -
-            let slotMachine = document.getElementById('slotMachine');
+            // - DOM Элементы - (будут инициализированы после загрузки DOM)
+            let slotMachine = null;
             let slotElements = [];
-            let messageElement = document.getElementById('message');
-            let balanceDisplay = document.getElementById('balanceDisplay');
-            let jackpotDisplay = document.getElementById('jackpotDisplay');
-            let betDisplay = document.getElementById('betDisplay');
-            let betAmountDisplay = document.getElementById('betAmountDisplay');
-            let usernameDisplay = document.getElementById('usernameDisplay');
-            let freespinCount = document.getElementById('freespinCount');
-            let spinButton = document.getElementById('spinButton');
-            let autoSpinButton = document.getElementById('autoSpinButton');
-            let stopAutoSpinButton = document.getElementById('stopAutoSpinButton');
-            let betMinus = document.getElementById('betMinus');
-            let betPlus = document.getElementById('betPlus');
-            let botChat = document.getElementById('botChat');
+            let messageElement = null;
+            let balanceDisplay = null;
+            let jackpotDisplay = null;
+            let betDisplay = null;
+            let betAmountDisplay = null;
+            let usernameDisplay = null;
+            let freespinCount = null;
+            let spinButton = null;
+            let autoSpinButton = null;
+            let stopAutoSpinButton = null;
+            let betMinus = null;
+            let betPlus = null;
+            let botChat = null;
 
             // - Параметры игры -
             const COLUMNS = 5;
@@ -1727,25 +1727,42 @@
             // *** ИЗМЕНЕНО: Восстановлена структура initializeGame из фрукты.txt ***
             function initializeGame() {
                 console.log("Инициализация игры...");
+                
+                // 1. Инициализируем DOM элементы
+                slotMachine = document.getElementById('slotMachine');
+                messageElement = document.getElementById('message');
+                balanceDisplay = document.getElementById('balanceDisplay');
+                jackpotDisplay = document.getElementById('jackpotDisplay');
+                betDisplay = document.getElementById('betDisplay');
+                betAmountDisplay = document.getElementById('betAmountDisplay');
+                usernameDisplay = document.getElementById('usernameDisplay');
+                freespinCount = document.getElementById('freespinCount');
+                spinButton = document.getElementById('spinButton');
+                autoSpinButton = document.getElementById('autoSpinButton');
+                stopAutoSpinButton = document.getElementById('stopAutoSpinButton');
+                betMinus = document.getElementById('betMinus');
+                betPlus = document.getElementById('betPlus');
+                botChat = document.getElementById('botChat');
+                
+                // 2. Инициализируем Telegram SDK
                 initTelegram();
-                // 1. Инициализируем Telegram SDK
-                // 2. Инициализируем пользователя и фриспины
+                
                 // 3. Создаем слоты
                 createSlots();
+                
                 // 4. Обновляем UI
                 updateUI();
-                // 5. Назначаем обработчики для ставок
+                
+                // 5. Назначаем обработчики событий
                 setupEventListeners();
-                // 6. Назначаем обработчики для пополнения
-                // 7. Запускаем бот-чат
-                // 8. Назначаем обработчики для вывода
-                // 9. Назначаем обработчики для правил
 
-                // Если пользователь из Telegram, используем его имя
+                // 6. Если пользователь из Telegram, используем его имя
                 if (tgUser && tgUser.first_name) {
                     username = tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : "");
                     updateUI();
                 }
+                
+                console.log("Инициализация игры завершена успешно!");
             }
 
 
