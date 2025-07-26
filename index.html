@@ -524,6 +524,130 @@
             margin-top: 10px;
         }
 
+        /* Мини-игра "Дождь монет" */
+        #coinRainOverlay {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            overflow: hidden;
+        }
+
+        #coinRainCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        #coinRainUI {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 1001;
+            pointer-events: none;
+        }
+
+        #coinRainTitle {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            margin-bottom: 15px;
+            animation: coinRainTitlePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes coinRainTitlePulse {
+            0%, 100% { 
+                transform: scale(1);
+                color: #ffd700;
+            }
+            50% { 
+                transform: scale(1.1);
+                color: #ffed4e;
+            }
+        }
+
+        #coinRainStats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #coinRainStats > div {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 2px solid #ffd700;
+            color: white;
+        }
+
+        #coinsCaught {
+            color: #4caf50;
+            text-shadow: 0 0 5px rgba(76, 175, 80, 0.8);
+        }
+
+        #timeLeft {
+            color: #ff6b6b;
+            text-shadow: 0 0 5px rgba(255, 107, 107, 0.8);
+        }
+
+        #coinRainHint {
+            font-size: 16px;
+            color: #ffd700;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            animation: coinRainHintBlink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes coinRainHintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        #coinRainResult {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            border: 3px solid #ffd700;
+            z-index: 1002;
+        }
+
+        #coinRainResultText {
+            font-size: 22px;
+            font-weight: bold;
+            color: #4caf50;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
+        }
+
+        #coinRainClose {
+            padding: 12px 25px;
+            font-size: 16px;
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+            transition: all 0.3s ease;
+            pointer-events: all;
+        }
+
+        #coinRainClose:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(76, 175, 80, 0.5);
+        }
+
         /* Адаптивность */
         @media (max-width: 360px) {
             .header h1 {
@@ -634,6 +758,23 @@
         </div>
     </div>
 
+    <!-- Мини-игра "Дождь монет" -->
+    <div id="coinRainOverlay" class="mini-game-overlay" style="display:none;">
+        <canvas id="coinRainCanvas"></canvas>
+        <div id="coinRainUI">
+            <div id="coinRainTitle">💰 ДОЖДЬ МОНЕТ! 💰</div>
+            <div id="coinRainStats">
+                <div>Поймано: <span id="coinsCaught">0</span> ₽</div>
+                <div>Осталось: <span id="timeLeft">4</span> сек</div>
+            </div>
+            <div id="coinRainHint">Тапайте по монетам!</div>
+        </div>
+        <div id="coinRainResult" style="display:none;">
+            <div id="coinRainResultText"></div>
+            <button id="coinRainClose">Забрать выигрыш</button>
+        </div>
+    </div>
+
     <!-- Модальное окно ввода имени -->
     <div id="usernameModal" class="modal-bg">
         <div class="modal">
@@ -702,8 +843,9 @@
                 <br>
                 <p><b>🎲 Мини-игры:</b></p>
                 <p>• <b>"Выбери коробку":</b> Выберите одну из 3 коробок для получения бонуса</p>
-                <p>• Запускаются случайно при выигрышах (7% шанс)</p>
-                <p>• Бонус равен основному выигрышу</p>
+                <p>• <b>"Дождь монет":</b> Тапайте по монетам (5₽ за монету, 4 секунды, до 800₽)</p>
+                <p>• Запускаются случайно при выигрышах (8% шанс)</p>
+                <p>• Бонусы разные для каждой мини-игры</p>
                 <br>
                 <p><b>🏆 Выигрышные линии:</b></p>
                 <p>• 4 горизонтальные линии (ряды)</p>
@@ -1154,7 +1296,14 @@
 
                     // Запуск мини-игры
                     if (Math.random() < 0.08 || totalWin >= betAmount * 20) {
-                        setTimeout(() => startMiniGame(totalWin), 2000);
+                        setTimeout(() => {
+                            // Случайный выбор мини-игры: 50% коробки, 50% дождь монет
+                            if (Math.random() < 0.5) {
+                                startMiniGame(totalWin);
+                            } else {
+                                startCoinRainGame(totalWin);
+                            }
+                        }, 2000);
                     }
                 } else {
                     showMessage("Не повезло. Попробуйте еще раз!");
@@ -1249,6 +1398,270 @@
                     overlay.style.display = 'none';
                     console.log('Мини-игра закрыта');
                 };
+            }
+
+            // Мини-игра "Дождь монет"
+            function startCoinRainGame(winAmount) {
+                console.log('💰 Запуск мини-игры "Дождь монет"');
+                
+                const overlay = document.getElementById('coinRainOverlay');
+                const canvas = document.getElementById('coinRainCanvas');
+                const ctx = canvas.getContext('2d');
+                const coinsCaughtSpan = document.getElementById('coinsCaught');
+                const timeLeftSpan = document.getElementById('timeLeft');
+                const resultDiv = document.getElementById('coinRainResult');
+                const resultTextDiv = document.getElementById('coinRainResultText');
+                const closeBtn = document.getElementById('coinRainClose');
+
+                if (!overlay || !canvas || !ctx) {
+                    console.error('Элементы мини-игры "Дождь монет" не найдены');
+                    return;
+                }
+
+                // Параметры игры
+                const GAME_DURATION = 4000; // 4 секунды
+                const COIN_VALUE = 5; // 5 рублей за монету
+                const MAX_TOTAL_VALUE = 800; // максимум 800 рублей
+                const MAX_COINS = Math.floor(MAX_TOTAL_VALUE / COIN_VALUE); // 160 монет максимум
+                const COINS_PER_SECOND = MAX_COINS / (GAME_DURATION / 1000); // примерно 40 монет в секунду
+
+                // Настройка canvas
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                // Игровые переменные
+                let coins = [];
+                let caughtCoins = 0;
+                let totalCaught = 0;
+                let timeLeft = 4;
+                let gameActive = true;
+                let spawnedCoins = 0;
+
+                // Класс для монеты
+                class Coin {
+                    constructor() {
+                        this.radius = 15 + Math.random() * 10; // радиус 15-25px
+                        this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
+                        this.y = -this.radius;
+                        this.speedY = 3 + Math.random() * 4; // скорость падения 3-7px/кадр
+                        this.speedX = (Math.random() - 0.5) * 2; // небольшое горизонтальное движение
+                        this.rotation = 0;
+                        this.rotationSpeed = (Math.random() - 0.5) * 0.2;
+                        this.caught = false;
+                        this.glowIntensity = Math.random();
+                    }
+
+                    update() {
+                        if (this.caught) return;
+                        
+                        this.y += this.speedY;
+                        this.x += this.speedX;
+                        this.rotation += this.rotationSpeed;
+                        this.glowIntensity += 0.1;
+
+                        // Отскок от стен
+                        if (this.x <= this.radius || this.x >= canvas.width - this.radius) {
+                            this.speedX = -this.speedX;
+                        }
+                    }
+
+                    draw() {
+                        if (this.caught) return;
+
+                        ctx.save();
+                        ctx.translate(this.x, this.y);
+                        ctx.rotate(this.rotation);
+
+                        // Свечение
+                        const glow = Math.sin(this.glowIntensity) * 0.5 + 0.5;
+                        ctx.shadowColor = '#ffd700';
+                        ctx.shadowBlur = 10 + glow * 15;
+
+                        // Монета (градиент)
+                        const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.radius);
+                        gradient.addColorStop(0, '#ffed4e');
+                        gradient.addColorStop(0.3, '#ffd700');
+                        gradient.addColorStop(0.7, '#ffa500');
+                        gradient.addColorStop(1, '#ff8c00');
+
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Внутренний круг
+                        ctx.fillStyle = '#ffe55c';
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.radius * 0.6, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Символ рубля
+                        ctx.fillStyle = '#d4af37';
+                        ctx.font = `bold ${this.radius}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText('₽', 0, 0);
+
+                        ctx.restore();
+                    }
+
+                    isClicked(mouseX, mouseY) {
+                        const distance = Math.sqrt((mouseX - this.x) ** 2 + (mouseY - this.y) ** 2);
+                        return distance <= this.radius && !this.caught;
+                    }
+                }
+
+                // Создание новой монеты
+                function spawnCoin() {
+                    if (gameActive && spawnedCoins < MAX_COINS) {
+                        coins.push(new Coin());
+                        spawnedCoins++;
+                    }
+                }
+
+                // Обработка кликов
+                function handleClick(event) {
+                    if (!gameActive) return;
+
+                    const rect = canvas.getBoundingClientRect();
+                    const mouseX = event.clientX - rect.left;
+                    const mouseY = event.clientY - rect.top;
+
+                    for (let i = coins.length - 1; i >= 0; i--) {
+                        if (coins[i].isClicked(mouseX, mouseY)) {
+                            coins[i].caught = true;
+                            caughtCoins++;
+                            totalCaught += COIN_VALUE;
+                            
+                            // Обновляем UI
+                            coinsCaughtSpan.textContent = totalCaught;
+                            
+                            // Эффект поимки
+                            createCatchEffect(mouseX, mouseY);
+                            
+                            // Тактильная обратная связь
+                            vibrate();
+                            
+                            // Удаляем пойманную монету
+                            coins.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+
+                // Эффект поимки монеты
+                function createCatchEffect(x, y) {
+                    ctx.save();
+                    ctx.globalAlpha = 0.8;
+                    ctx.fillStyle = '#4caf50';
+                    ctx.font = 'bold 20px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('+5₽', x, y - 30);
+                    ctx.restore();
+                }
+
+                // Анимация игры
+                function animate() {
+                    if (!gameActive) return;
+
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // Обновляем и рисуем монеты
+                    for (let i = coins.length - 1; i >= 0; i--) {
+                        coins[i].update();
+                        coins[i].draw();
+
+                        // Удаляем монеты, упавшие за пределы экрана
+                        if (coins[i].y - coins[i].radius > canvas.height) {
+                            coins.splice(i, 1);
+                        }
+                    }
+
+                    requestAnimationFrame(animate);
+                }
+
+                // Таймер игры
+                function startTimer() {
+                    const timer = setInterval(() => {
+                        if (!gameActive) {
+                            clearInterval(timer);
+                            return;
+                        }
+
+                        timeLeft--;
+                        timeLeftSpan.textContent = timeLeft;
+
+                        if (timeLeft <= 0) {
+                            endGame();
+                            clearInterval(timer);
+                        }
+                    }, 1000);
+                }
+
+                // Завершение игры
+                function endGame() {
+                    gameActive = false;
+                    
+                    // Добавляем к балансу
+                    balance += totalCaught;
+                    updateUI();
+
+                    // Показываем результат
+                    resultTextDiv.textContent = `Поймано ${caughtCoins} монет на сумму ${totalCaught} ₽!`;
+                    resultDiv.style.display = 'block';
+
+                    // Сообщение в чат
+                    showMessage(`💰 Дождь монет: +${totalCaught} ₽`);
+                    addBotMessage(`${username || 'Игрок'} поймал ${totalCaught} ₽ в мини-игре "Дождь монет"!`);
+
+                    console.log(`💰 Игра завершена: поймано ${totalCaught} ₽`);
+                }
+
+                // Инициализация игры
+                coins = [];
+                caughtCoins = 0;
+                totalCaught = 0;
+                timeLeft = 4;
+                gameActive = true;
+                spawnedCoins = 0;
+
+                // Обновляем UI
+                coinsCaughtSpan.textContent = '0';
+                timeLeftSpan.textContent = '4';
+                resultDiv.style.display = 'none';
+
+                // Показываем игру
+                overlay.style.display = 'flex';
+
+                // Обработчики событий
+                canvas.addEventListener('click', handleClick);
+                canvas.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const event = { clientX: touch.clientX, clientY: touch.clientY };
+                    handleClick(event);
+                });
+
+                closeBtn.onclick = function() {
+                    gameActive = false;
+                    overlay.style.display = 'none';
+                    console.log('💰 Мини-игра "Дождь монет" закрыта');
+                };
+
+                // Запуск спавна монет (каждые 100мс)
+                const spawnInterval = setInterval(() => {
+                    if (gameActive) {
+                        spawnCoin();
+                    } else {
+                        clearInterval(spawnInterval);
+                    }
+                }, 100);
+
+                // Запуск анимации и таймера
+                animate();
+                startTimer();
+
+                console.log(`💰 Мини-игра "Дождь монет" запущена. Максимум: ${MAX_TOTAL_VALUE} ₽`);
             }
 
             // Обработчики событий
