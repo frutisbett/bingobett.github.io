@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Демо: Дождь монет - BingoBett</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            color: white;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #gameCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            cursor: pointer;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+        }
+
+        #gameUI {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 1001;
+            pointer-events: none;
+        }
+
+        #gameTitle {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            margin-bottom: 20px;
+            animation: titlePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { 
+                transform: scale(1);
+                color: #ffd700;
+            }
+            50% { 
+                transform: scale(1.1);
+                color: #ffed4e;
+            }
+        }
+
+        #gameStats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        #gameStats > div {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 3px solid #ffd700;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        #coinsCaught {
+            color: #4caf50;
+            text-shadow: 0 0 5px rgba(76, 175, 80, 0.8);
+        }
+
+        #timeLeft {
+            color: #ff6b6b;
+            text-shadow: 0 0 5px rgba(255, 107, 107, 0.8);
+        }
+
+        #gameHint {
+            font-size: 18px;
+            color: #ffd700;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            animation: hintBlink 1.5s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes hintBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        #gameResult {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 40px;
+            border-radius: 25px;
+            text-align: center;
+            border: 4px solid #ffd700;
+            z-index: 1002;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        #gameResultText {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4caf50;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
+        }
+
+        #restartBtn {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+            transition: all 0.3s ease;
+            pointer-events: all;
+        }
+
+        #restartBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(76, 175, 80, 0.5);
+        }
+
+        #instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 16px;
+            color: #ccc;
+            background: rgba(0,0,0,0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            pointer-events: none;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 480px) {
+            #gameTitle { font-size: 22px; }
+            #gameStats { 
+                flex-direction: column; 
+                gap: 10px; 
+                align-items: center;
+            }
+            #gameStats > div { 
+                font-size: 16px; 
+                padding: 8px 15px;
+            }
+            #gameHint { font-size: 16px; }
+            #instructions { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    
+    <div id="gameUI">
+        <div id="gameTitle">💰 ДОЖДЬ МОНЕТ! 💰</div>
+        <div id="gameStats">
+            <div>Поймано: <span id="coinsCaught">0</span> ₽</div>
+            <div>Осталось: <span id="timeLeft">4</span> сек</div>
+        </div>
+        <div id="gameHint">Тапайте по монетам! Каждая = 5₽</div>
+    </div>
+
+    <div id="gameResult">
+        <div id="gameResultText"></div>
+        <button id="restartBtn">🎮 Играть еще раз</button>
+    </div>
+
+    <div id="instructions">
+        💡 Демонстрация мини-игры из BingoBett<br>
+        Максимум: 800₽ за 4 секунды • Мобильная версия поддерживается
+    </div>
+
+    <script>
+        class CoinRainDemo {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.coinsCaughtSpan = document.getElementById('coinsCaught');
+                this.timeLeftSpan = document.getElementById('timeLeft');
+                this.resultDiv = document.getElementById('gameResult');
+                this.resultTextDiv = document.getElementById('gameResultText');
+                this.restartBtn = document.getElementById('restartBtn');
+
+                // Параметры игры
+                this.GAME_DURATION = 4000; // 4 секунды
+                this.COIN_VALUE = 5; // 5 рублей за монету
+                this.MAX_TOTAL_VALUE = 800; // максимум 800 рублей
+                this.MAX_COINS = Math.floor(this.MAX_TOTAL_VALUE / this.COIN_VALUE); // 160 монет
+
+                this.setupCanvas();
+                this.setupEventListeners();
+                this.startGame();
+            }
+
+            setupCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                
+                // Обработка изменения размера окна
+                window.addEventListener('resize', () => {
+                    this.canvas.width = window.innerWidth;
+                    this.canvas.height = window.innerHeight;
+                });
+            }
+
+            setupEventListeners() {
+                this.canvas.addEventListener('click', (e) => this.handleClick(e));
+                this.canvas.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    this.handleClick({ 
+                        clientX: touch.clientX, 
+                        clientY: touch.clientY 
+                    });
+                });
+
+                this.restartBtn.addEventListener('click', () => {
+                    this.resultDiv.style.display = 'none';
+                    this.startGame();
+                });
+            }
+
+            startGame() {
+                console.log('💰 Запуск демо "Дождь монет"');
+                
+                // Игровые переменные
+                this.coins = [];
+                this.caughtCoins = 0;
+                this.totalCaught = 0;
+                this.timeLeft = 4;
+                this.gameActive = true;
+                this.spawnedCoins = 0;
+
+                // Обновляем UI
+                this.coinsCaughtSpan.textContent = '0';
+                this.timeLeftSpan.textContent = '4';
+                this.resultDiv.style.display = 'none';
+
+                // Запуск игровых циклов
+                this.startCoinSpawner();
+                this.startGameLoop();
+                this.startTimer();
+            }
+
+            startCoinSpawner() {
+                this.spawnInterval = setInterval(() => {
+                    if (this.gameActive && this.spawnedCoins < this.MAX_COINS) {
+                        this.coins.push(new Coin(this.canvas.width, this.canvas.height));
+                        this.spawnedCoins++;
+                    } else if (!this.gameActive) {
+                        clearInterval(this.spawnInterval);
+                    }
+                }, 100); // Новая монета каждые 100мс
+            }
+
+            startGameLoop() {
+                const animate = () => {
+                    if (!this.gameActive) return;
+
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                    // Обновляем и рисуем монеты
+                    for (let i = this.coins.length - 1; i >= 0; i--) {
+                        this.coins[i].update();
+                        this.coins[i].draw(this.ctx);
+
+                        // Удаляем монеты, упавшие за пределы экрана
+                        if (this.coins[i].y - this.coins[i].radius > this.canvas.height) {
+                            this.coins.splice(i, 1);
+                        }
+                    }
+
+                    requestAnimationFrame(animate);
+                };
+                animate();
+            }
+
+            startTimer() {
+                this.timer = setInterval(() => {
+                    if (!this.gameActive) {
+                        clearInterval(this.timer);
+                        return;
+                    }
+
+                    this.timeLeft--;
+                    this.timeLeftSpan.textContent = this.timeLeft;
+
+                    if (this.timeLeft <= 0) {
+                        this.endGame();
+                        clearInterval(this.timer);
+                    }
+                }, 1000);
+            }
+
+            handleClick(event) {
+                if (!this.gameActive) return;
+
+                const rect = this.canvas.getBoundingClientRect();
+                const mouseX = event.clientX - rect.left;
+                const mouseY = event.clientY - rect.top;
+
+                for (let i = this.coins.length - 1; i >= 0; i--) {
+                    if (this.coins[i].isClicked(mouseX, mouseY)) {
+                        this.coins[i].caught = true;
+                        this.caughtCoins++;
+                        this.totalCaught += this.COIN_VALUE;
+                        
+                        // Обновляем UI
+                        this.coinsCaughtSpan.textContent = this.totalCaught;
+                        
+                        // Эффект поимки
+                        this.createCatchEffect(mouseX, mouseY);
+                        
+                        // Удаляем пойманную монету
+                        this.coins.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+
+            createCatchEffect(x, y) {
+                // Создаем временный эффект "+5₽"
+                const effect = {
+                    x: x,
+                    y: y,
+                    opacity: 1,
+                    scale: 1,
+                    life: 30
+                };
+
+                const animateEffect = () => {
+                    if (effect.life <= 0) return;
+
+                    this.ctx.save();
+                    this.ctx.globalAlpha = effect.opacity;
+                    this.ctx.fillStyle = '#4caf50';
+                    this.ctx.font = `bold ${20 * effect.scale}px Arial`;
+                    this.ctx.textAlign = 'center';
+                    this.ctx.strokeStyle = '#000';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.strokeText('+5₽', effect.x, effect.y);
+                    this.ctx.fillText('+5₽', effect.x, effect.y);
+                    this.ctx.restore();
+
+                    effect.y -= 2;
+                    effect.opacity *= 0.95;
+                    effect.scale += 0.02;
+                    effect.life--;
+
+                    if (effect.life > 0) {
+                        requestAnimationFrame(animateEffect);
+                    }
+                };
+                animateEffect();
+            }
+
+            endGame() {
+                this.gameActive = false;
+                clearInterval(this.spawnInterval);
+                clearInterval(this.timer);
+
+                // Показываем результат
+                const percentage = Math.round((this.totalCaught / this.MAX_TOTAL_VALUE) * 100);
+                this.resultTextDiv.innerHTML = `
+                    <div style="font-size: 28px; margin-bottom: 15px;">🎉 Игра завершена!</div>
+                    <div>Поймано: <span style="color: #ffd700;">${this.caughtCoins}</span> монет</div>
+                    <div>Заработано: <span style="color: #4caf50;">${this.totalCaught} ₽</span></div>
+                    <div>Эффективность: <span style="color: #ff6b6b;">${percentage}%</span></div>
+                    <div style="font-size: 14px; margin-top: 10px; color: #aaa;">
+                        Максимум: ${this.MAX_TOTAL_VALUE}₽ за ${this.GAME_DURATION/1000} сек
+                    </div>
+                `;
+                this.resultDiv.style.display = 'block';
+
+                console.log(`💰 Демо завершено: поймано ${this.totalCaught} ₽`);
+            }
+        }
+
+        // Класс монеты (идентичен основной игре)
+        class Coin {
+            constructor(canvasWidth, canvasHeight) {
+                this.radius = 15 + Math.random() * 10;
+                this.x = Math.random() * (canvasWidth - this.radius * 2) + this.radius;
+                this.y = -this.radius;
+                this.speedY = 3 + Math.random() * 4;
+                this.speedX = (Math.random() - 0.5) * 2;
+                this.rotation = 0;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.2;
+                this.caught = false;
+                this.glowIntensity = Math.random();
+            }
+
+            update() {
+                if (this.caught) return;
+                
+                this.y += this.speedY;
+                this.x += this.speedX;
+                this.rotation += this.rotationSpeed;
+                this.glowIntensity += 0.1;
+
+                // Отскок от стен
+                if (this.x <= this.radius || this.x >= window.innerWidth - this.radius) {
+                    this.speedX = -this.speedX;
+                }
+            }
+
+            draw(ctx) {
+                if (this.caught) return;
+
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+
+                // Свечение
+                const glow = Math.sin(this.glowIntensity) * 0.5 + 0.5;
+                ctx.shadowColor = '#ffd700';
+                ctx.shadowBlur = 10 + glow * 15;
+
+                // Монета (градиент)
+                const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.radius);
+                gradient.addColorStop(0, '#ffed4e');
+                gradient.addColorStop(0.3, '#ffd700');
+                gradient.addColorStop(0.7, '#ffa500');
+                gradient.addColorStop(1, '#ff8c00');
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Внутренний круг
+                ctx.fillStyle = '#ffe55c';
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius * 0.6, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Символ рубля
+                ctx.fillStyle = '#d4af37';
+                ctx.font = `bold ${this.radius}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('₽', 0, 0);
+
+                ctx.restore();
+            }
+
+            isClicked(mouseX, mouseY) {
+                const distance = Math.sqrt((mouseX - this.x) ** 2 + (mouseY - this.y) ** 2);
+                return distance <= this.radius && !this.caught;
+            }
+        }
+
+        // Запуск демо при загрузке страницы
+        window.addEventListener('DOMContentLoaded', () => {
+            new CoinRainDemo();
+        });
+    </script>
+</body>
+</html>

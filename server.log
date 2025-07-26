@@ -5,3 +5,5 @@
 127.0.0.1 - - [26/Jul/2025 18:37:18] "GET /bingobett-standalone-fixed.html HTTP/1.1" 200 -
 127.0.0.1 - - [26/Jul/2025 18:54:14] "GET /bingobett-standalone-fixed.html HTTP/1.1" 200 -
 127.0.0.1 - - [26/Jul/2025 18:54:19] "GET /bingobett-standalone-fixed.html HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jul/2025 19:05:16] "GET /coin-rain-demo.html HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jul/2025 19:05:21] "GET /index.html HTTP/1.1" 200 -
