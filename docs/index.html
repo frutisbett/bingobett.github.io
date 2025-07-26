@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 BingoBett - Telegram Mini App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            color: gold;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+            margin-bottom: 20px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 215, 0, 0.7); }
+            to { text-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 0 40px rgba(255, 215, 0, 0.8); }
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+        
+        .status {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .status h3 {
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+        
+        .info {
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s ease;
+            border: 2px solid #4caf50;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn.telegram {
+            background: linear-gradient(135deg, #0088cc, #005580);
+            border-color: #0088cc;
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .instructions h3 {
+            color: gold;
+            margin-bottom: 15px;
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .github-url {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: #888;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎰 BingoBett</h1>
+        <p class="subtitle">Telegram Mini App готов к запуску!</p>
+        
+        <div class="status">
+            <h3>🟢 Статус: Развернуто на GitHub Pages</h3>
+            <div class="info">📅 Дата развертывания: <span id="deployDate"></span></div>
+            <div class="info">🌐 Домен: <span id="githubDomain"></span></div>
+            <div class="info">📱 Готов для Telegram Mini App</div>
+        </div>
+
+        <div style="margin: 30px 0;">
+            <a href="game.html" class="btn">🎮 Играть в браузере</a>
+            <a href="#" class="btn telegram" onclick="openInTelegram()">📱 Открыть в Telegram</a>
+        </div>
+
+        <div class="instructions">
+            <h3>🚀 Как подключить к Telegram боту:</h3>
+            <ol>
+                <li>Откройте <strong>@BotFather</strong> в Telegram</li>
+                <li>Создайте нового бота командой <code>/newbot</code></li>
+                <li>Настройте Mini App командой <code>/newapp</code></li>
+                <li>Укажите URL игры:</li>
+                <div class="github-url" id="gameUrl">Загружается...</div>
+                <li>Протестируйте бота в Telegram</li>
+            </ol>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Команды для BotFather:</h3>
+            <ol>
+                <li><strong>Создание бота:</strong>
+                    <div class="github-url">/newbot<br>BingoBett Game<br>your_bot_name_bot</div>
+                </li>
+                <li><strong>Настройка Web App:</strong>
+                    <div class="github-url">/newapp<br>🎰 BingoBett<br>Увлекательная слот-машина с джекпотами!</div>
+                </li>
+                <li><strong>Команды бота:</strong>
+                    <div class="github-url">/setcommands<br>start - 🎰 Запустить игру<br>help - ❓ Помощь</div>
+                </li>
+                <li><strong>Кнопка меню:</strong>
+                    <div class="github-url">/setmenubutton<br>🎰 Играть в BingoBett</div>
+                </li>
+            </ol>
+        </div>
+
+        <div class="footer">
+            <p>🛠️ Код размещен на GitHub Pages</p>
+            <p>📖 <a href="https://github.com/yourusername/bingobett-telegram-miniapp" style="color: gold;">Репозиторий на GitHub</a></p>
+            <p>🎰 BingoBett © 2024 • MIT License</p>
+        </div>
+    </div>
+
+    <script>
+        // Устанавливаем дату развертывания
+        document.getElementById('deployDate').textContent = new Date().toLocaleDateString('ru-RU');
+        
+        // Определяем домен GitHub Pages
+        const hostname = window.location.hostname;
+        document.getElementById('githubDomain').textContent = hostname;
+        
+        // Устанавливаем URL игры
+        const gameUrl = `${window.location.origin}/game.html`;
+        document.getElementById('gameUrl').textContent = gameUrl;
+        
+        // Функция открытия в Telegram
+        function openInTelegram() {
+            const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(gameUrl)}&text=${encodeURIComponent('🎰 Играй в BingoBett - профессиональную слот-машину!')}`;
+            window.open(telegramUrl, '_blank');
+        }
+        
+        console.log('🎰 BingoBett развернут на GitHub Pages');
+        console.log('📱 URL для Telegram Mini App:', gameUrl);
+    </script>
+</body>
+</html>
