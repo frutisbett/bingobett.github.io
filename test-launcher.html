@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 BingoBett - Тестовый лаунчер</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .button {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .button.primary {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            font-size: 1.3em;
+            padding: 20px 40px;
+        }
+        
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .info {
+            margin-top: 30px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .features {
+            text-align: left;
+            margin: 20px 0;
+        }
+        
+        .features li {
+            margin: 8px 0;
+            list-style: none;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .features li:before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎰 BingoBett</h1>
+        <div class="subtitle">Слот-машина для Telegram Mini App</div>
+        
+        <div class="status">
+            <strong>✅ Статус:</strong> Готов к запуску
+        </div>
+        
+        <a href="bingobett-standalone.html" class="button primary" target="_blank">
+            🎮 ЗАПУСТИТЬ ИГРУ
+        </a>
+        
+        <div class="features">
+            <h3>🎯 Возможности игры:</h3>
+            <ul>
+                <li>Слот-машина 5×4 с анимацией</li>
+                <li>Система фриспинов и джекпота</li>
+                <li>Мини-игра "Выбери коробку"</li>
+                <li>Сохранение прогресса</li>
+                <li>Адаптивный дизайн</li>
+                <li>Telegram Mini App поддержка</li>
+            </ul>
+        </div>
+        
+        <div class="info">
+            <p><strong>📱 Для мобильных:</strong> Откройте на телефоне для лучшего опыта</p>
+            <p><strong>🌐 Поддержка:</strong> Chrome, Firefox, Safari, Edge</p>
+        </div>
+        
+        <button class="button" onclick="checkGame()">🔍 Проверить статус</button>
+        <button class="button" onclick="location.reload()">🔄 Обновить</button>
+    </div>
+
+    <script>
+        function checkGame() {
+            fetch('bingobett-standalone.html')
+                .then(response => {
+                    if (response.ok) {
+                        alert('✅ Игра доступна и готова к запуску!\n\nРазмер файла: ' + 
+                              Math.round(response.headers.get('content-length') / 1024) + ' KB');
+                    } else {
+                        alert('❌ Ошибка загрузки игры');
+                    }
+                })
+                .catch(error => {
+                    alert('❌ Ошибка соединения: ' + error.message);
+                });
+        }
+
+        // Автопроверка при загрузке
+        window.addEventListener('load', () => {
+            console.log('🎰 BingoBett Test Launcher загружен');
+            console.log('📁 Файл игры: bingobett-standalone.html');
+            console.log('🌐 Сервер: ' + window.location.origin);
+        });
+    </script>
+</body>
+</html>
