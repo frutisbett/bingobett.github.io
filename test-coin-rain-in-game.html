@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Тест мини-игры "Дождь монет" в BingoBett</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #333);
+            color: white;
+            padding: 20px;
+            margin: 0;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+        }
+        .game-frame {
+            width: 100%;
+            height: 800px;
+            border: 3px solid #4caf50;
+            border-radius: 10px;
+            background: white;
+        }
+        .test-panel {
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+        }
+        .test-panel h2 {
+            color: #ffd700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .test-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .test-btn {
+            padding: 12px;
+            font-size: 14px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .test-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        .test-btn.force-btn {
+            background: #ff9800;
+        }
+        .test-btn.force-btn:hover {
+            background: #e68900;
+        }
+        .test-results {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .result-value {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        .test-log {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 12px;
+            font-family: monospace;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+        .log-success { color: #4caf50; }
+        .log-error { color: #f44336; }
+        .log-info { color: #2196f3; }
+        .log-warning { color: #ff9800; }
+        
+        .instructions {
+            background: rgba(0,100,200,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #2196f3;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        
+        @media (max-width: 768px) {
+            .test-container {
+                grid-template-columns: 1fr;
+            }
+            .game-frame {
+                height: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; color: #ffd700;">🧪 Тест мини-игры "Дождь монет"</h1>
+    
+    <div class="test-container">
+        <div>
+            <h2 style="color: #4caf50;">🎰 BingoBett игра</h2>
+            <iframe id="gameFrame" class="game-frame" src="index.html"></iframe>
+        </div>
+        
+        <div class="test-panel">
+            <h2>💰 Панель тестирования</h2>
+            
+            <div class="instructions">
+                <strong>📋 Инструкции по тестированию:</strong><br>
+                1. Дождитесь загрузки игры<br>
+                2. Попробуйте обычные спины (8% шанс мини-игры)<br>
+                3. Используйте "Принудительный запуск" для прямого тестирования<br>
+                4. Проверьте работу тап-механики в мини-игре
+            </div>
+            
+            <div class="test-controls">
+                <button class="test-btn" onclick="checkGameStatus()">🔍 Проверить статус игры</button>
+                <button class="test-btn force-btn" onclick="forceCoinRainGame()">🚀 Принудительный запуск дождя монет</button>
+                <button class="test-btn" onclick="simulateWinSpins()">🎲 10 спинов с выигрышами</button>
+                <button class="test-btn" onclick="testMiniGameChance()">📊 Тест шанса мини-игр (100 спинов)</button>
+                <button class="test-btn" onclick="clearLog()">🗑️ Очистить лог</button>
+            </div>
+            
+            <div class="test-results">
+                <h3 style="color: #ffd700; margin-bottom: 10px;">📊 Результаты тестирования</h3>
+                <div class="result-item">
+                    <span>Статус игры:</span>
+                    <span class="result-value" id="gameStatus">Проверяется...</span>
+                </div>
+                <div class="result-item">
+                    <span>Мини-игры запущено:</span>
+                    <span class="result-value" id="miniGamesTriggered">0</span>
+                </div>
+                <div class="result-item">
+                    <span>Дождь монет запущено:</span>
+                    <span class="result-value" id="coinRainTriggered">0</span>
+                </div>
+                <div class="result-item">
+                    <span>Средний заработок:</span>
+                    <span class="result-value" id="averageEarnings">0 ₽</span>
+                </div>
+                <div class="result-item">
+                    <span>Тестов выполнено:</span>
+                    <span class="result-value" id="testsCompleted">0</span>
+                </div>
+            </div>
+            
+            <h3 style="color: #ffd700;">📋 Журнал тестирования</h3>
+            <div class="test-log" id="testLog">
+                <div class="log-entry log-info">Ожидание инициализации тестера...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class CoinRainGameTester {
+            constructor() {
+                this.gameFrame = document.getElementById('gameFrame');
+                this.testStats = {
+                    miniGamesTriggered: 0,
+                    coinRainTriggered: 0,
+                    totalEarnings: [],
+                    testsCompleted: 0
+                };
+                
+                this.initializeAfterDelay();
+            }
+
+            initializeAfterDelay() {
+                // Ждем загрузки iframe
+                setTimeout(() => {
+                    this.log('✅ Тестер инициализирован', 'success');
+                    this.checkGameStatus();
+                }, 3000);
+            }
+
+            async checkGameStatus() {
+                try {
+                    const gameWindow = this.gameFrame.contentWindow;
+                    const gameDocument = this.gameFrame.contentDocument;
+                    
+                    if (!gameDocument) {
+                        this.log('❌ Не удается получить доступ к игре', 'error');
+                        document.getElementById('gameStatus').textContent = 'Недоступно';
+                        return false;
+                    }
+
+                    // Проверяем наличие ключевых элементов
+                    const coinRainOverlay = gameDocument.getElementById('coinRainOverlay');
+                    const coinRainCanvas = gameDocument.getElementById('coinRainCanvas');
+                    const spinButton = gameDocument.getElementById('spinButton');
+                    
+                    if (coinRainOverlay && coinRainCanvas && spinButton) {
+                        this.log('✅ Все элементы мини-игры найдены', 'success');
+                        document.getElementById('gameStatus').textContent = 'Готово';
+                        return true;
+                    } else {
+                        this.log('⚠️ Некоторые элементы мини-игры не найдены', 'warning');
+                        document.getElementById('gameStatus').textContent = 'Неполная загрузка';
+                        return false;
+                    }
+                } catch (error) {
+                    this.log(`❌ Ошибка проверки статуса: ${error.message}`, 'error');
+                    document.getElementById('gameStatus').textContent = 'Ошибка';
+                    return false;
+                }
+            }
+
+            async forceCoinRainGame() {
+                try {
+                    this.log('🚀 Принудительный запуск мини-игры "Дождь монет"...', 'info');
+                    
+                    const gameWindow = this.gameFrame.contentWindow;
+                    const gameDocument = this.gameFrame.contentDocument;
+                    
+                    if (!gameDocument) {
+                        this.log('❌ Нет доступа к игре', 'error');
+                        return;
+                    }
+
+                    // Пытаемся вызвать функцию напрямую
+                    if (gameWindow.startCoinRainGame) {
+                        this.log('📞 Вызов startCoinRainGame(100)...', 'info');
+                        gameWindow.startCoinRainGame(100);
+                        this.testStats.coinRainTriggered++;
+                        this.testStats.miniGamesTriggered++;
+                        this.updateStats();
+                        this.log('✅ Мини-игра "Дождь монет" запущена!', 'success');
+                        
+                        // Мониторим результат
+                        this.monitorCoinRainGame();
+                    } else {
+                        this.log('⚠️ Функция startCoinRainGame не найдена, пробуем через eval...', 'warning');
+                        
+                        // Альтернативный способ
+                        gameWindow.eval(`
+                            if (typeof startCoinRainGame === 'function') {
+                                startCoinRainGame(100);
+                                console.log('Мини-игра запущена через eval');
+                            } else {
+                                console.error('startCoinRainGame не доступна');
+                            }
+                        `);
+                        this.log('📞 Попытка запуска через eval выполнена', 'info');
+                    }
+                } catch (error) {
+                    this.log(`❌ Ошибка принудительного запуска: ${error.message}`, 'error');
+                }
+            }
+
+            async monitorCoinRainGame() {
+                const gameDocument = this.gameFrame.contentDocument;
+                if (!gameDocument) return;
+
+                const overlay = gameDocument.getElementById('coinRainOverlay');
+                if (!overlay) return;
+
+                this.log('👀 Мониторинг мини-игры начат...', 'info');
+
+                const monitor = () => {
+                    const style = window.getComputedStyle(overlay);
+                    const isVisible = style.display !== 'none';
+                    
+                    if (isVisible) {
+                        const coinsCaught = gameDocument.getElementById('coinsCaught');
+                        const timeLeft = gameDocument.getElementById('timeLeft');
+                        
+                        if (coinsCaught && timeLeft) {
+                            this.log(`💰 Поймано: ${coinsCaught.textContent}₽, Время: ${timeLeft.textContent}сек`, 'info');
+                        }
+                        
+                        setTimeout(monitor, 1000);
+                    } else {
+                        this.log('🏁 Мини-игра завершена', 'success');
+                        
+                        // Пытаемся получить финальный результат
+                        if (coinsCaught) {
+                            const finalEarnings = parseInt(coinsCaught.textContent) || 0;
+                            this.testStats.totalEarnings.push(finalEarnings);
+                            this.log(`💎 Финальный результат: ${finalEarnings}₽`, 'success');
+                            this.updateStats();
+                        }
+                    }
+                };
+
+                monitor();
+            }
+
+            async simulateWinSpins() {
+                this.log('🎲 Запуск 10 спинов с симуляцией выигрышей...', 'info');
+                
+                for (let i = 1; i <= 10; i++) {
+                    await this.simulateSpin(i);
+                    await this.delay(2000); // Пауза между спинами
+                }
+                
+                this.log('✅ 10 спинов завершено', 'success');
+                this.testStats.testsCompleted++;
+                this.updateStats();
+            }
+
+            async simulateSpin(spinNumber) {
+                try {
+                    const gameDocument = this.gameFrame.contentDocument;
+                    if (!gameDocument) return;
+
+                    const spinButton = gameDocument.getElementById('spinButton');
+                    if (spinButton && !spinButton.disabled) {
+                        this.log(`🎰 Спин ${spinNumber}/10...`, 'info');
+                        spinButton.click();
+                        
+                        // Ждем завершения спина
+                        await this.delay(3000);
+                        
+                        // Проверяем, запустилась ли мини-игра
+                        const overlay = gameDocument.getElementById('coinRainOverlay');
+                        if (overlay && window.getComputedStyle(overlay).display !== 'none') {
+                            this.log(`🎊 Спин ${spinNumber}: Запустилась мини-игра!`, 'success');
+                            this.testStats.miniGamesTriggered++;
+                            this.testStats.coinRainTriggered++;
+                            this.monitorCoinRainGame();
+                        } else {
+                            this.log(`⚪ Спин ${spinNumber}: Обычный результат`, 'info');
+                        }
+                    }
+                } catch (error) {
+                    this.log(`❌ Ошибка спина ${spinNumber}: ${error.message}`, 'error');
+                }
+            }
+
+            async testMiniGameChance() {
+                this.log('📊 Запуск теста шанса мини-игр (100 спинов)...', 'info');
+                this.log('⚠️ Это может занять несколько минут...', 'warning');
+                
+                let miniGameCount = 0;
+                let coinRainCount = 0;
+                
+                for (let i = 1; i <= 100; i++) {
+                    try {
+                        const gameDocument = this.gameFrame.contentDocument;
+                        if (!gameDocument) break;
+
+                        const spinButton = gameDocument.getElementById('spinButton');
+                        if (spinButton && !spinButton.disabled) {
+                            spinButton.click();
+                            await this.delay(1500); // Быстрее для массового теста
+                            
+                            // Проверяем мини-игры
+                            const coinRainOverlay = gameDocument.getElementById('coinRainOverlay');
+                            const boxOverlay = gameDocument.getElementById('miniGameOverlay');
+                            
+                            if (coinRainOverlay && window.getComputedStyle(coinRainOverlay).display !== 'none') {
+                                coinRainCount++;
+                                miniGameCount++;
+                                this.log(`💰 Спин ${i}: Дождь монет!`, 'success');
+                                
+                                // Закрываем быстро для продолжения теста
+                                setTimeout(() => {
+                                    const closeBtn = gameDocument.getElementById('coinRainClose');
+                                    if (closeBtn) closeBtn.click();
+                                }, 500);
+                            } else if (boxOverlay && window.getComputedStyle(boxOverlay).display !== 'none') {
+                                miniGameCount++;
+                                this.log(`🎁 Спин ${i}: Выбери коробку!`, 'success');
+                                
+                                // Закрываем быстро
+                                setTimeout(() => {
+                                    const closeBtn = gameDocument.getElementById('closeMiniGame');
+                                    if (closeBtn) closeBtn.click();
+                                }, 500);
+                            }
+                            
+                            if (i % 20 === 0) {
+                                this.log(`📊 Прогресс: ${i}/100 спинов, мини-игр: ${miniGameCount}`, 'info');
+                            }
+                        }
+                    } catch (error) {
+                        this.log(`❌ Ошибка на спине ${i}: ${error.message}`, 'error');
+                    }
+                }
+                
+                const percentage = (miniGameCount / 100 * 100).toFixed(1);
+                const coinRainPercentage = (coinRainCount / 100 * 100).toFixed(1);
+                
+                this.log(`📊 РЕЗУЛЬТАТЫ ТЕСТА:`, 'success');
+                this.log(`   Всего мини-игр: ${miniGameCount}/100 (${percentage}%)`, 'success');
+                this.log(`   Дождь монет: ${coinRainCount}/100 (${coinRainPercentage}%)`, 'success');
+                this.log(`   Ожидалось: ~8% мини-игр, ~4% дождь монет`, 'info');
+                
+                this.testStats.testsCompleted++;
+                this.updateStats();
+            }
+
+            updateStats() {
+                document.getElementById('miniGamesTriggered').textContent = this.testStats.miniGamesTriggered;
+                document.getElementById('coinRainTriggered').textContent = this.testStats.coinRainTriggered;
+                document.getElementById('testsCompleted').textContent = this.testStats.testsCompleted;
+                
+                if (this.testStats.totalEarnings.length > 0) {
+                    const average = this.testStats.totalEarnings.reduce((a, b) => a + b, 0) / this.testStats.totalEarnings.length;
+                    document.getElementById('averageEarnings').textContent = average.toFixed(1) + ' ₽';
+                }
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            log(message, type = 'info') {
+                const logContainer = document.getElementById('testLog');
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry log-${type}`;
+                logEntry.textContent = `[${timestamp}] ${message}`;
+                
+                logContainer.appendChild(logEntry);
+                logContainer.scrollTop = logContainer.scrollHeight;
+                
+                console.log(`[CoinRainTester] ${message}`);
+            }
+
+            clearLog() {
+                document.getElementById('testLog').innerHTML = '<div class="log-entry log-info">Лог очищен.</div>';
+            }
+        }
+
+        // Глобальные функции для кнопок
+        let tester;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            tester = new CoinRainGameTester();
+        });
+
+        function checkGameStatus() {
+            if (tester) tester.checkGameStatus();
+        }
+
+        function forceCoinRainGame() {
+            if (tester) tester.forceCoinRainGame();
+        }
+
+        function simulateWinSpins() {
+            if (tester) tester.simulateWinSpins();
+        }
+
+        function testMiniGameChance() {
+            if (tester) tester.testMiniGameChance();
+        }
+
+        function clearLog() {
+            if (tester) tester.clearLog();
+        }
+    </script>
+</body>
+</html>

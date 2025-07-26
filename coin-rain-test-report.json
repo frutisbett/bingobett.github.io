@@ -1,0 +1,234 @@
+{
+  "summary": {
+    "timestamp": "2025-07-26T19:10:45.422Z",
+    "totalTests": 41,
+    "passed": 40,
+    "failed": 1,
+    "successRate": 98
+  },
+  "codeAnalysis": {
+    "fileSize": 83,
+    "HTML элемент coinRainOverlay": true,
+    "Canvas элемент": true,
+    "UI элементы дождя монет": true,
+    "Функция startCoinRainGame": true,
+    "Класс Coin": true,
+    "CSS стили мини-игры": true,
+    "Параметр GAME_DURATION": true,
+    "Параметр COIN_VALUE": true,
+    "Параметр MAX_TOTAL_VALUE": true
+  },
+  "gameParameters": {
+    "Длительность 4 секунды": "4000ms (4 секунды)",
+    "Стоимость монеты 5₽": "5 рублей",
+    "Максимум 800₽": "800 рублей",
+    "Расчет количества монет": "160 монет (800÷5)"
+  },
+  "detailedResults": [
+    {
+      "name": "HTML элемент coinRainOverlay",
+      "passed": true,
+      "details": "Найдено"
+    },
+    {
+      "name": "Canvas элемент",
+      "passed": true,
+      "details": "Найдено"
+    },
+    {
+      "name": "UI элементы дождя монет",
+      "passed": true,
+      "details": "Найдено"
+    },
+    {
+      "name": "Функция startCoinRainGame",
+      "passed": true,
+      "details": "Найдено"
+    },
+    {
+      "name": "Класс Coin",
+      "passed": true,
+      "details": "Найдено"
+    },
+    {
+      "name": "CSS стили мини-игры",
+      "passed": true,
+      "details": "Найдено"
+    },
+    {
+      "name": "Параметр GAME_DURATION",
+      "passed": true,
+      "details": "Найдено"
+    },
+    {
+      "name": "Параметр COIN_VALUE",
+      "passed": true,
+      "details": "Найдено"
+    },
+    {
+      "name": "Параметр MAX_TOTAL_VALUE",
+      "passed": true,
+      "details": "Найдено"
+    },
+    {
+      "name": "Мини-игра \"Дождь монет\" в HTML",
+      "passed": true,
+      "details": "Структура корректна"
+    },
+    {
+      "name": "Canvas элемент для рендеринга",
+      "passed": true,
+      "details": "Структура корректна"
+    },
+    {
+      "name": "UI элементы статистики",
+      "passed": true,
+      "details": "Структура корректна"
+    },
+    {
+      "name": "Результирующий экран",
+      "passed": true,
+      "details": "Структура корректна"
+    },
+    {
+      "name": "Кнопка закрытия игры",
+      "passed": true,
+      "details": "Структура корректна"
+    },
+    {
+      "name": "Заголовок \"ДОЖДЬ МОНЕТ!\"",
+      "passed": true,
+      "details": "Структура корректна"
+    },
+    {
+      "name": "Стиль оверлея мини-игры",
+      "passed": true,
+      "details": "Стили найдены"
+    },
+    {
+      "name": "Стиль canvas элемента",
+      "passed": true,
+      "details": "Стили найдены"
+    },
+    {
+      "name": "Стили UI интерфейса",
+      "passed": true,
+      "details": "Стили найдены"
+    },
+    {
+      "name": "Анимация заголовка",
+      "passed": true,
+      "details": "Стили найдены"
+    },
+    {
+      "name": "Градиентный фон",
+      "passed": true,
+      "details": "Стили найдены"
+    },
+    {
+      "name": "Адаптивный дизайн",
+      "passed": true,
+      "details": "Стили найдены"
+    },
+    {
+      "name": "Функция startCoinRainGame",
+      "passed": true,
+      "details": "Логика реализована"
+    },
+    {
+      "name": "Класс Coin",
+      "passed": true,
+      "details": "Логика реализована"
+    },
+    {
+      "name": "Canvas рендеринг",
+      "passed": true,
+      "details": "Логика реализована"
+    },
+    {
+      "name": "Обработка кликов",
+      "passed": true,
+      "details": "Логика реализована"
+    },
+    {
+      "name": "Touch события",
+      "passed": true,
+      "details": "Логика реализована"
+    },
+    {
+      "name": "Таймер игры",
+      "passed": true,
+      "details": "Логика реализована"
+    },
+    {
+      "name": "Анимационный цикл",
+      "passed": true,
+      "details": "Логика реализована"
+    },
+    {
+      "name": "Спавн монет",
+      "passed": true,
+      "details": "Логика реализована"
+    },
+    {
+      "name": "Длительность 4 секунды",
+      "passed": true,
+      "details": "Соответствует: 4000ms (4 секунды)"
+    },
+    {
+      "name": "Стоимость монеты 5₽",
+      "passed": true,
+      "details": "Соответствует: 5 рублей"
+    },
+    {
+      "name": "Максимум 800₽",
+      "passed": true,
+      "details": "Соответствует: 800 рублей"
+    },
+    {
+      "name": "Расчет количества монет",
+      "passed": true,
+      "details": "Соответствует: 160 монет (800÷5)"
+    },
+    {
+      "name": "Интервал спавна 100мс",
+      "passed": false,
+      "details": "Не найдено: 100 миллисекунд"
+    },
+    {
+      "name": "Случайный выбор мини-игр",
+      "passed": true,
+      "details": "Интеграция корректна"
+    },
+    {
+      "name": "Запуск при выигрышах",
+      "passed": true,
+      "details": "Интеграция корректна"
+    },
+    {
+      "name": "Добавление к балансу",
+      "passed": true,
+      "details": "Интеграция корректна"
+    },
+    {
+      "name": "Обновление UI",
+      "passed": true,
+      "details": "Интеграция корректна"
+    },
+    {
+      "name": "Сообщения в чат",
+      "passed": true,
+      "details": "Интеграция корректна"
+    },
+    {
+      "name": "Вибрация (Telegram)",
+      "passed": true,
+      "details": "Интеграция корректна"
+    },
+    {
+      "name": "Обновленные правила",
+      "passed": true,
+      "details": "Интеграция корректна"
+    }
+  ]
+}
