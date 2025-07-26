@@ -1,0 +1,3 @@
+127.0.0.1 - - [26/Jul/2025 17:24:49] "HEAD /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jul/2025 17:24:54] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [26/Jul/2025 17:28:23] "HEAD /bingobett-standalone-fixed.html HTTP/1.1" 200 -
