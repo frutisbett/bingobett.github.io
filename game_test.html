@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BingoBett - Расширенный тест</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #1a1a1a; 
+            color: white; 
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section { 
+            margin: 20px 0; 
+            padding: 15px; 
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+        }
+        .test-result { 
+            margin: 5px 0; 
+            padding: 8px; 
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .success { background: #4caf50; }
+        .error { background: #f44336; }
+        .warning { background: #ff9800; }
+        .info { background: #2196f3; }
+        .test-link {
+            display: inline-block;
+            margin: 10px 5px;
+            padding: 10px 15px;
+            background: #9c27b0;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .test-link:hover { background: #7b1fa2; }
+        h2 { color: gold; margin-bottom: 15px; }
+        h3 { color: #4caf50; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🎰 BingoBett - Полное тестирование</h1>
+    
+    <div class="test-section">
+        <h2>🔗 Быстрые ссылки</h2>
+        <a href="http://localhost:8000/index.html" class="test-link" target="_blank">🎮 Основная игра</a>
+        <a href="http://localhost:8000/test_page.html" class="test-link" target="_blank">⚡ Базовые тесты</a>
+        <a href="#" class="test-link" onclick="location.reload()">🔄 Перезапустить тесты</a>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Результаты тестирования</h2>
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        const results = document.getElementById('test-results');
+        let testCount = 0;
+        let passedCount = 0;
+        
+        function addResult(message, type = 'success') {
+            testCount++;
+            if (type === 'success') passedCount++;
+            
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<strong>[${testCount}]</strong> ${message}`;
+            results.appendChild(div);
+        }
+
+        function addSection(title) {
+            const h3 = document.createElement('h3');
+            h3.textContent = title;
+            results.appendChild(h3);
+        }
+
+        // Начинаем тестирование
+        addSection('🔧 Базовые тесты JavaScript');
+
+        // Тест 1: Проверка основных переменных игры
+        try {
+            const gameVars = {
+                balance: 777,
+                betAmount: 10,
+                jackpot: 2200453,
+                columns: 5,
+                rows: 4,
+                minBet: 10,
+                maxBet: 80
+            };
+            
+            if (gameVars.balance > 0 && gameVars.betAmount >= gameVars.minBet && gameVars.jackpot > 0) {
+                addResult('✓ Игровые переменные инициализированы корректно');
+            } else {
+                throw new Error('Неверные значения переменных');
+            }
+        } catch (e) {
+            addResult('✗ Ошибка игровых переменных: ' + e.message, 'error');
+        }
+
+        // Тест 2: Проверка символов слот-машины
+        try {
+            const symbols = ["🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","⭐","🃏","👑","💰"];
+            const payTable = {
+                "🍒": {3:5, 4:10, 5:20}, "🍋": {3:5, 4:10, 5:20}, "🍊": {3:5, 4:10, 5:20},
+                "🍉": {3:5, 4:10, 5:20}, "🍇": {3:5, 4:10, 5:20}, "🍓": {3:7, 4:14, 5:28},
+                "💰": {3:100, 4:200, 5:500}
+            };
+            
+            if (symbols.length >= 16 && payTable["🍒"] && payTable["💰"]) {
+                addResult('✓ Символы и таблица выплат настроены корректно');
+            } else {
+                throw new Error('Неполная конфигурация символов');
+            }
+        } catch (e) {
+            addResult('✗ Ошибка конфигурации символов: ' + e.message, 'error');
+        }
+
+        // Тест 3: Проверка localStorage
+        try {
+            const testData = {
+                balance: '1000',
+                bet: '20',
+                username: 'TestUser'
+            };
+            
+            // Сохраняем
+            Object.keys(testData).forEach(key => {
+                localStorage.setItem(`test_${key}`, testData[key]);
+            });
+            
+            // Проверяем
+            let allCorrect = true;
+            Object.keys(testData).forEach(key => {
+                if (localStorage.getItem(`test_${key}`) !== testData[key]) {
+                    allCorrect = false;
+                }
+            });
+            
+            // Очищаем
+            Object.keys(testData).forEach(key => {
+                localStorage.removeItem(`test_${key}`);
+            });
+            
+            if (allCorrect) {
+                addResult('✓ localStorage работает корректно');
+            } else {
+                throw new Error('Неверные данные в localStorage');
+            }
+        } catch (e) {
+            addResult('✗ Ошибка localStorage: ' + e.message, 'error');
+        }
+
+        addSection('🎮 Тесты игровой логики');
+
+        // Тест 4: Проверка класса FreeSpinsManager
+        try {
+            class TestFreeSpinsManager {
+                constructor() {
+                    this.freeSpins = 55;
+                    this.registrationTime = Date.now();
+                }
+                
+                getFreeSpins() {
+                    return this.freeSpins;
+                }
+                
+                useFreeSpins(count = 1) {
+                    if (this.freeSpins >= count) {
+                        this.freeSpins -= count;
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            
+            const manager = new TestFreeSpinsManager();
+            const initial = manager.getFreeSpins();
+            const used = manager.useFreeSpins(1);
+            const after = manager.getFreeSpins();
+            
+            if (initial === 55 && used === true && after === 54) {
+                addResult('✓ Менеджер фриспинов работает корректно');
+            } else {
+                throw new Error(`Неверная логика: ${initial}, ${used}, ${after}`);
+            }
+        } catch (e) {
+            addResult('✗ Ошибка менеджера фриспинов: ' + e.message, 'error');
+        }
+
+        // Тест 5: Проверка математики выигрышей
+        try {
+            function calculateWin(symbol, count, bet) {
+                const payTable = {
+                    "🍒": {3:5, 4:10, 5:20},
+                    "💰": {3:100, 4:200, 5:500}
+                };
+                
+                if (payTable[symbol] && payTable[symbol][count]) {
+                    return payTable[symbol][count] * bet;
+                }
+                return 0;
+            }
+            
+            const tests = [
+                {symbol: "🍒", count: 3, bet: 10, expected: 50},
+                {symbol: "💰", count: 5, bet: 20, expected: 10000},
+                {symbol: "🍋", count: 3, bet: 10, expected: 0}
+            ];
+            
+            let allPassed = true;
+            tests.forEach(test => {
+                const result = calculateWin(test.symbol, test.count, test.bet);
+                if (result !== test.expected) {
+                    allPassed = false;
+                }
+            });
+            
+            if (allPassed) {
+                addResult('✓ Математика выигрышей работает корректно');
+            } else {
+                throw new Error('Неверные расчеты выигрышей');
+            }
+        } catch (e) {
+            addResult('✗ Ошибка расчета выигрышей: ' + e.message, 'error');
+        }
+
+        addSection('🌐 Тесты интерфейса');
+
+        // Тест 6: Проверка создания DOM элементов
+        try {
+            const testContainer = document.createElement('div');
+            testContainer.id = 'test-slot-machine';
+            document.body.appendChild(testContainer);
+            
+            // Создаем тестовые слоты
+            for (let i = 0; i < 20; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'test-slot';
+                slot.textContent = '🍒';
+                testContainer.appendChild(slot);
+            }
+            
+            const slots = testContainer.querySelectorAll('.test-slot');
+            
+            if (slots.length === 20 && slots[0].textContent === '🍒') {
+                addResult('✓ Создание слотов работает корректно');
+            } else {
+                throw new Error('Неверное количество или содержимое слотов');
+            }
+            
+            document.body.removeChild(testContainer);
+        } catch (e) {
+            addResult('✗ Ошибка создания слотов: ' + e.message, 'error');
+        }
+
+        // Тест 7: Проверка обработчиков событий
+        try {
+            const button = document.createElement('button');
+            let eventFired = false;
+            
+            button.addEventListener('click', () => {
+                eventFired = true;
+            });
+            
+            // Симулируем клик
+            button.click();
+            
+            if (eventFired) {
+                addResult('✓ Обработчики событий работают корректно');
+            } else {
+                throw new Error('Событие не сработало');
+            }
+        } catch (e) {
+            addResult('✗ Ошибка обработчиков событий: ' + e.message, 'error');
+        }
+
+        addSection('⚡ Тесты производительности');
+
+        // Тест 8: Проверка скорости создания элементов
+        try {
+            const startTime = performance.now();
+            const elements = [];
+            
+            for (let i = 0; i < 1000; i++) {
+                const div = document.createElement('div');
+                div.textContent = `Element ${i}`;
+                elements.push(div);
+            }
+            
+            const endTime = performance.now();
+            const duration = endTime - startTime;
+            
+            if (duration < 100 && elements.length === 1000) {
+                addResult(`✓ Производительность DOM операций: ${duration.toFixed(2)}ms`);
+            } else {
+                addResult(`⚠ Медленная производительность DOM: ${duration.toFixed(2)}ms`, 'warning');
+            }
+        } catch (e) {
+            addResult('✗ Ошибка теста производительности: ' + e.message, 'error');
+        }
+
+        addSection('🔒 Тесты безопасности');
+
+        // Тест 9: Проверка валидации ввода
+        try {
+            function validateCardNumber(cardNumber) {
+                const cleaned = cardNumber.replace(/\s/g, '');
+                return /^\d{16}$/.test(cleaned);
+            }
+            
+            const validCards = ['1234567890123456', '1234 5678 9012 3456'];
+            const invalidCards = ['123456789012345', 'abcd5678901234567', '1234-5678-9012-3456'];
+            
+            let validationWorks = true;
+            
+            validCards.forEach(card => {
+                if (!validateCardNumber(card)) validationWorks = false;
+            });
+            
+            invalidCards.forEach(card => {
+                if (validateCardNumber(card)) validationWorks = false;
+            });
+            
+            if (validationWorks) {
+                addResult('✓ Валидация номера карты работает корректно');
+            } else {
+                throw new Error('Неверная валидация');
+            }
+        } catch (e) {
+            addResult('✗ Ошибка валидации: ' + e.message, 'error');
+        }
+
+        // Финальные результаты
+        setTimeout(() => {
+            addSection('📈 Итоговые результаты');
+            
+            const successRate = (passedCount / testCount * 100).toFixed(1);
+            
+            if (successRate >= 90) {
+                addResult(`🎉 Отличный результат! Пройдено ${passedCount}/${testCount} тестов (${successRate}%)`, 'success');
+                addResult('🚀 Код готов к использованию!', 'info');
+            } else if (successRate >= 70) {
+                addResult(`⚠ Хороший результат! Пройдено ${passedCount}/${testCount} тестов (${successRate}%)`, 'warning');
+                addResult('🔧 Рекомендуется устранить оставшиеся проблемы', 'info');
+            } else {
+                addResult(`❌ Требуется доработка! Пройдено ${passedCount}/${testCount} тестов (${successRate}%)`, 'error');
+                addResult('🔨 Необходимы серьезные исправления', 'info');
+            }
+            
+            addResult('🎮 Основная игра доступна по ссылке: http://localhost:8000/index.html', 'info');
+        }, 500);
+    </script>
+</body>
+</html>

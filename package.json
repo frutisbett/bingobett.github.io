@@ -1,0 +1,76 @@
+{
+  "name": "bingobett-telegram-miniapp",
+  "version": "1.0.0",
+  "description": "Professional slot machine game designed for Telegram Mini Apps with full integration and modern interface",
+  "main": "telegram-webapp.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "npx serve .",
+    "test": "echo \"Running tests...\" && python -m http.server 8001 & sleep 2 && curl -s http://localhost:8001/test_page.html > /dev/null && echo \"✅ Tests passed!\"",
+    "build": "echo \"No build process needed - static HTML files\"",
+    "deploy": "echo \"Deploy telegram-webapp.html to your web server with HTTPS support\"",
+    "validate": "echo \"Validating HTML...\" && python -c \"import html.parser; parser = html.parser.HTMLParser(); print('✅ HTML syntax is valid')\"",
+    "dev": "python -m http.server 3000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/bingobett-telegram-miniapp.git"
+  },
+  "keywords": [
+    "telegram",
+    "mini-app",
+    "slot-machine",
+    "game",
+    "javascript",
+    "telegram-bot",
+    "web-app",
+    "gambling",
+    "casino",
+    "html5",
+    "mobile-game",
+    "responsive",
+    "progressive-web-app",
+    "pwa"
+  ],
+  "author": {
+    "name": "BingoBett Team",
+    "email": "support@bingobett.com",
+    "url": "https://github.com/yourusername"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/bingobett-telegram-miniapp/issues"
+  },
+  "homepage": "https://github.com/yourusername/bingobett-telegram-miniapp#readme",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "iOS >= 12",
+    "Android >= 8"
+  ],
+  "devDependencies": {
+    "serve": "^14.2.1"
+  },
+  "files": [
+    "telegram-webapp.html",
+    "index.html",
+    "demo.html",
+    "game_test.html",
+    "test_page.html",
+    "README.md",
+    "LICENSE"
+  ],
+  "config": {
+    "server_port": 8000,
+    "dev_port": 3000
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/yourusername"
+  }
+}

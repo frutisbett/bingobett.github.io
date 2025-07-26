@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🎰 BingoBett - Telegram Mini App</title>
+    <title>BingoBett</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
@@ -462,30 +462,13 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Уведомление о режиме браузера */
-        .browser-notice {
-            background: linear-gradient(135deg, #2196f3, #1565c0);
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-size: 12px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            border: 1px solid #1976d2;
-        }
     </style>
 </head>
 <body class="loading">
-    <!-- Уведомление о режиме браузера -->
-    <div class="browser-notice">
-        🌐 <strong>Режим браузера</strong> • Для полной функциональности откройте в Telegram Mini App
-    </div>
-
     <div class="header">
         <h1>🎰 BingoBett</h1>
         <div class="user-info">
-            <div class="info-item">Игрок: <span id="usernameDisplay">Игрок</span></div>
+                         <div class="info-item">Игрок: <span id="usernameDisplay">Игрок</span></div>
             <div class="info-item freespin-info">Фриспины: <span id="freespinCount">0</span></div>
         </div>
         <div class="user-info">
@@ -598,39 +581,31 @@
 
             function initTelegram() {
                 if (tg) {
-                    try {
-                        tg.ready();
-                        tg.expand();
-                        tg.enableClosingConfirmation();
-                        
-                        // Применяем тему Telegram
-                        document.documentElement.style.setProperty('--tg-viewport-height', tg.viewportHeight + 'px');
-                        
-                        tgUser = tg.initDataUnsafe?.user;
-                        console.log('✅ Telegram WebApp инициализирован', tgUser);
-                        
-                        // Скрываем уведомление о браузере в Telegram
-                        const notice = document.querySelector('.browser-notice');
-                        if (notice) notice.style.display = 'none';
-                        
-                        // Настройка главной кнопки
-                        tg.MainButton.setText('Играть');
-                        tg.MainButton.show();
-                        tg.MainButton.onClick(() => {
-                            if (!isSpinning) startSpin();
-                        });
-                        
-                        // Уведомляем о готовности
-                        tg.sendData(JSON.stringify({
-                            action: 'game_loaded',
-                            user_id: tgUser?.id,
-                            timestamp: Date.now()
-                        }));
-                    } catch (error) {
-                        console.warn('⚠️ Ошибка инициализации Telegram SDK:', error);
-                    }
+                    tg.ready();
+                    tg.expand();
+                    tg.enableClosingConfirmation();
+                    
+                    // Применяем тему Telegram
+                    document.documentElement.style.setProperty('--tg-viewport-height', tg.viewportHeight + 'px');
+                    
+                    tgUser = tg.initDataUnsafe?.user;
+                    console.log('Telegram WebApp инициализирован', tgUser);
+                    
+                    // Настройка главной кнопки
+                    tg.MainButton.setText('Играть');
+                    tg.MainButton.show();
+                    tg.MainButton.onClick(() => {
+                        if (!isSpinning) startSpin();
+                    });
+                    
+                    // Уведомляем о готовности
+                    tg.sendData(JSON.stringify({
+                        action: 'game_loaded',
+                        user_id: tgUser?.id,
+                        timestamp: Date.now()
+                    }));
                 } else {
-                    console.log('🌐 Запуск в браузере (Telegram SDK недоступен)');
+                    console.warn('Telegram WebApp SDK не найден');
                 }
             }
 
@@ -749,7 +724,7 @@
                 freeSpinsManager.updateDisplay();
                 
                 // Обновляем главную кнопку Telegram
-                if (tg && tg.MainButton) {
+                if (tg) {
                     const canSpin = balance >= betAmount || freeSpinsManager.getFreeSpins() > 0;
                     if (canSpin && !isSpinning) {
                         tg.MainButton.setText(`Крутить (${betAmount} ₽)`);
@@ -768,8 +743,8 @@
                 if (messageElement) {
                     messageElement.textContent = text;
                     
-                    // Отправляем уведомление в Telegram (если доступно)
-                    if (tg && tg.showAlert) {
+                    // Отправляем уведомление в Telegram
+                    if (tg) {
                         tg.showAlert(text);
                     }
                     
@@ -971,7 +946,7 @@
                     addBotMessage(`${username || 'Игрок'} сорвал ДЖЕКПОТ ${jackpot.toFixed(2)} ₽!`);
                     jackpot = 100000;
                     
-                    if (tg && tg.sendData) {
+                    if (tg) {
                         tg.sendData(JSON.stringify({
                             action: 'jackpot_won',
                             amount: jackpot,
@@ -1099,14 +1074,14 @@
                 replenishButtons.forEach(btn => {
                     btn.onclick = () => {
                         const amount = btn.getAttribute('data-amount');
-                        if (tg && tg.sendData) {
+                        if (tg) {
                             tg.sendData(JSON.stringify({
                                 action: 'payment',
                                 amount: amount,
                                 user_id: tgUser?.id
                             }));
                         } else {
-                            // Эмуляция для браузера
+                            // Эмуляция для тестирования
                             balance += parseFloat(amount);
                             updateUI();
                             showMessage(`Баланс пополнен на ${amount} ₽`);
@@ -1166,7 +1141,7 @@
                             return;
                         }
                         
-                        if (tg && tg.sendData) {
+                        if (tg) {
                             tg.sendData(JSON.stringify({
                                 action: 'withdraw',
                                 amount: balance - 40000,
@@ -1179,7 +1154,7 @@
                         balance = 40000;
                         updateUI();
                         withdrawModal.style.display = 'none';
-                        showMessage(`Запрошен вывод ${withdrawSum.toFixed(2)} ₽ (эмуляция)`);
+                        showMessage(`Запрошен вывод ${withdrawSum.toFixed(2)} ₽`);
                     };
                 }
 
@@ -1239,7 +1214,7 @@
 
             // Инициализация
             function initializeGame() {
-                console.log('🎰 Инициализация BingoBett...');
+                console.log('Инициализация Telegram Mini App...');
                 
                 // DOM элементы
                 slotMachine = document.getElementById('slotMachine');
@@ -1272,8 +1247,7 @@
                 document.body.classList.add('loading');
                 
                 addBotMessage();
-                console.log('✅ BingoBett инициализирован успешно!');
-                console.log('🎯 Режим:', tg ? 'Telegram Mini App' : 'Браузер');
+                console.log('Игра инициализирована успешно!');
             }
 
             // Запуск

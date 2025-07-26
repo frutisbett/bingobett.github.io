@@ -1,0 +1,39 @@
+# GitHub Pages Configuration for BingoBett Telegram Mini App
+
+title: "BingoBett - Telegram Mini App"
+description: "Профессиональная слот-машина для Telegram Mini Apps"
+baseurl: ""
+url: ""
+
+# GitHub Pages settings
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - LICENSE
+  - package.json
+  - .gitignore
+
+# Include files
+include:
+  - game.html
+
+# Site settings
+lang: ru
+timezone: Europe/Moscow
+
+# Social links
+github_username: yourusername
+telegram_bot: your_bot_username
+
+# SEO settings
+google_analytics: ""
+yandex_metrica: ""
+
+# Security
+safe: true
+incremental: false

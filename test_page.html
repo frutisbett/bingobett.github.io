@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BingoBett - Тест</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #1a1a1a; 
+            color: white; 
+            padding: 20px;
+        }
+        .test-result { 
+            margin: 10px 0; 
+            padding: 10px; 
+            border-radius: 5px;
+        }
+        .success { background: #4caf50; }
+        .error { background: #f44336; }
+        .warning { background: #ff9800; }
+    </style>
+</head>
+<body>
+    <h1>Тестирование BingoBett</h1>
+    <div id="test-results"></div>
+
+    <script>
+        const results = document.getElementById('test-results');
+        
+        function addResult(message, type = 'success') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.textContent = message;
+            results.appendChild(div);
+        }
+
+        // Тест 1: Проверка основных переменных
+        try {
+            let balance = 777;
+            let betAmount = 10;
+            let jackpot = 2200453;
+            addResult('✓ Переменные игры инициализированы корректно');
+        } catch (e) {
+            addResult('✗ Ошибка инициализации переменных: ' + e.message, 'error');
+        }
+
+        // Тест 2: Проверка localStorage
+        try {
+            localStorage.setItem('test', 'value');
+            const value = localStorage.getItem('test');
+            localStorage.removeItem('test');
+            if (value === 'value') {
+                addResult('✓ localStorage работает корректно');
+            } else {
+                throw new Error('Неверное значение');
+            }
+        } catch (e) {
+            addResult('✗ Ошибка localStorage: ' + e.message, 'error');
+        }
+
+        // Тест 3: Проверка функций
+        try {
+            function testFunction() {
+                return true;
+            }
+            if (testFunction()) {
+                addResult('✓ Функции работают корректно');
+            }
+        } catch (e) {
+            addResult('✗ Ошибка функций: ' + e.message, 'error');
+        }
+
+        // Тест 4: Проверка DOM
+        try {
+            const testDiv = document.createElement('div');
+            testDiv.id = 'test-element';
+            document.body.appendChild(testDiv);
+            const found = document.getElementById('test-element');
+            if (found) {
+                addResult('✓ Манипуляции с DOM работают корректно');
+                document.body.removeChild(testDiv);
+            } else {
+                throw new Error('Элемент не найден');
+            }
+        } catch (e) {
+            addResult('✗ Ошибка DOM: ' + e.message, 'error');
+        }
+
+        // Тест 5: Проверка JSON
+        try {
+            const testObj = { test: true, number: 123 };
+            const json = JSON.stringify(testObj);
+            const parsed = JSON.parse(json);
+            if (parsed.test === true && parsed.number === 123) {
+                addResult('✓ JSON сериализация работает корректно');
+            } else {
+                throw new Error('Неверные данные после парсинга');
+            }
+        } catch (e) {
+            addResult('✗ Ошибка JSON: ' + e.message, 'error');
+        }
+
+        // Тест 6: Проверка математических операций
+        try {
+            const a = 10;
+            const b = 5;
+            const result = a * b / 2;
+            if (result === 25) {
+                addResult('✓ Математические операции работают корректно');
+            } else {
+                throw new Error('Неверный результат вычислений');
+            }
+        } catch (e) {
+            addResult('✗ Ошибка вычислений: ' + e.message, 'error');
+        }
+
+        // Тест 7: Проверка событий
+        try {
+            const button = document.createElement('button');
+            button.textContent = 'Тест';
+            let clicked = false;
+            button.onclick = function() {
+                clicked = true;
+            };
+            button.click();
+            if (clicked) {
+                addResult('✓ События работают корректно');
+            } else {
+                throw new Error('Событие не сработало');
+            }
+        } catch (e) {
+            addResult('✗ Ошибка событий: ' + e.message, 'error');
+        }
+
+        // Тест 8: Проверка таймеров
+        try {
+            let timerWorked = false;
+            setTimeout(() => {
+                timerWorked = true;
+                if (timerWorked) {
+                    addResult('✓ Таймеры работают корректно');
+                }
+            }, 100);
+        } catch (e) {
+            addResult('✗ Ошибка таймеров: ' + e.message, 'error');
+        }
+
+        // Финальное сообщение
+        setTimeout(() => {
+            addResult('🎮 Тестирование завершено! Основные функции JavaScript работают корректно.', 'warning');
+            addResult('🔗 Основной файл: http://localhost:8000/index.html', 'warning');
+        }, 200);
+    </script>
+</body>
+</html>

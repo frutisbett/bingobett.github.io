@@ -1,3 +1,15 @@
+BINGOBETT - СЛОТ-МАШИНА ДЛЯ TELEGRAM MINI APP
+==============================================
+
+ИНСТРУКЦИЯ:
+1. Скопируйте весь код ниже
+2. Сохраните в файл с расширением .html (например: bingobett.html)
+3. Откройте файл в браузере
+4. Играйте!
+
+НАЧАЛО КОДА:
+============
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -282,7 +294,6 @@
             color: var(--tg-theme-hint-color, #aaa);
         }
 
-        /* Модальные окна */
         .modal-bg {
             position: fixed;
             top: 0;
@@ -339,7 +350,6 @@
             font-size: 12px;
         }
 
-        /* Мини-игра */
         .mini-game-overlay {
             position: fixed;
             top: 0;
@@ -428,7 +438,6 @@
             margin-top: 8px;
         }
 
-        /* Улучшения для маленьких экранов */
         @media (max-width: 360px) {
             .header h1 {
                 font-size: 18px;
@@ -452,7 +461,6 @@
             }
         }
 
-        /* Анимация загрузки для Telegram */
         .loading {
             opacity: 0;
             animation: fadeIn 0.5s ease-in-out forwards;
@@ -463,7 +471,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Уведомление о режиме браузера */
         .browser-notice {
             background: linear-gradient(135deg, #2196f3, #1565c0);
             color: white;
@@ -477,7 +484,6 @@
     </style>
 </head>
 <body class="loading">
-    <!-- Уведомление о режиме браузера -->
     <div class="browser-notice">
         🌐 <strong>Режим браузера</strong> • Для полной функциональности откройте в Telegram Mini App
     </div>
@@ -526,7 +532,6 @@
     <div class="message" id="message"></div>
     <div id="botChat"><b>Активные игроки:</b><br></div>
 
-    <!-- Мини-игра "Выбери коробку" -->
     <div class="mini-game-overlay" id="miniGameOverlay">
         <div class="mini-game-content">
             <h3>Мини-игра: выберите коробку!</h3>
@@ -540,7 +545,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно ввода имени -->
     <div id="usernameModal" class="modal-bg" style="display:none;">
         <div class="modal">
             <h3>Добро пожаловать в BingoBett!</h3>
@@ -550,7 +554,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно вывода -->
     <div id="withdrawModal" class="modal-bg" style="display:none;">
         <div class="modal">
             <h3>Вывод средств</h3>
@@ -565,7 +568,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно правил -->
     <div id="rulesModal" class="modal-bg" style="display:none;">
         <div class="modal" style="text-align: left; max-height: 80vh; overflow-y: auto;">
             <h3 style="text-align: center; color: var(--tg-theme-link-color, gold);">Правила BingoBett</h3>
@@ -592,7 +594,6 @@
         (function() {
             'use strict';
 
-            // Telegram WebApp инициализация
             let tg = window.Telegram?.WebApp;
             let tgUser = null;
 
@@ -603,24 +604,20 @@
                         tg.expand();
                         tg.enableClosingConfirmation();
                         
-                        // Применяем тему Telegram
                         document.documentElement.style.setProperty('--tg-viewport-height', tg.viewportHeight + 'px');
                         
                         tgUser = tg.initDataUnsafe?.user;
                         console.log('✅ Telegram WebApp инициализирован', tgUser);
                         
-                        // Скрываем уведомление о браузере в Telegram
                         const notice = document.querySelector('.browser-notice');
                         if (notice) notice.style.display = 'none';
                         
-                        // Настройка главной кнопки
                         tg.MainButton.setText('Играть');
                         tg.MainButton.show();
                         tg.MainButton.onClick(() => {
                             if (!isSpinning) startSpin();
                         });
                         
-                        // Уведомляем о готовности
                         tg.sendData(JSON.stringify({
                             action: 'game_loaded',
                             user_id: tgUser?.id,
@@ -634,7 +631,6 @@
                 }
             }
 
-            // DOM элементы
             let slotMachine = null;
             let slotElements = [];
             let messageElement = null;
@@ -651,7 +647,6 @@
             let betPlus = null;
             let botChat = null;
 
-            // Игровые параметры
             const COLUMNS = 5;
             const ROWS = 4;
             const MIN_BET = 10;
@@ -674,7 +669,6 @@
                 "💰": {3:100, 4:200, 5:500}
             };
 
-            // Состояние игры
             let balance = parseFloat(localStorage.getItem('tg_slotBalance')) || 777;
             let betAmount = parseInt(localStorage.getItem('tg_slotBet')) || 10;
             let jackpot = parseFloat(localStorage.getItem('tg_jackpot')) || 2200453;
@@ -683,7 +677,6 @@
             let autoSpinActive = false;
             let autoSpinInterval = null;
 
-            // Класс управления фриспинами
             class FreeSpinsManager {
                 constructor() {
                     this.initializeFreeSpins();
@@ -733,7 +726,6 @@
 
             const freeSpinsManager = new FreeSpinsManager();
 
-            // Функции UI
             function updateUI() {
                 if (balanceDisplay) balanceDisplay.textContent = balance.toFixed(2);
                 if (jackpotDisplay) jackpotDisplay.textContent = new Intl.NumberFormat('ru-RU').format(jackpot);
@@ -748,7 +740,6 @@
                 
                 freeSpinsManager.updateDisplay();
                 
-                // Обновляем главную кнопку Telegram
                 if (tg && tg.MainButton) {
                     const canSpin = balance >= betAmount || freeSpinsManager.getFreeSpins() > 0;
                     if (canSpin && !isSpinning) {
@@ -768,7 +759,6 @@
                 if (messageElement) {
                     messageElement.textContent = text;
                     
-                    // Отправляем уведомление в Telegram (если доступно)
                     if (tg && tg.showAlert) {
                         tg.showAlert(text);
                     }
@@ -787,7 +777,6 @@
                 }
             }
 
-            // Логика игры
             function createSlots() {
                 if (!slotMachine) return;
                 slotMachine.innerHTML = '';
@@ -838,7 +827,6 @@
 
                 if (messageElement) messageElement.textContent = "Крутим...";
 
-                // Анимация
                 let finalStopPositions = [];
                 for(let col = 0; col < COLUMNS; col++){
                     finalStopPositions.push(Math.floor(Math.random() * REELS[col].length));
@@ -892,7 +880,6 @@
 
                 slotElements.forEach(slot => slot.classList.remove('spinning'));
 
-                // Проверка выигрышей
                 let results = [];
                 for(let row = 0; row < ROWS; row++){
                     let line = [];
@@ -926,7 +913,6 @@
                     }
                 }
 
-                // Подсветка выигрышей
                 let winningSlots = [];
                 for (const winInfo of winningLines) {
                     const {row, count} = winInfo;
@@ -964,7 +950,6 @@
                     showMessage("Не повезло. Попробуйте ещё!");
                 }
 
-                // Джекпот
                 if (Math.random() < 0.001) {
                     balance += jackpot;
                     showMessage(`🏆 ДЖЕКПОТ! +${jackpot.toFixed(2)} ₽`);
@@ -985,7 +970,6 @@
                 isSpinning = false;
             }
 
-            // Мини-игра
             function startMiniGame(winAmount) {
                 const overlay = document.getElementById('miniGameOverlay');
                 const boxes = overlay?.querySelectorAll('.box');
@@ -1031,9 +1015,7 @@
                 };
             }
 
-            // Обработчики событий
             function setupEventListeners() {
-                // Кнопки ставки
                 if (betMinus) {
                     betMinus.onclick = () => {
                         if (betAmount > MIN_BET) {
@@ -1054,7 +1036,6 @@
                     };
                 }
 
-                // Кнопки вращения
                 if (spinButton) {
                     spinButton.onclick = startSpin;
                 }
@@ -1094,7 +1075,6 @@
                     if (stopAutoSpinButton) stopAutoSpinButton.style.display = 'none';
                 }
 
-                // Кнопки пополнения
                 const replenishButtons = document.querySelectorAll('.replenish-btn');
                 replenishButtons.forEach(btn => {
                     btn.onclick = () => {
@@ -1106,7 +1086,6 @@
                                 user_id: tgUser?.id
                             }));
                         } else {
-                            // Эмуляция для браузера
                             balance += parseFloat(amount);
                             updateUI();
                             showMessage(`Баланс пополнен на ${amount} ₽`);
@@ -1115,12 +1094,10 @@
                     };
                 });
 
-                // Остальные модальные окна
                 initializeModals();
             }
 
             function initializeModals() {
-                // Модальное окно имени
                 const modal = document.getElementById('usernameModal');
                 const input = document.getElementById('usernameInput');
                 const okBtn = document.getElementById('usernameOkBtn');
@@ -1140,7 +1117,6 @@
                     };
                 }
 
-                // Модальное окно вывода
                 const withdrawBtn = document.getElementById('withdrawBtn');
                 const withdrawModal = document.getElementById('withdrawModal');
                 const cardInput = document.getElementById('cardNumberInput');
@@ -1189,7 +1165,6 @@
                     };
                 }
 
-                // Модальное окно правил
                 const rulesBtn = document.getElementById('rulesButton');
                 const rulesModal = document.getElementById('rulesModal');
                 const closeRulesBtn = document.getElementById('closeRulesBtn');
@@ -1207,7 +1182,6 @@
                 }
             }
 
-            // Бот-чат
             const botNames = ["Алексей", "Мария", "Дмитрий", "Анна", "Сергей", "Елена"];
             const botMessages = ["выиграл 120 ₽!", "получил бонус!", "сорвал джекпот!", "выиграл 300 ₽!"];
 
@@ -1237,11 +1211,9 @@
                 if (Math.random() < 0.3) addBotMessage();
             }, 6000);
 
-            // Инициализация
             function initializeGame() {
                 console.log('🎰 Инициализация BingoBett...');
                 
-                // DOM элементы
                 slotMachine = document.getElementById('slotMachine');
                 messageElement = document.getElementById('message');
                 balanceDisplay = document.getElementById('balanceDisplay');
@@ -1262,13 +1234,11 @@
                 updateUI();
                 setupEventListeners();
 
-                // Используем данные пользователя Telegram
                 if (tgUser) {
                     username = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
                     updateUI();
                 }
 
-                // Анимация загрузки
                 document.body.classList.add('loading');
                 
                 addBotMessage();
@@ -1276,7 +1246,6 @@
                 console.log('🎯 Режим:', tg ? 'Telegram Mini App' : 'Браузер');
             }
 
-            // Запуск
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', initializeGame);
             } else {
@@ -1287,3 +1256,8 @@
     </script>
 </body>
 </html>
+
+КОНЕЦ КОДА
+==========
+
+ГОТОВО! Сохраните этот код в файл с расширением .html и откройте в браузере.

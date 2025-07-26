@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 BingoBett - Запуск</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loader-text {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        
+        .error {
+            background: #ff4444;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+            text-align: center;
+        }
+        
+        .button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100vh;
+            border: none;
+            background: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+        <div class="loader-text">🎰 Загрузка BingoBett...</div>
+        <div id="status">Подготовка игры</div>
+        <div id="error-container" style="display: none;"></div>
+    </div>
+    
+    <iframe id="gameFrame" src="bingobett-standalone.html" style="display: none;"></iframe>
+
+    <script>
+        const loader = document.getElementById('loader');
+        const gameFrame = document.getElementById('gameFrame');
+        const status = document.getElementById('status');
+        const errorContainer = document.getElementById('error-container');
+        
+        let loadAttempts = 0;
+        const maxAttempts = 3;
+        
+        function updateStatus(message) {
+            status.textContent = message;
+            console.log('🎰 Status:', message);
+        }
+        
+        function showError(message) {
+            errorContainer.innerHTML = `
+                <div class="error">
+                    <h3>❌ Ошибка загрузки</h3>
+                    <p>${message}</p>
+                    <button class="button" onclick="retryLoad()">🔄 Повторить</button>
+                    <a href="bingobett-standalone.html" class="button" target="_blank">🎮 Открыть в новой вкладке</a>
+                </div>
+            `;
+            errorContainer.style.display = 'block';
+        }
+        
+        function hideLoader() {
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                gameFrame.style.display = 'block';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 1000);
+        }
+        
+        function retryLoad() {
+            loadAttempts++;
+            if (loadAttempts >= maxAttempts) {
+                showError('Превышено количество попыток загрузки. Попробуйте открыть игру напрямую.');
+                return;
+            }
+            
+            errorContainer.style.display = 'none';
+            updateStatus('Повторная попытка загрузки...');
+            gameFrame.src = 'bingobett-standalone.html?v=' + Date.now();
+        }
+        
+        // Обработчики для iframe
+        gameFrame.onload = function() {
+            updateStatus('✅ Игра загружена успешно!');
+            hideLoader();
+        };
+        
+        gameFrame.onerror = function() {
+            updateStatus('❌ Ошибка загрузки игры');
+            showError('Не удалось загрузить игру. Проверьте, что файл bingobett-standalone.html находится в той же папке.');
+        };
+        
+        // Проверка доступности файла
+        fetch('bingobett-standalone.html')
+            .then(response => {
+                if (response.ok) {
+                    updateStatus('📁 Файл найден, загрузка...');
+                    return response.text();
+                } else {
+                    throw new Error('Файл недоступен (код: ' + response.status + ')');
+                }
+            })
+            .then(content => {
+                updateStatus('🎮 Запуск игры...');
+                // Файл доступен, iframe должен загрузиться
+            })
+            .catch(error => {
+                updateStatus('❌ Ошибка');
+                showError('Файл bingobett-standalone.html не найден или недоступен. ' + error.message);
+            });
+        
+        // Таймаут на случай зависания
+        setTimeout(() => {
+            if (!loader.classList.contains('hidden')) {
+                updateStatus('⏱️ Превышено время ожидания');
+                showError('Игра загружается слишком долго. Попробуйте открыть её напрямую.');
+            }
+        }, 10000);
+        
+        // Обработка сообщений от игры
+        window.addEventListener('message', function(event) {
+            if (event.data === 'game_ready') {
+                updateStatus('🎯 Игра готова!');
+                hideLoader();
+            }
+        });
+        
+        console.log('🎰 BingoBett Launcher v1.0');
+        console.log('📁 Ищем файл: bingobett-standalone.html');
+        console.log('🌐 URL:', window.location.href);
+    </script>
+</body>
+</html>
