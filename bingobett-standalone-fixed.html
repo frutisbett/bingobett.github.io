@@ -610,10 +610,9 @@
         <div class="modal" style="text-align: left; max-height: 80vh; overflow-y: auto;">
             <h3 style="text-align: center; color: gold;">📋 Правила BingoBett</h3>
             <div style="font-size: 13px; line-height: 1.5;">
-                <p><b>🎰 Игра:</b> Слот-машина 5×4, выигрыши по горизонтальным линиям</p>
+                <p><b>🎰 Игра:</b> Слот-машина 5×4, выигрыши по 6 линиям (4 горизонтальные + 2 диагональные)</p>
                 <p><b>💰 Ставки:</b> от 10 до 80 рублей за спин</p>
                 <p><b>🎁 Фриспины:</b> 55 бесплатных вращений на 24 часа</p>
-                <p><b>🏆 Джекпот:</b> 0.1% шанс выиграть, 10% от каждой ставки идет в фонд</p>
                 <p><b>💳 Вывод:</b> минимальный баланс 40,001 ₽ для вывода</p>
                 <br>
                 <p><b>💎 Выплаты (множитель ×ставка):</b></p>
@@ -622,7 +621,14 @@
                 <p>🎁💎⭐🃏: 3×15+, 4×30+, 5×60+</p>
                 <p>👑💰: 3×50+, 4×100+, 5×200+</p>
                 <br>
-                <p><b>🎲 Мини-игры:</b> Запускаются случайно при выигрышах</p>
+                <p><b>🎲 Мини-игры:</b></p>
+                <p>• <b>"Выбери коробку":</b> Выберите одну из 3 коробок для получения бонуса</p>
+                <p>• Запускаются случайно при выигрышах (7% шанс)</p>
+                <p>• Бонус равен основному выигрышу</p>
+                <br>
+                <p><b>🏆 Выигрышные линии:</b></p>
+                <p>• 4 горизонтальные линии (ряды)</p>
+                <p>• 2 диагональные линии (↘ и ↙)</p>
             </div>
             <div style="text-align: center; margin-top: 20px;">
                 <button id="closeRulesBtn">Закрыть</button>
@@ -873,6 +879,7 @@
                 let totalWin = 0;
                 let winningSlots = [];
                 
+                // 1. Проверяем горизонтальные линии (4 ряда)
                 for (let row = 0; row < ROWS; row++) {
                     let line = [];
                     for (let col = 0; col < COLUMNS; col++) {
@@ -899,6 +906,72 @@
                         for (let col = 0; col < count; col++) {
                             const index = row * COLUMNS + col;
                             winningSlots.push(index);
+                        }
+                    }
+                }
+                
+                // 2. Проверяем диагональ сверху-слева вниз-вправо (↘)
+                let diagonalLine1 = [];
+                for (let i = 0; i < Math.min(ROWS, COLUMNS); i++) {
+                    const slotIndex = i * COLUMNS + i;
+                    diagonalLine1.push({
+                        symbol: slotElements[slotIndex].textContent,
+                        index: slotIndex
+                    });
+                }
+                
+                if (diagonalLine1.length >= 3) {
+                    const firstSymbol = diagonalLine1[0].symbol;
+                    let count = 1;
+                    
+                    for (let i = 1; i < diagonalLine1.length; i++) {
+                        if (diagonalLine1[i].symbol === firstSymbol) {
+                            count++;
+                        } else {
+                            break;
+                        }
+                    }
+                    
+                    if (count >= 3 && payTable[firstSymbol]) {
+                        const win = payTable[firstSymbol][count] || 0;
+                        totalWin += win * betAmount;
+                        
+                        // Добавляем выигрышные слоты для подсветки
+                        for (let i = 0; i < count; i++) {
+                            winningSlots.push(diagonalLine1[i].index);
+                        }
+                    }
+                }
+                
+                // 3. Проверяем диагональ сверху-справа вниз-влево (↙)
+                let diagonalLine2 = [];
+                for (let i = 0; i < Math.min(ROWS, COLUMNS); i++) {
+                    const slotIndex = i * COLUMNS + (COLUMNS - 1 - i);
+                    diagonalLine2.push({
+                        symbol: slotElements[slotIndex].textContent,
+                        index: slotIndex
+                    });
+                }
+                
+                if (diagonalLine2.length >= 3) {
+                    const firstSymbol = diagonalLine2[0].symbol;
+                    let count = 1;
+                    
+                    for (let i = 1; i < diagonalLine2.length; i++) {
+                        if (diagonalLine2[i].symbol === firstSymbol) {
+                            count++;
+                        } else {
+                            break;
+                        }
+                    }
+                    
+                    if (count >= 3 && payTable[firstSymbol]) {
+                        const win = payTable[firstSymbol][count] || 0;
+                        totalWin += win * betAmount;
+                        
+                        // Добавляем выигрышные слоты для подсветки
+                        for (let i = 0; i < count; i++) {
+                            winningSlots.push(diagonalLine2[i].index);
                         }
                     }
                 }
