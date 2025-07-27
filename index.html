@@ -619,44 +619,11 @@
             button { font-size: 11px; padding: 10px 12px; }
         }
 
-        /* TELEGRAM MINI APP ДИАГНОСТИКА */
-        .telegram-debug {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: #ff0000;
-            color: #fff;
-            padding: 10px;
-            font-size: 12px;
-            z-index: 9999;
-            text-align: center;
-            display: none;
-        }
-        
-        .telegram-debug.show {
-            display: block;
-        }
-        
-        .telegram-debug button {
-            background: #fff;
-            color: #000;
-            border: none;
-            padding: 5px 10px;
-            margin: 0 5px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 11px;
-        }
+
     </style>
 </head>
 <body class="loading">
-    <!-- TELEGRAM MINI APP ДИАГНОСТИКА -->
-    <div class="telegram-debug" id="telegramDebug">
-        🚨 TELEGRAM MINI APP DEBUG: <span id="debugInfo">Проверка...</span>
-        <button onclick="fixTelegramIssues()">🔧 ИСПРАВИТЬ</button>
-        <button onclick="document.getElementById('telegramDebug').style.display='none'">❌ СКРЫТЬ</button>
-    </div>
+
     
     <div class="browser-notice" style="display: none;">
         🖥️ <strong>Локальная версия для тестирования</strong> • Игра полностью работает в браузере
@@ -836,72 +803,7 @@
             console.log('🌐 fetch доступен:', typeof fetch !== 'undefined');
             console.log('🎨 Canvas доступен:', !!document.createElement('canvas').getContext);
             
-            // TELEGRAM MINI APP ДИАГНОСТИКА
-            function diagnoseTelegramIssues() {
-                const debugDiv = document.getElementById('telegramDebug');
-                const debugInfo = document.getElementById('debugInfo');
-                let issues = [];
-                
-                // Проверка Telegram WebApp
-                if (!window.Telegram || !window.Telegram.WebApp) {
-                    issues.push('Telegram SDK не загружен');
-                }
-                
-                // Проверка протокола
-                if (window.location.protocol !== 'https:') {
-                    issues.push('Не HTTPS');
-                }
-                
-                // Проверка User Agent
-                if (!navigator.userAgent.includes('Telegram')) {
-                    issues.push('Не в Telegram');
-                }
-                
-                // Проверка localStorage
-                try {
-                    localStorage.setItem('test', 'test');
-                    localStorage.removeItem('test');
-                } catch(e) {
-                    issues.push('localStorage недоступен');
-                }
-                
-                if (issues.length > 0) {
-                    debugInfo.textContent = issues.join(', ');
-                    debugDiv.classList.add('show');
-                } else {
-                    debugInfo.textContent = 'Все OK!';
-                    setTimeout(() => debugDiv.style.display = 'none', 3000);
-                }
-            }
-            
-            // Функция исправления проблем
-            window.fixTelegramIssues = function() {
-                console.log('🔧 Попытка исправления проблем Telegram Mini App...');
-                
-                // Принудительная инициализация Telegram
-                if (!window.Telegram) {
-                    console.log('🔄 Попытка повторной загрузки Telegram SDK...');
-                    const script = document.createElement('script');
-                    script.src = 'https://telegram.org/js/telegram-web-app.js?v=' + Date.now();
-                    document.head.appendChild(script);
-                }
-                
-                // Сброс localStorage
-                try {
-                    localStorage.clear();
-                    console.log('🗑️ localStorage очищен');
-                } catch(e) {
-                    console.error('❌ Ошибка очистки localStorage:', e);
-                }
-                
-                // Перезагрузка страницы
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            };
-            
-            // Запуск диагностики через 2 секунды
-            setTimeout(diagnoseTelegramIssues, 2000);
+
             
             // Отслеживаем загрузку Telegram SDK
             let telegramCheckInterval = setInterval(() => {
