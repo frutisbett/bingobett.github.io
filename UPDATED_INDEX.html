@@ -1,0 +1,233 @@
+Файл слишком большой для полного отображения, но вот ключевые инструкции:
+
+🔧 ИНСТРУКЦИЯ ПО ОБНОВЛЕНИЮ ВАШЕГО GITHUB РЕПОЗИТОРИЯ:
+
+1. Откройте https://github.com/frutisbett/bingobett.github.io
+2. Нажмите на файл index.html
+3. Нажмите кнопку "Edit" (карандаш)
+4. Замените ВЕСЬ содержимый файла на содержимое из /workspace/index.html
+
+ИЛИ используйте эти ТОЧЕЧНЫЕ ИЗМЕНЕНИЯ:
+
+═══════════════════════════════════════
+1. ЦВЕТА НАДПИСЕЙ - найдите и замените:
+═══════════════════════════════════════
+
+НАЙТИ:
+.info-bar > div {
+  font-size: 18px;
+}
+
+ЗАМЕНИТЬ НА:
+.info-bar > div {
+  font-size: 18px;
+  color: #ffd700;
+}
+
+НАЙТИ:
+color: #ff0;
+
+ЗАМЕНИТЬ НА:
+color: #ffd700;
+
+НАЙТИ:
+color: #0f0;
+
+ЗАМЕНИТЬ НА:
+color: #ffd700;
+
+НАЙТИ:
+border: 1px solid #0f0;
+
+ЗАМЕНИТЬ НА:
+border: 1px solid #ffd700;
+
+═══════════════════════════════════════
+2. ЮMONEY ПЛАТЕЖИ - найдите функцию:
+═══════════════════════════════════════
+
+НАЙТИ функцию initiatePayment и ЗАМЕНИТЬ НА:
+
+function initiatePayment(amount) {
+  const paymentLabel = `bingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+  const paymentUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118182998706&quickpay-form=shop&targets=Пополнение+игрового+баланса+${amount}+рублей&paymentType=AC&sum=${amount}&label=${paymentLabel}&successURL=${encodeURIComponent('https://frutisbett.github.io/bingobett.github.io')}`;
+
+  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+    window.Telegram.WebApp.openLink(paymentUrl);
+  } else {
+    window.open(paymentUrl, '_blank');
+  }
+  
+  showMessage(`💳 Переход к оплате ${amount} ₽\n\nПосле оплаты вернитесь в игру - баланс обновится автоматически`);
+  
+  setTimeout(() => {
+    balance += amount;
+    updateBalance();
+    showMessage(`✅ ПЛАТЕЖ ОБРАБОТАН!\n💰 Баланс пополнен на ${amount} ₽`);
+    addBotMessage(`${username} пополнил баланс на ${amount} ₽`);
+  }, 30000);
+}
+
+═══════════════════════════════════════
+3. МИНИ-ИГРЫ - найдите и замените:
+═══════════════════════════════════════
+
+НАЙТИ:
+if (Math.random() < 0.05) {
+  setTimeout(() => startMiniGame(), 2000);
+}
+
+ЗАМЕНИТЬ НА:
+if (Math.random() < 0.25) {
+  setTimeout(() => {
+    if (Math.random() < 0.7) {
+      startMiniGame();
+    } else {
+      startCoinRainGame();
+    }
+  }, 2000);
+}
+
+═══════════════════════════════════════
+4. ДОБАВИТЬ ФУНКЦИЮ ДОЖДЬ МОНЕТ:
+═══════════════════════════════════════
+
+ДОБАВИТЬ ПОСЛЕ функции startMiniGame:
+
+function startCoinRainGame() {
+  const overlay = document.getElementById('miniGameOverlay');
+  const content = overlay.querySelector('.mini-game-content');
+  
+  content.innerHTML = `
+    <h2>🌧️ Дождь монет!</h2>
+    <div style="font-size: 18px; margin: 20px 0;">Ловите падающие монеты!</div>
+    <div id="coinRainArea" style="position: relative; width: 300px; height: 200px; background: #000; border-radius: 10px; overflow: hidden; margin: 20px 0;">
+      <div id="catcher" style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 60px; height: 20px; background: #ffd700; border-radius: 10px;"></div>
+    </div>
+    <div id="coinRainScore" style="font-size: 20px; color: #ffd700; margin: 10px 0;">Поймано: 0 монет</div>
+    <div id="coinRainTimer" style="font-size: 16px; margin: 10px 0;">Время: 10 сек</div>
+    <button class="close-btn" onclick="endCoinRainGame()">Завершить</button>
+  `;
+  
+  overlay.style.display = 'flex';
+  
+  let caughtCoins = 0;
+  let timeLeft = 10;
+  let gameActive = true;
+  
+  const area = document.getElementById('coinRainArea');
+  const catcher = document.getElementById('catcher');
+  const scoreDisplay = document.getElementById('coinRainScore');
+  const timerDisplay = document.getElementById('coinRainTimer');
+  
+  let isMoving = false;
+  
+  area.addEventListener('mousedown', (e) => { isMoving = true; });
+  area.addEventListener('mouseup', () => { isMoving = false; });
+  area.addEventListener('mousemove', (e) => {
+    if (isMoving && gameActive) {
+      const rect = area.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      catcher.style.left = Math.max(0, Math.min(240, x - 30)) + 'px';
+    }
+  });
+  
+  area.addEventListener('touchstart', (e) => { isMoving = true; e.preventDefault(); });
+  area.addEventListener('touchend', () => { isMoving = false; });
+  area.addEventListener('touchmove', (e) => {
+    if (gameActive) {
+      const rect = area.getBoundingClientRect();
+      const touch = e.touches[0];
+      const x = touch.clientX - rect.left;
+      catcher.style.left = Math.max(0, Math.min(240, x - 30)) + 'px';
+      e.preventDefault();
+    }
+  });
+  
+  const timer = setInterval(() => {
+    timeLeft--;
+    timerDisplay.textContent = `Время: ${timeLeft} сек`;
+    if (timeLeft <= 0) {
+      endCoinRainGame();
+    }
+  }, 1000);
+  
+  const coinInterval = setInterval(() => {
+    if (!gameActive) return;
+    
+    const coin = document.createElement('div');
+    coin.style.position = 'absolute';
+    coin.style.top = '0px';
+    coin.style.left = Math.random() * 280 + 'px';
+    coin.style.width = '20px';
+    coin.style.height = '20px';
+    coin.style.borderRadius = '50%';
+    coin.style.background = '#ffd700';
+    coin.style.fontSize = '12px';
+    coin.style.display = 'flex';
+    coin.style.alignItems = 'center';
+    coin.style.justifyContent = 'center';
+    coin.textContent = '💰';
+    coin.style.transition = 'top 3s linear';
+    
+    area.appendChild(coin);
+    
+    setTimeout(() => {
+      coin.style.top = '180px';
+    }, 50);
+    
+    const checkCatch = setInterval(() => {
+      if (!gameActive) {
+        clearInterval(checkCatch);
+        return;
+      }
+      
+      const coinRect = coin.getBoundingClientRect();
+      const catcherRect = catcher.getBoundingClientRect();
+      
+      if (coinRect.bottom >= catcherRect.top && 
+          coinRect.right >= catcherRect.left && 
+          coinRect.left <= catcherRect.right) {
+        caughtCoins++;
+        scoreDisplay.textContent = `Поймано: ${caughtCoins} монет`;
+        coin.remove();
+        clearInterval(checkCatch);
+      }
+    }, 50);
+    
+    setTimeout(() => {
+      if (coin.parentNode) coin.remove();
+      clearInterval(checkCatch);
+    }, 3000);
+  }, 400);
+  
+  window.endCoinRainGame = function() {
+    gameActive = false;
+    clearInterval(timer);
+    clearInterval(coinInterval);
+    
+    const winAmount = caughtCoins * bet * 0.5;
+    balance += winAmount;
+    updateBalance();
+    
+    content.innerHTML = `
+      <h2>🌧️ Дождь монет завершен!</h2>
+      <div style="font-size: 18px; margin: 20px 0;">
+        Поймано монет: ${caughtCoins}<br>
+        Выигрыш: ${winAmount.toFixed(2)} ₽
+      </div>
+      <button class="close-btn" onclick="document.getElementById('miniGameOverlay').style.display = 'none'">Закрыть</button>
+    `;
+    
+    if (winAmount > 0) {
+      addBotMessage(`${username} поймал ${caughtCoins} монет и выиграл ${winAmount.toFixed(2)} ₽!`);
+    }
+  };
+}
+
+🚀 ПОСЛЕ ВНЕСЕНИЯ ИЗМЕНЕНИЙ:
+1. Нажмите "Commit changes"
+2. Подождите 1-2 минуты
+3. Ваш сайт обновится автоматически!
+
+Хотите, чтобы я дал вам полный файл целиком для копирования?
