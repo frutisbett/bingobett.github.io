@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎰 BingoBett - Добро пожаловать!</title>
+    <script src="https://telegram.org/js/telegram-web-app.js?v=6.9"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .welcome-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .logo {
+            font-size: 4em;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        h1 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .features {
+            text-align: left;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+        
+        .feature {
+            margin: 10px 0;
+            padding: 8px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #ffd700;
+        }
+        
+        .play-button {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .play-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+        
+        .info {
+            font-size: 0.9em;
+            opacity: 0.7;
+            margin-top: 20px;
+        }
+        
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #ffd700;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="logo">🎰</div>
+        <h1>BingoBett</h1>
+        <div class="subtitle">Игровые слоты с реальными выигрышами!</div>
+        
+        <div class="features">
+            <div class="feature">💰 Реальные выигрыши через ЮMoney</div>
+            <div class="feature">🎮 Мини-игры "Дождь монет"</div>
+            <div class="feature">🎁 55 бесплатных спинов в день</div>
+            <div class="feature">💳 Вывод от 40,001 ₽</div>
+        </div>
+        
+        <button class="play-button" onclick="startGame()">
+            🎰 Начать играть
+        </button>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div>Загрузка игры...</div>
+        </div>
+        
+        <div class="info">
+            Нажмите кнопку выше чтобы запустить игру в Telegram Mini App
+        </div>
+    </div>
+
+    <script>
+        let tg = null;
+        
+        // Инициализация Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+            tg = window.Telegram.WebApp;
+            tg.ready();
+            tg.expand();
+            
+            // Настройка MainButton
+            tg.MainButton.setText('🎰 Играть в BingoBett');
+            tg.MainButton.show();
+            tg.MainButton.onClick(startGame);
+            
+            console.log('✅ Telegram WebApp инициализирован');
+        }
+        
+        function startGame() {
+            console.log('🎮 Запуск игры BingoBett...');
+            
+            // Показываем загрузку
+            document.getElementById('loading').style.display = 'block';
+            document.querySelector('.play-button').style.display = 'none';
+            
+            // Haptic feedback
+            if (tg && tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('medium');
+            }
+            
+            // Задержка для эффекта загрузки
+            setTimeout(() => {
+                // Перенаправляем на основную игру
+                window.location.href = 'https://frutisbett.github.io/bingobett.github.io/index.html';
+            }, 1500);
+        }
+        
+        // Автоматический запуск через 3 секунды
+        setTimeout(() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('autostart') === 'true') {
+                startGame();
+            }
+        }, 3000);
+        
+        // Обработка параметров URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('action') === 'play') {
+            // Если пришли с командой /play - сразу запускаем игру
+            setTimeout(startGame, 1000);
+        }
+        
+        console.log('🚀 BingoBett стартовая страница загружена');
+        console.log('🔗 URL:', window.location.href);
+        console.log('📱 Telegram WebApp:', tg ? 'Доступен' : 'Недоступен');
+    </script>
+</body>
+</html>
