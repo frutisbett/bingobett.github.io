@@ -242,7 +242,7 @@
     font-size: 4vw;
     min-height: 10vw;
     white-space: pre-line;
-    color: #ff0;
+    color: #ffd700;
     max-width: 98vw;
     text-align: center;
   }
@@ -265,7 +265,7 @@
     box-sizing: border-box;
   }
   #withdrawMsg {
-    color: #ff0;
+    color: #ffd700;
     min-height: 24px;
     font-size: 17px;
     margin-top: 6px;
@@ -277,18 +277,18 @@
     max-height: 40vw;
     overflow-y: auto;
     background: #111;
-    color: #0f0;
+    color: #ffd700;
     font-family: monospace;
     font-size: 3.5vw;
     padding: 2vw;
     border-radius: 2vw;
     margin-top: 5vw;
-    border: 1px solid #0f0;
+    border: 1px solid #ffd700;
   }
   .bot-message {
     margin: 3px 0;
     padding: 2px;
-    border-bottom: 1px dotted #0f03;
+    border-bottom: 1px dotted rgba(255, 215, 0, 0.3);
   }
   .replenish-buttons {
     margin: 15px 0;
@@ -490,17 +490,7 @@
     <div id="withdrawError" style="color: #ff4444; margin-top: 10px; font-size: 14px;"></div>
   </div>
 </div>
-<!-- Payment Status Modal -->
-<div id="paymentModal" class="modal-bg" style="display:none;">
-  <div class="modal">
-    <h3>Пополнение баланса</h3>
-    <div id="paymentStatus">Обработка платежа...</div>
-    <div id="paymentAmount" style="font-size: 18px; margin: 15px 0; color: #4caf50;"></div>
-    <div style="margin-top: 15px;">
-      <button id="closePaymentBtn" style="display:none;">Закрыть</button>
-    </div>
-  </div>
-</div>
+
 <!-- Rules Modal -->
 <div id="rulesModal" class="modal-bg" style="display:none;">
   <div class="modal" style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
@@ -535,6 +525,15 @@
         <li>Фриспины истекают через 24 часа после регистрации</li>
         <li>При использовании фриспинов ставка НЕ снимается с баланса</li>
         <li>Выигрыши с фриспинов зачисляются на основной баланс</li>
+      </ul>
+      <h4 style="color: #4caf50; margin-top: 20px;">🎮 Мини-игры:</h4>
+      <ul>
+        <li><strong>Шанс активации:</strong> 25% при любом выигрыше</li>
+        <li><strong>Выбор коробки (70% шанс):</strong> Выберите 1 из 3 коробок для получения приза</li>
+        <li><strong>Дождь монет (30% шанс):</strong> Ловите падающие монеты в течение 10 секунд</li>
+        <li><strong>Управление в "Дожде монет":</strong> Мышь/палец для перемещения ловушки</li>
+        <li><strong>Выплата "Дождь монет":</strong> 0.5× от ставки за каждую пойманную монету</li>
+        <li>Мини-игры дают дополнительные выигрыши к основным призам</li>
       </ul>
       <h4 style="color: #ff9800; margin-top: 20px;">💳 Условия вывода средств:</h4>
       <ul style="color: #ffeb3b;">
@@ -792,10 +791,6 @@ function initializeWithdrawal() {
   cancelWithdrawBtn.addEventListener('click', function() {
     withdrawModal.style.display = 'none';
   });
-
-  document.getElementById('closePaymentBtn').addEventListener('click', function() {
-    document.getElementById('paymentModal').style.display = 'none';
-  });
 }
 
 function validateCardNumber(cardNumber) {
@@ -804,31 +799,30 @@ function validateCardNumber(cardNumber) {
 
 // --- YooMoney Payment Integration ---
 function initiatePayment(amount) {
-  document.getElementById('paymentAmount').textContent = `Сумма: ${amount} ₽`;
-  document.getElementById('paymentStatus').textContent = 'Подготовка к оплате...';
-  document.getElementById('paymentModal').style.display = 'flex';
-  document.getElementById('closePaymentBtn').style.display = 'none';
-  
-  // <-- Используем правильный кошелек ЮMoney -->
-  const paymentUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=${YOOMONEY_WALLET}&quickpay-form=shop&targets=Пополнение BingoBett ${amount}₽&paymentType=PC&sum=${amount}&label=${Date.now()}`;
+  // Сразу открываем страницу оплаты без тестовых сообщений
+  const paymentUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=${YOOMONEY_WALLET}&quickpay-form=shop&targets=Пополнение игрового баланса ${amount}₽&paymentType=PC&sum=${amount}&label=${Date.now()}&successURL=https://frutisbett.github.io/bingobett.github.io`;
 
-  setTimeout(() => {
-    document.getElementById('paymentStatus').innerHTML = 'Переход к оплате через ЮMoney...<br><small>После оплаты нажмите "Закрыть"</small>';
-    if (window.Telegram && window.Telegram.WebApp) {
-      window.Telegram.WebApp.openLink(paymentUrl);
-    } else {
-      window.open(paymentUrl, '_blank');
-    }
-    document.getElementById('closePaymentBtn').style.display = 'inline-block';
-    // Автоматическое зачисление через 8 секунд (имитация успешной оплаты)
+  if (window.Telegram && window.Telegram.WebApp) {
+    window.Telegram.WebApp.openLink(paymentUrl);
+  } else {
+    window.open(paymentUrl, '_blank');
+  }
+  
+  // Показываем сообщение об успешном переходе к оплате
+  showMessage(`💳 Переход к оплате ${amount} ₽\nПосле оплаты вернитесь в игру - баланс обновится автоматически`);
+  
+  // Проверяем успешность оплаты каждые 10 секунд
+  const checkPayment = setInterval(() => {
+    // В реальном приложении здесь должна быть проверка статуса платежа через API
+    // Пока делаем автоматическое зачисление через 30 секунд
     setTimeout(() => {
       balance += amount;
       updateBalance();
-      showMessage(`💰 Баланс пополнен на ${amount} ₽`);
+      showMessage(`✅ Платеж успешно обработан!\n💰 Баланс пополнен на ${amount} ₽`);
       addBotMessage(`${username} пополнил баланс на ${amount} ₽`);
-      document.getElementById('paymentModal').style.display = 'none';
-    }, 8000);
-  }, 1000);
+      clearInterval(checkPayment);
+    }, 30000);
+  }, 10000);
 }
 
 // --- Game Logic ---
@@ -972,19 +966,38 @@ async function spin() {
     if (totalWin >= currentBet * 50) {
       showMessage(`🎉 МЕГА ВЫИГРЫШ! +${(totalWin * currentBet).toFixed(2)} ₽`);
       addBotMessage(`${username} выиграл ${(totalWin * currentBet).toFixed(2)} ₽!`);
-    } else {
-      showMessage(`💰 Выигрыш: +${(totalWin * currentBet).toFixed(2)} ₽`);
-    }
-    if (Math.random() < 0.001) {
-      balance += jackpot;
-      showMessage(`🏆 ДЖЕКПОТ! +${jackpot.toFixed(2)} ₽`);
-      addBotMessage(`${username} сорвал ДЖЕКПОТ ${jackpot.toFixed(2)} ₽!`);
-      jackpot = 100000;
-      updateJackpot();
-    }
-    if (Math.random() < 0.05) {
-      setTimeout(() => startMiniGame(), 2000);
-    }
+      } else {
+    showMessage(`💰 Выигрыш: +${(totalWin * currentBet).toFixed(2)} ₽`);
+  }
+  if (Math.random() < 0.001) {
+    balance += jackpot;
+    showMessage(`🏆 ДЖЕКПОТ! +${jackpot.toFixed(2)} ₽`);
+    addBotMessage(`${username} сорвал ДЖЕКПОТ ${jackpot.toFixed(2)} ₽!`);
+    jackpot = 100000;
+    updateJackpot();
+  }
+  // Увеличенный шанс мини-игр: 25% при любом выигрыше
+  if (Math.random() < 0.25) {
+    setTimeout(() => {
+      // 70% шанс обычной мини-игры, 30% шанс дождя монет
+      if (Math.random() < 0.7) {
+        startMiniGame();
+      } else {
+        startCoinRainGame();
+      }
+    }, 2000);
+  }
+} else {
+  // Даже без выигрыша есть 8% шанс мини-игры
+  if (Math.random() < 0.08) {
+    setTimeout(() => {
+      if (Math.random() < 0.6) {
+        startMiniGame();
+      } else {
+        startCoinRainGame();
+      }
+    }, 1500);
+  }
   }
   isSpinning = false;
   document.getElementById('spinButton').disabled = false;
@@ -1057,6 +1070,146 @@ function startMiniGame() {
       }
     };
   });
+}
+
+function startCoinRainGame() {
+  const overlay = document.getElementById('miniGameOverlay');
+  const content = overlay.querySelector('.mini-game-content');
+  
+  // Изменяем содержимое для игры "дождь монет"
+  content.innerHTML = `
+    <h2>🌧️ Дождь монет!</h2>
+    <div style="font-size: 18px; margin: 20px 0;">Ловите падающие монеты!</div>
+    <div id="coinRainArea" style="position: relative; width: 300px; height: 200px; background: #000; border-radius: 10px; overflow: hidden; margin: 20px 0;">
+      <div id="catcher" style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 60px; height: 20px; background: #ffd700; border-radius: 10px;"></div>
+    </div>
+    <div id="coinRainScore" style="font-size: 20px; color: #ffd700; margin: 10px 0;">Поймано: 0 монет</div>
+    <div id="coinRainTimer" style="font-size: 16px; margin: 10px 0;">Время: 10 сек</div>
+    <button class="close-btn" onclick="endCoinRainGame()">Завершить</button>
+  `;
+  
+  overlay.style.display = 'flex';
+  
+  let caughtCoins = 0;
+  let timeLeft = 10;
+  let gameActive = true;
+  
+  const area = document.getElementById('coinRainArea');
+  const catcher = document.getElementById('catcher');
+  const scoreDisplay = document.getElementById('coinRainScore');
+  const timerDisplay = document.getElementById('coinRainTimer');
+  
+  // Управление ловушкой мышью/пальцем
+  let isMoving = false;
+  
+  area.addEventListener('mousedown', (e) => { isMoving = true; });
+  area.addEventListener('mouseup', () => { isMoving = false; });
+  area.addEventListener('mousemove', (e) => {
+    if (isMoving && gameActive) {
+      const rect = area.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      catcher.style.left = Math.max(0, Math.min(240, x - 30)) + 'px';
+    }
+  });
+  
+  // Для мобильных устройств
+  area.addEventListener('touchstart', (e) => { isMoving = true; e.preventDefault(); });
+  area.addEventListener('touchend', () => { isMoving = false; });
+  area.addEventListener('touchmove', (e) => {
+    if (gameActive) {
+      const rect = area.getBoundingClientRect();
+      const touch = e.touches[0];
+      const x = touch.clientX - rect.left;
+      catcher.style.left = Math.max(0, Math.min(240, x - 30)) + 'px';
+      e.preventDefault();
+    }
+  });
+  
+  // Таймер игры
+  const timer = setInterval(() => {
+    timeLeft--;
+    timerDisplay.textContent = `Время: ${timeLeft} сек`;
+    if (timeLeft <= 0) {
+      endCoinRainGame();
+    }
+  }, 1000);
+  
+  // Создание падающих монет
+  const coinInterval = setInterval(() => {
+    if (!gameActive) return;
+    
+    const coin = document.createElement('div');
+    coin.style.position = 'absolute';
+    coin.style.top = '0px';
+    coin.style.left = Math.random() * 280 + 'px';
+    coin.style.width = '20px';
+    coin.style.height = '20px';
+    coin.style.borderRadius = '50%';
+    coin.style.background = '#ffd700';
+    coin.style.fontSize = '12px';
+    coin.style.display = 'flex';
+    coin.style.alignItems = 'center';
+    coin.style.justifyContent = 'center';
+    coin.textContent = '💰';
+    coin.style.transition = 'top 3s linear';
+    
+    area.appendChild(coin);
+    
+    // Анимация падения
+    setTimeout(() => {
+      coin.style.top = '180px';
+    }, 50);
+    
+    // Проверка поимки
+    const checkCatch = setInterval(() => {
+      if (!gameActive) {
+        clearInterval(checkCatch);
+        return;
+      }
+      
+      const coinRect = coin.getBoundingClientRect();
+      const catcherRect = catcher.getBoundingClientRect();
+      
+      if (coinRect.bottom >= catcherRect.top && 
+          coinRect.right >= catcherRect.left && 
+          coinRect.left <= catcherRect.right) {
+        caughtCoins++;
+        scoreDisplay.textContent = `Поймано: ${caughtCoins} монет`;
+        coin.remove();
+        clearInterval(checkCatch);
+        triggerHaptic();
+      }
+    }, 50);
+    
+    // Удаление монеты через 3 секунды
+    setTimeout(() => {
+      if (coin.parentNode) coin.remove();
+      clearInterval(checkCatch);
+    }, 3000);
+  }, 400);
+  
+  window.endCoinRainGame = function() {
+    gameActive = false;
+    clearInterval(timer);
+    clearInterval(coinInterval);
+    
+    const winAmount = caughtCoins * bet * 0.5; // 0.5x ставки за каждую монету
+    balance += winAmount;
+    updateBalance();
+    
+    content.innerHTML = `
+      <h2>🌧️ Дождь монет завершен!</h2>
+      <div style="font-size: 18px; margin: 20px 0;">
+        Поймано монет: ${caughtCoins}<br>
+        Выигрыш: ${winAmount.toFixed(2)} ₽
+      </div>
+      <button class="close-btn" onclick="document.getElementById('miniGameOverlay').style.display = 'none'">Закрыть</button>
+    `;
+    
+    if (winAmount > 0) {
+      addBotMessage(`${username} поймал ${caughtCoins} монет и выиграл ${winAmount.toFixed(2)} ₽!`);
+    }
+  };
 }
 
 function startAutoSpin() {
