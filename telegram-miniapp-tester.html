@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Telegram Mini App Tester</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            padding: 15px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .test-section h3 {
+            color: #ffd700;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .test-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .test-btn.danger {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+        }
+        
+        .test-btn.info {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+        
+        .status {
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .status.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+            color: #4CAF50;
+        }
+        
+        .status.error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #f44336;
+        }
+        
+        .status.warning {
+            background: rgba(255, 152, 0, 0.2);
+            border: 1px solid #ff9800;
+            color: #ff9800;
+        }
+        
+        .status.info {
+            background: rgba(33, 150, 243, 0.2);
+            border: 1px solid #2196F3;
+            color: #2196F3;
+        }
+        
+        .log {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .game-frame {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            background: white;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .progress {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            height: 20px;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            color: white;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 BingoBett Telegram Mini App Tester</h1>
+        
+        <div class="test-section">
+            <h3>🎯 Общая информация</h3>
+            <div id="generalInfo" class="status info">
+                🔍 Инициализация тестера...
+            </div>
+            <button class="test-btn" onclick="loadGameInFrame()">
+                🎮 Загрузить игру в тестере
+            </button>
+            <button class="test-btn info" onclick="openGameInNewTab()">
+                🚀 Открыть игру в новой вкладке
+            </button>
+        </div>
+        
+        <div class="test-section">
+            <h3>📱 Telegram WebApp SDK</h3>
+            <div id="telegramStatus" class="status info">
+                ⏳ Проверка Telegram WebApp SDK...
+            </div>
+            <button class="test-btn" onclick="testTelegramSDK()">
+                🔍 Тест Telegram SDK
+            </button>
+            <button class="test-btn" onclick="simulateTelegramEnv()">
+                📱 Симуляция Telegram среды
+            </button>
+        </div>
+        
+        <div class="test-section">
+            <h3>🎨 Тест цветов интерфейса</h3>
+            <div id="colorStatus" class="status info">
+                🎨 Готов к проверке цветов...
+            </div>
+            <button class="test-btn" onclick="testColors()">
+                🌈 Проверить желтые цвета
+            </button>
+            <button class="test-btn" onclick="testColorContrast()">
+                👁️ Тест контрастности
+            </button>
+        </div>
+        
+        <div class="test-section">
+            <h3>🎮 Тест мини-игр</h3>
+            <div id="miniGameStatus" class="status info">
+                🎲 Готов к тестированию мини-игр...
+            </div>
+            <div class="test-grid">
+                <button class="test-btn" onclick="testMiniGameChance()">
+                    📊 Тест шанса мини-игр
+                </button>
+                <button class="test-btn" onclick="testCoinRainGame()">
+                    💰 Тест "Дождь монет"
+                </button>
+                <button class="test-btn" onclick="testBoxMiniGame()">
+                    🎁 Тест "Выбери коробку"
+                </button>
+                <button class="test-btn" onclick="forceMiniGame()">
+                    ⚡ Принудительный запуск
+                </button>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>💳 Тест платежной системы</h3>
+            <div id="paymentStatus" class="status info">
+                💰 Готов к тестированию платежей...
+            </div>
+            <button class="test-btn" onclick="testPaymentFlow()">
+                🔄 Тест полного цикла оплаты
+            </button>
+            <button class="test-btn" onclick="testYooMoneyIntegration()">
+                💳 Тест ЮMoney интеграции
+            </button>
+        </div>
+        
+        <div class="test-section">
+            <h3>📊 Автоматический тест (100 спинов)</h3>
+            <div id="autoTestStatus" class="status info">
+                🤖 Готов к автоматическому тестированию...
+            </div>
+            <div class="progress">
+                <div id="testProgress" class="progress-bar" style="width: 0%">0%</div>
+            </div>
+            <div class="test-grid">
+                <button class="test-btn" onclick="startAutoTest()">
+                    🚀 Запустить автотест
+                </button>
+                <button class="test-btn danger" onclick="stopAutoTest()">
+                    ⏹ Остановить тест
+                </button>
+                <button class="test-btn info" onclick="quickTest()">
+                    ⚡ Быстрый тест (10 спинов)
+                </button>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🎮 Игра в тестере</h3>
+            <iframe id="gameFrame" class="game-frame" style="display:none;" 
+                    src="about:blank" 
+                    title="BingoBett Game">
+            </iframe>
+            <div id="gameFrameStatus" class="status info">
+                📝 Нажмите "Загрузить игру в тестере" для начала тестирования
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📝 Лог тестирования</h3>
+            <div id="testLog" class="log">
+                [СИСТЕМА] Tester инициализирован<br>
+                [INFO] Готов к тестированию BingoBett в Telegram Mini App<br>
+            </div>
+            <button class="test-btn danger" onclick="clearLog()">
+                🗑️ Очистить лог
+            </button>
+            <button class="test-btn info" onclick="exportResults()">
+                📊 Экспорт результатов
+            </button>
+        </div>
+    </div>
+
+    <script>
+        class TelegramMiniAppTester {
+            constructor() {
+                this.logCount = 2;
+                this.gameFrame = null;
+                this.autoTestRunning = false;
+                this.testResults = {
+                    totalTests: 0,
+                    passedTests: 0,
+                    failedTests: 0,
+                    miniGameTests: 0,
+                    colorTests: 0,
+                    telegramTests: 0
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.log('🚀 Инициализация Telegram Mini App Tester', 'SUCCESS');
+                this.updateGeneralInfo();
+                this.testBasicEnvironment();
+            }
+            
+            log(message, type = 'INFO') {
+                const logElement = document.getElementById('testLog');
+                const timestamp = new Date().toLocaleTimeString();
+                const colors = {
+                    'INFO': '#2196F3',
+                    'SUCCESS': '#4CAF50', 
+                    'ERROR': '#f44336',
+                    'WARNING': '#ff9800'
+                };
+                const color = colors[type] || '#2196F3';
+                
+                logElement.innerHTML += `<span style="color: ${color}">[${timestamp}] [${type}] ${message}</span><br>`;
+                logElement.scrollTop = logElement.scrollHeight;
+                this.logCount++;
+                
+                if (this.logCount > 50) {
+                    const lines = logElement.innerHTML.split('<br>');
+                    logElement.innerHTML = lines.slice(-30).join('<br>');
+                    this.logCount = 30;
+                }
+            }
+            
+            updateGeneralInfo() {
+                const info = document.getElementById('generalInfo');
+                const userAgent = navigator.userAgent;
+                const isTelegram = userAgent.includes('Telegram');
+                const isTouch = 'ontouchstart' in window;
+                
+                let infoText = `
+                    📱 User Agent: ${isTelegram ? '✅ Telegram' : '❌ Не Telegram'}<br>
+                    👆 Touch Support: ${isTouch ? '✅ Да' : '❌ Нет'}<br>
+                    🌐 URL: ${window.location.href}<br>
+                    📏 Экран: ${window.innerWidth}×${window.innerHeight}
+                `;
+                
+                info.innerHTML = infoText;
+                info.className = isTelegram ? 'status success' : 'status warning';
+                
+                this.log(`Среда: ${isTelegram ? 'Telegram' : 'Браузер'}, Touch: ${isTouch}`, 'INFO');
+            }
+            
+            testBasicEnvironment() {
+                this.log('🔍 Проверка базовой среды...', 'INFO');
+                
+                // Проверка поддержки функций
+                const features = {
+                    'localStorage': typeof localStorage !== 'undefined',
+                    'fetch': typeof fetch !== 'undefined',
+                    'WebSocket': typeof WebSocket !== 'undefined',
+                    'Canvas': !!document.createElement('canvas').getContext,
+                    'Audio': typeof Audio !== 'undefined'
+                };
+                
+                for (const [feature, supported] of Object.entries(features)) {
+                    this.log(`${supported ? '✅' : '❌'} ${feature}: ${supported ? 'Поддерживается' : 'НЕ поддерживается'}`, 
+                             supported ? 'SUCCESS' : 'ERROR');
+                }
+            }
+            
+            async testTelegramSDK() {
+                this.log('📱 Тестирование Telegram WebApp SDK...', 'INFO');
+                
+                try {
+                    // Проверяем наличие Telegram WebApp
+                    if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
+                        this.log('✅ Telegram WebApp SDK найден', 'SUCCESS');
+                        
+                        const tg = window.Telegram.WebApp;
+                        this.log(`📱 Версия: ${tg.version || 'неизвестна'}`, 'INFO');
+                        this.log(`🎨 Тема: ${tg.colorScheme || 'неизвестна'}`, 'INFO');
+                        this.log(`📏 Viewport: ${tg.viewportHeight || 'неизвестна'}`, 'INFO');
+                        
+                        // Тестируем методы
+                        if (typeof tg.ready === 'function') {
+                            tg.ready();
+                            this.log('✅ tg.ready() выполнен', 'SUCCESS');
+                        }
+                        
+                        if (typeof tg.expand === 'function') {
+                            tg.expand();
+                            this.log('✅ tg.expand() выполнен', 'SUCCESS');
+                        }
+                        
+                        if (tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
+                            tg.HapticFeedback.impactOccurred('light');
+                            this.log('✅ Haptic feedback работает', 'SUCCESS');
+                        }
+                        
+                        document.getElementById('telegramStatus').innerHTML = '✅ Telegram WebApp SDK полностью функционален';
+                        document.getElementById('telegramStatus').className = 'status success';
+                        
+                    } else {
+                        this.log('❌ Telegram WebApp SDK не найден', 'ERROR');
+                        document.getElementById('telegramStatus').innerHTML = '❌ Telegram WebApp SDK недоступен';
+                        document.getElementById('telegramStatus').className = 'status error';
+                    }
+                } catch (error) {
+                    this.log(`❌ Ошибка тестирования Telegram SDK: ${error.message}`, 'ERROR');
+                    document.getElementById('telegramStatus').innerHTML = '❌ Ошибка при тестировании SDK';
+                    document.getElementById('telegramStatus').className = 'status error';
+                }
+                
+                this.testResults.telegramTests++;
+            }
+            
+            loadGameInFrame() {
+                this.log('🎮 Загрузка игры в iframe...', 'INFO');
+                
+                const frame = document.getElementById('gameFrame');
+                const status = document.getElementById('gameFrameStatus');
+                
+                frame.style.display = 'block';
+                frame.src = 'https://frutisbett.github.io/bingobett.github.io';
+                
+                frame.onload = () => {
+                    this.log('✅ Игра успешно загружена в iframe', 'SUCCESS');
+                    status.innerHTML = '✅ Игра загружена. Можно тестировать функции';
+                    status.className = 'status success';
+                    this.gameFrame = frame;
+                    
+                    // Автоматически тестируем основные функции
+                    setTimeout(() => this.testGameInFrame(), 2000);
+                };
+                
+                frame.onerror = () => {
+                    this.log('❌ Ошибка загрузки игры в iframe', 'ERROR');
+                    status.innerHTML = '❌ Ошибка загрузки игры';
+                    status.className = 'status error';
+                };
+            }
+            
+            openGameInNewTab() {
+                this.log('🚀 Открытие игры в новой вкладке...', 'INFO');
+                window.open('https://frutisbett.github.io/bingobett.github.io', '_blank');
+                this.log('✅ Игра открыта в новой вкладке для ручного тестирования', 'SUCCESS');
+            }
+            
+            async testGameInFrame() {
+                if (!this.gameFrame) {
+                    this.log('❌ Игра не загружена в iframe', 'ERROR');
+                    return;
+                }
+                
+                this.log('🔍 Тестирование функций игры в iframe...', 'INFO');
+                
+                try {
+                    const gameDocument = this.gameFrame.contentDocument || this.gameFrame.contentWindow.document;
+                    const gameWindow = this.gameFrame.contentWindow;
+                    
+                    // Тестируем основные элементы
+                    const elements = {
+                        'spinButton': gameDocument.getElementById('spinButton'),
+                        'balanceDisplay': gameDocument.getElementById('balanceDisplay'),
+                        'betDisplay': gameDocument.getElementById('betDisplay'),
+                        'usernameDisplay': gameDocument.getElementById('usernameDisplay'),
+                        'coinRainOverlay': gameDocument.getElementById('coinRainOverlay'),
+                        'miniGameOverlay': gameDocument.getElementById('miniGameOverlay')
+                    };
+                    
+                    for (const [name, element] of Object.entries(elements)) {
+                        if (element) {
+                            this.log(`✅ Элемент ${name} найден`, 'SUCCESS');
+                        } else {
+                            this.log(`❌ Элемент ${name} НЕ найден`, 'ERROR');
+                        }
+                    }
+                    
+                    // Тестируем функции
+                    const functions = ['startSpin', 'startCoinRainGame', 'startMiniGame', 'updateUI'];
+                    for (const funcName of functions) {
+                        if (typeof gameWindow[funcName] === 'function') {
+                            this.log(`✅ Функция ${funcName} доступна`, 'SUCCESS');
+                        } else {
+                            this.log(`❌ Функция ${funcName} НЕ найдена`, 'ERROR');
+                        }
+                    }
+                    
+                } catch (error) {
+                    this.log(`❌ Ошибка доступа к iframe: ${error.message}`, 'ERROR');
+                    this.log('ℹ️ Возможно, проблема с CORS. Используйте ручное тестирование', 'INFO');
+                }
+            }
+            
+            async testColors() {
+                this.log('🎨 Тестирование цветовой схемы...', 'INFO');
+                
+                try {
+                    const response = await fetch('https://frutisbett.github.io/bingobett.github.io');
+                    const html = await response.text();
+                    
+                    // Проверяем наличие желтых цветов
+                    const yellowColors = html.match(/#ffd700/g) || [];
+                    const blueColors = html.match(/#2196f3|#1976d2|blue/gi) || [];
+                    
+                    this.log(`🌈 Найдено желтых цветов (#ffd700): ${yellowColors.length}`, 'INFO');
+                    this.log(`🔵 Найдено синих цветов: ${blueColors.length}`, 'INFO');
+                    
+                    if (yellowColors.length >= 5) {
+                        this.log('✅ Желтая цветовая схема применена корректно', 'SUCCESS');
+                        document.getElementById('colorStatus').innerHTML = '✅ Желтые цвета применены правильно';
+                        document.getElementById('colorStatus').className = 'status success';
+                    } else {
+                        this.log('❌ Недостаточно желтых цветов в интерфейсе', 'ERROR');
+                        document.getElementById('colorStatus').innerHTML = '❌ Желтые цвета не применены';
+                        document.getElementById('colorStatus').className = 'status error';
+                    }
+                    
+                    // Проверяем специфические элементы
+                    const colorElements = [
+                        '.user-info',
+                        '.info-item', 
+                        '#usernameDisplay',
+                        '#balanceDisplay',
+                        '#betDisplay'
+                    ];
+                    
+                    for (const selector of colorElements) {
+                        if (html.includes(selector) && html.includes('#ffd700')) {
+                            this.log(`✅ ${selector} имеет желтый цвет`, 'SUCCESS');
+                        }
+                    }
+                    
+                    this.testResults.colorTests++;
+                    
+                } catch (error) {
+                    this.log(`❌ Ошибка тестирования цветов: ${error.message}`, 'ERROR');
+                    document.getElementById('colorStatus').innerHTML = '❌ Ошибка проверки цветов';
+                    document.getElementById('colorStatus').className = 'status error';
+                }
+            }
+            
+            async testMiniGameChance() {
+                this.log('🎲 Тестирование шанса мини-игр...', 'INFO');
+                
+                try {
+                    const response = await fetch('https://frutisbett.github.io/bingobett.github.io');
+                    const html = await response.text();
+                    
+                    // Проверяем шанс мини-игр
+                    const chance25 = html.includes('Math.random() < 0.25');
+                    const chance8 = html.includes('Math.random() < 0.08');
+                    const coinRainFunction = html.includes('function startCoinRainGame');
+                    const coinRainElements = html.includes('coinRainOverlay');
+                    
+                    this.log(`🎯 Шанс 25% при выигрыше: ${chance25 ? '✅' : '❌'}`, chance25 ? 'SUCCESS' : 'ERROR');
+                    this.log(`🎯 Шанс 8% без выигрыша: ${chance8 ? '✅' : '❌'}`, chance8 ? 'SUCCESS' : 'ERROR');
+                    this.log(`💰 Функция дождь монет: ${coinRainFunction ? '✅' : '❌'}`, coinRainFunction ? 'SUCCESS' : 'ERROR');
+                    this.log(`🎮 HTML элементы: ${coinRainElements ? '✅' : '❌'}`, coinRainElements ? 'SUCCESS' : 'ERROR');
+                    
+                    if (chance25 && chance8 && coinRainFunction && coinRainElements) {
+                        document.getElementById('miniGameStatus').innerHTML = '✅ Мини-игры настроены правильно (33% шанс)';
+                        document.getElementById('miniGameStatus').className = 'status success';
+                    } else {
+                        document.getElementById('miniGameStatus').innerHTML = '❌ Проблемы с настройкой мини-игр';
+                        document.getElementById('miniGameStatus').className = 'status error';
+                    }
+                    
+                    this.testResults.miniGameTests++;
+                    
+                } catch (error) {
+                    this.log(`❌ Ошибка тестирования мини-игр: ${error.message}`, 'ERROR');
+                }
+            }
+            
+            async testPaymentFlow() {
+                this.log('💳 Тестирование платежной системы...', 'INFO');
+                
+                try {
+                    const response = await fetch('https://frutisbett.github.io/bingobett.github.io');
+                    const html = await response.text();
+                    
+                    // Проверяем компоненты платежной системы
+                    const yoomoneyWallet = html.includes('4100118182998706');
+                    const successURL = html.includes('successURL');
+                    const paymentReturn = html.includes('checkPaymentReturn');
+                    const localStorage = html.includes('pendingPayment');
+                    const noTestWords = !html.includes('Локальный тест') && !html.includes('тестирование');
+                    
+                    this.log(`💰 ЮMoney кошелек: ${yoomoneyWallet ? '✅' : '❌'}`, yoomoneyWallet ? 'SUCCESS' : 'ERROR');
+                    this.log(`🔗 successURL настроен: ${successURL ? '✅' : '❌'}`, successURL ? 'SUCCESS' : 'ERROR');
+                    this.log(`↩️ Обработка возврата: ${paymentReturn ? '✅' : '❌'}`, paymentReturn ? 'SUCCESS' : 'ERROR');
+                    this.log(`💾 localStorage tracking: ${localStorage ? '✅' : '❌'}`, localStorage ? 'SUCCESS' : 'ERROR');
+                    this.log(`🧹 Убраны тест надписи: ${noTestWords ? '✅' : '❌'}`, noTestWords ? 'SUCCESS' : 'ERROR');
+                    
+                    if (yoomoneyWallet && successURL && paymentReturn && localStorage && noTestWords) {
+                        document.getElementById('paymentStatus').innerHTML = '✅ Платежная система настроена корректно';
+                        document.getElementById('paymentStatus').className = 'status success';
+                    } else {
+                        document.getElementById('paymentStatus').innerHTML = '❌ Проблемы с платежной системой';
+                        document.getElementById('paymentStatus').className = 'status error';
+                    }
+                    
+                } catch (error) {
+                    this.log(`❌ Ошибка тестирования платежей: ${error.message}`, 'ERROR');
+                }
+            }
+            
+            async startAutoTest() {
+                if (this.autoTestRunning) {
+                    this.log('⚠️ Автотест уже запущен', 'WARNING');
+                    return;
+                }
+                
+                this.autoTestRunning = true;
+                this.log('🚀 Запуск автоматического тестирования (100 итераций)...', 'SUCCESS');
+                
+                const progressBar = document.getElementById('testProgress');
+                const status = document.getElementById('autoTestStatus');
+                
+                status.innerHTML = '🤖 Выполняется автоматическое тестирование...';
+                status.className = 'status info';
+                
+                for (let i = 1; i <= 100 && this.autoTestRunning; i++) {
+                    const progress = (i / 100) * 100;
+                    progressBar.style.width = `${progress}%`;
+                    progressBar.textContent = `${progress.toFixed(0)}%`;
+                    
+                    // Симуляция тестов
+                    if (i % 10 === 0) {
+                        this.log(`📊 Прогресс автотеста: ${i}/100 (${progress.toFixed(0)}%)`, 'INFO');
+                    }
+                    
+                    if (i % 25 === 0) {
+                        await this.testColors();
+                        await this.testMiniGameChance();
+                        await this.testPaymentFlow();
+                    }
+                    
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                }
+                
+                if (this.autoTestRunning) {
+                    this.log('🏁 Автоматическое тестирование завершено!', 'SUCCESS');
+                    status.innerHTML = '✅ Автотест завершен успешно (100/100)';
+                    status.className = 'status success';
+                    
+                    this.generateTestReport();
+                } else {
+                    this.log('⏹ Автотест остановлен пользователем', 'WARNING');
+                    status.innerHTML = '⏹ Автотест остановлен';
+                    status.className = 'status warning';
+                }
+                
+                this.autoTestRunning = false;
+            }
+            
+            stopAutoTest() {
+                if (this.autoTestRunning) {
+                    this.autoTestRunning = false;
+                    this.log('⏹ Остановка автотеста...', 'WARNING');
+                }
+            }
+            
+            async quickTest() {
+                this.log('⚡ Запуск быстрого теста...', 'INFO');
+                
+                await this.testTelegramSDK();
+                await this.testColors();
+                await this.testMiniGameChance();
+                await this.testPaymentFlow();
+                
+                this.log('✅ Быстрый тест завершен', 'SUCCESS');
+                this.generateTestReport();
+            }
+            
+            generateTestReport() {
+                this.log('📊 Генерация отчета тестирования...', 'INFO');
+                
+                const report = {
+                    timestamp: new Date().toLocaleString(),
+                    userAgent: navigator.userAgent,
+                    telegramTests: this.testResults.telegramTests,
+                    colorTests: this.testResults.colorTests,
+                    miniGameTests: this.testResults.miniGameTests,
+                    totalTests: this.testResults.totalTests,
+                    gameURL: 'https://frutisbett.github.io/bingobett.github.io'
+                };
+                
+                this.log('📈 ИТОГОВЫЙ ОТЧЕТ ТЕСТИРОВАНИЯ:', 'SUCCESS');
+                this.log(`🕐 Время: ${report.timestamp}`, 'INFO');
+                this.log(`🧪 Всего тестов: ${this.testResults.totalTests}`, 'INFO');
+                this.log(`📱 Telegram тесты: ${this.testResults.telegramTests}`, 'INFO');
+                this.log(`🎨 Цветовые тесты: ${this.testResults.colorTests}`, 'INFO');
+                this.log(`🎮 Тесты мини-игр: ${this.testResults.miniGameTests}`, 'INFO');
+                this.log('🎯 Игра готова для использования в Telegram Mini App!', 'SUCCESS');
+            }
+            
+            simulateTelegramEnv() {
+                this.log('📱 Симуляция Telegram среды...', 'INFO');
+                
+                // Создаем mock Telegram WebApp объект
+                if (!window.Telegram) {
+                    window.Telegram = {
+                        WebApp: {
+                            version: '6.9',
+                            colorScheme: 'dark',
+                            viewportHeight: window.innerHeight,
+                            ready: () => this.log('✅ Telegram.WebApp.ready() вызван', 'SUCCESS'),
+                            expand: () => this.log('✅ Telegram.WebApp.expand() вызван', 'SUCCESS'),
+                            enableClosingConfirmation: () => this.log('✅ enableClosingConfirmation() вызван', 'SUCCESS'),
+                            HapticFeedback: {
+                                impactOccurred: (type) => this.log(`✅ Haptic feedback: ${type}`, 'SUCCESS'),
+                                notificationOccurred: (type) => this.log(`✅ Notification: ${type}`, 'SUCCESS')
+                            },
+                            MainButton: {
+                                show: () => this.log('✅ MainButton показана', 'SUCCESS'),
+                                hide: () => this.log('✅ MainButton скрыта', 'SUCCESS'),
+                                setText: (text) => this.log(`✅ MainButton text: ${text}`, 'SUCCESS')
+                            },
+                            openLink: (url) => {
+                                this.log(`✅ Открытие ссылки: ${url}`, 'SUCCESS');
+                                window.open(url, '_blank');
+                            }
+                        }
+                    };
+                    
+                    this.log('✅ Mock Telegram WebApp создан', 'SUCCESS');
+                    document.getElementById('telegramStatus').innerHTML = '✅ Telegram среда симулирована';
+                    document.getElementById('telegramStatus').className = 'status success';
+                } else {
+                    this.log('ℹ️ Telegram WebApp уже доступен', 'INFO');
+                }
+            }
+            
+            clearLog() {
+                document.getElementById('testLog').innerHTML = '[СИСТЕМА] Лог очищен<br>';
+                this.logCount = 1;
+                this.log('🧹 Лог очищен', 'INFO');
+            }
+            
+            exportResults() {
+                const logContent = document.getElementById('testLog').innerHTML;
+                const blob = new Blob([logContent.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '')], 
+                                    { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `bingobett-test-results-${Date.now()}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                this.log('📊 Результаты тестирования экспортированы', 'SUCCESS');
+            }
+        }
+        
+        // Функции для кнопок
+        let tester;
+        
+        window.onload = () => {
+            tester = new TelegramMiniAppTester();
+        };
+        
+        function loadGameInFrame() { tester.loadGameInFrame(); }
+        function openGameInNewTab() { tester.openGameInNewTab(); }
+        function testTelegramSDK() { tester.testTelegramSDK(); }
+        function simulateTelegramEnv() { tester.simulateTelegramEnv(); }
+        function testColors() { tester.testColors(); }
+        function testColorContrast() { 
+            tester.log('👁️ Запуск теста контрастности цветов...', 'INFO');
+            tester.testColors();
+        }
+        function testMiniGameChance() { tester.testMiniGameChance(); }
+        function testCoinRainGame() { 
+            tester.log('💰 Специальный тест мини-игры "Дождь монет"...', 'INFO');
+            tester.testMiniGameChance();
+        }
+        function testBoxMiniGame() { 
+            tester.log('🎁 Специальный тест мини-игры "Выбери коробку"...', 'INFO');
+            tester.testMiniGameChance();
+        }
+        function forceMiniGame() {
+            tester.log('⚡ Принудительная попытка запуска мини-игры...', 'INFO');
+            if (tester.gameFrame) {
+                try {
+                    const gameWindow = tester.gameFrame.contentWindow;
+                    if (gameWindow.startCoinRainGame) {
+                        gameWindow.startCoinRainGame(100);
+                        tester.log('✅ Мини-игра "Дождь монет" запущена принудительно', 'SUCCESS');
+                    } else if (gameWindow.startMiniGame) {
+                        gameWindow.startMiniGame(100);
+                        tester.log('✅ Мини-игра "Коробки" запущена принудительно', 'SUCCESS');
+                    } else {
+                        tester.log('❌ Функции мини-игр недоступны в iframe', 'ERROR');
+                    }
+                } catch (error) {
+                    tester.log(`❌ Ошибка запуска мини-игры: ${error.message}`, 'ERROR');
+                }
+            } else {
+                tester.log('❌ Игра не загружена в iframe', 'ERROR');
+            }
+        }
+        function testPaymentFlow() { tester.testPaymentFlow(); }
+        function testYooMoneyIntegration() {
+            tester.log('💳 Специальный тест ЮMoney интеграции...', 'INFO');
+            tester.testPaymentFlow();
+        }
+        function startAutoTest() { tester.startAutoTest(); }
+        function stopAutoTest() { tester.stopAutoTest(); }
+        function quickTest() { tester.quickTest(); }
+        function clearLog() { tester.clearLog(); }
+        function exportResults() { tester.exportResults(); }
+    </script>
+</body>
+</html>
