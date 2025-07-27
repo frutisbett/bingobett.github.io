@@ -1618,39 +1618,43 @@
                 replenishButtons.forEach(btn => {
                     btn.onclick = () => {
                         const amount = btn.getAttribute('data-amount');
-                        console.log(`Пополнение на ${amount} ₽ через YooMoney`);
+                        console.log(`🛒 Пополнение на ${amount} ₽ через YooMoney`);
                         
-                        // YooMoney ссылка с данными кошелька
-                        const paymentLabel = `bingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-                        const yoomoneyUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118182998706&quickpay-form=shop&targets=Пополнение+игрового+баланса+${amount}+рублей&paymentType=AC&sum=${amount}&label=${paymentLabel}&successURL=${encodeURIComponent('https://frutisbett.github.io/bingobett.github.io')}`;
+                        // Генерируем уникальный ID платежа
+                        const paymentId = `bingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+                        
+                        // Сохраняем информацию о платеже
+                        const paymentInfo = {
+                            id: paymentId,
+                            amount: parseInt(amount),
+                            timestamp: Date.now(),
+                            status: 'pending'
+                        };
+                        localStorage.setItem('pendingPayment', JSON.stringify(paymentInfo));
+                        
+                        // Формируем URL для YooMoney с возвратом на игру
+                        const successURL = `https://frutisbett.github.io/bingobett.github.io?payment=success&amount=${amount}&id=${paymentId}`;
+                        const yoomoneyUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118182998706&quickpay-form=shop&targets=Пополнение+игрового+баланса+BingoBett&paymentType=AC&sum=${amount}&label=${paymentId}&successURL=${encodeURIComponent(successURL)}`;
+                        
+                        console.log('💳 YooMoney URL:', yoomoneyUrl);
+                        console.log('💾 Сохранен pending payment:', paymentInfo);
+                        
+                        // Показываем инструкции пользователю
+                        showMessage(`💳 Переход к оплате ${amount}₽\n\n⚡ После оплаты вернитесь в игру\n💰 Баланс пополнится автоматически!`);
                         
                         if (isTelegramApp && tg) {
                             // В Telegram Mini App
                             try {
                                 tg.openLink(yoomoneyUrl);
-                                showMessage(`💳 Переход на оплату ${amount} ₽ через YooMoney`);
                                 hapticFeedback('light');
                             } catch (error) {
                                 console.error('Ошибка открытия ссылки в Telegram:', error);
-                                // Fallback для Telegram
                                 window.open(yoomoneyUrl, '_blank');
                             }
                         } else {
                             // В обычном браузере
                             window.open(yoomoneyUrl, '_blank');
-                            showMessage(`💳 Открыта страница оплаты YooMoney на ${amount} ₽`);
                         }
-                        
-                        // Эмуляция для тестирования (временно)
-                        setTimeout(() => {
-                            if (confirm(`ТЕСТ: Подтвердить пополнение на ${amount} ₽?`)) {
-                                balance += parseFloat(amount);
-                                updateUI();
-                                showMessage(`✅ Баланс пополнен на ${amount} ₽`);
-                                addBotMessage(`${username} пополнил баланс на ${amount} ₽`);
-                                hapticFeedback('success');
-                            }
-                        }, 3000);
                     };
                 });
 
@@ -1950,10 +1954,60 @@
                 document.addEventListener('DOMContentLoaded', () => {
                     initTelegram();
                     initializeGame();
+                    // Проверяем URL на параметры успешного платежа
+                    checkPaymentReturn();
                 });
             } else {
                 initTelegram();
                 initializeGame();
+                // Проверяем URL на параметры успешного платежа
+                checkPaymentReturn();
+            }
+            
+            // Функция проверки URL параметров для обработки возврата с ЮMoney
+            function checkPaymentReturn() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const paymentStatus = urlParams.get('payment');
+                const paymentAmount = urlParams.get('amount');
+                const paymentId = urlParams.get('id');
+                
+                if (paymentStatus === 'success' && paymentAmount && paymentId) {
+                    console.log('🔍 Обнаружен возврат с ЮMoney:', { paymentStatus, paymentAmount, paymentId });
+                    
+                    // Проверяем, что это наш платеж
+                    const pendingPayment = JSON.parse(localStorage.getItem('pendingPayment') || '{}');
+                    
+                    if (pendingPayment.id === paymentId && pendingPayment.status === 'pending') {
+                        // Успешная оплата!
+                        const amount = parseInt(paymentAmount);
+                        balance += amount;
+                        updateUI();
+                        
+                        // Удаляем ожидающий платеж
+                        localStorage.removeItem('pendingPayment');
+                        
+                        // Показываем успешное сообщение
+                        setTimeout(() => {
+                            showMessage(`🎉 Платеж успешно обработан!\n💰 Ваш баланс пополнен на ${amount}₽\n\n🎮 Удачной игры!`);
+                            if (typeof addBotMessage === 'function') {
+                                addBotMessage(`💰 Отлично! Платеж на ${amount}₽ прошел успешно. Ваш баланс пополнен!`);
+                            }
+                        }, 2000);
+                        
+                        // Haptic feedback для Telegram
+                        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                            window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                        }
+                        
+                        // Очищаем URL от параметров платежа
+                        const cleanUrl = window.location.origin + window.location.pathname;
+                        window.history.replaceState({}, document.title, cleanUrl);
+                        
+                        console.log('✅ Платеж успешно обработан и баланс пополнен');
+                    } else {
+                        console.log('⚠️ Платеж не найден в pending или уже обработан');
+                    }
+                }
             }
 
         })();

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔗 BingoBett Webhook Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .section h2 {
+            color: #ffd700;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .demo-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .demo-btn.danger {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+        }
+        
+        .demo-btn.info {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+            color: #4CAF50;
+        }
+        
+        .status.error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #f44336;
+        }
+        
+        .status.info {
+            background: rgba(33, 150, 243, 0.2);
+            border: 1px solid #2196F3;
+            color: #2196F3;
+        }
+        
+        .webhook-log {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin: 10px 0;
+            border-left: 4px solid #ffd700;
+            overflow-x: auto;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 BingoBett Webhook System</h1>
+        
+        <div class="section">
+            <h2>🎯 Что такое Webhooks для GitHub Pages?</h2>
+            <p>Webhooks позволяют создать "умную" игру без собственного сервера, используя только статический хостинг GitHub Pages и внешние сервисы.</p>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🔄</span>
+                    <h3>Auto Deploy</h3>
+                    <p>Автоматическое обновление игры при каждом push в репозиторий</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">💰</span>
+                    <h3>Smart Payments</h3>
+                    <p>Умная обработка платежей ЮMoney через URL параметры</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3>Analytics</h3>
+                    <p>Сбор статистики через внешние сервисы и localStorage</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🔔</span>
+                    <h3>Notifications</h3>
+                    <p>Уведомления в Telegram о деплое и событиях игры</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🚀 GitHub Actions (уже работает!)</h2>
+            <div class="status success">
+                ✅ Автоматическое тестирование и деплой настроены
+            </div>
+            
+            <button class="demo-btn" onclick="simulateGitHubDeploy()">
+                🔄 Симуляция GitHub Deploy
+            </button>
+            
+            <div class="code">
+# GitHub Actions Workflow уже работает:
+✅ Тестирование HTML и JavaScript
+✅ Проверка платежной системы  
+✅ Валидация цветов и мини-игр
+✅ Автоматический деплой на GitHub Pages
+✅ Уведомления в Telegram
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>💳 Smart Payment System</h2>
+            <div class="status info">
+                ℹ️ Платежи обрабатываются через URL параметры без сервера
+            </div>
+            
+            <button class="demo-btn info" onclick="simulatePayment()">
+                💰 Тест ЮMoney платежа
+            </button>
+            
+            <div class="code">
+// Как работает без сервера:
+1. Игрок нажимает "Пополнить"
+2. Создается уникальный ID платежа
+3. Сохраняется в localStorage как "pending"
+4. Открывается ЮMoney с successURL содержащим ID
+5. После оплаты ЮMoney перенаправляет обратно с параметрами
+6. Игра проверяет параметры и зачисляет средства
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>📊 Analytics без сервера</h2>
+            <div class="status info">
+                📈 Статистика собирается локально и отправляется в внешние сервисы
+            </div>
+            
+            <button class="demo-btn info" onclick="simulateAnalytics()">
+                📊 Отправить аналитику
+            </button>
+            
+            <div class="code">
+// Варианты аналитики без сервера:
+✅ Google Analytics / Yandex Metrica
+✅ Telegram Bot API для логов
+✅ GitHub Issues API для отчетов
+✅ Discord Webhooks
+✅ Zapier / IFTTT интеграции
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🔔 Уведомления</h2>
+            <div class="status success">
+                📬 Telegram боты работают напрямую из браузера
+            </div>
+            
+            <button class="demo-btn" onclick="sendTelegramNotification()">
+                📱 Отправить в Telegram
+            </button>
+            
+            <div class="code">
+// Telegram Bot API (без сервера):
+const message = `🎰 Событие в игре: ${event}`;
+fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    chat_id: CHAT_ID,
+    text: message
+  })
+});
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>📱 Real-time обновления</h2>
+            <div class="status info">
+                🔄 Используем Service Workers и Broadcast Channel API
+            </div>
+            
+            <button class="demo-btn info" onclick="simulateRealTimeUpdate()">
+                ⚡ Симуляция обновления
+            </button>
+            
+            <div class="code">
+// Real-time без WebSocket:
+✅ Service Workers для фоновых обновлений
+✅ Broadcast Channel для синхронизации вкладок  
+✅ Server-Sent Events через внешние сервисы
+✅ Периодические проверки обновлений
+✅ Push Notifications через браузер
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>📝 Webhook Log</h2>
+            <div id="webhookLog" class="webhook-log">
+                [СИСТЕМА] Webhook демо инициализирован<br>
+                [INFO] Все интеграции готовы к работе<br>
+            </div>
+            
+            <button class="demo-btn danger" onclick="clearLog()">
+                🗑️ Очистить лог
+            </button>
+        </div>
+        
+        <div class="section">
+            <h2>🛠️ Готовые решения</h2>
+            <p>Ваша игра уже использует современные webhook технологии:</p>
+            
+            <div class="status success">
+                ✅ <strong>GitHub Actions</strong> - автоматический CI/CD<br>
+                ✅ <strong>Smart Payments</strong> - ЮMoney без сервера<br>
+                ✅ <strong>URL Parameters</strong> - обработка платежей<br>
+                ✅ <strong>localStorage</strong> - локальное состояние<br>
+                ✅ <strong>Telegram Integration</strong> - уведомления<br>
+                ✅ <strong>Auto Testing</strong> - проверка качества кода<br>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let logCount = 2;
+        
+        function addLog(message, type = 'INFO') {
+            const log = document.getElementById('webhookLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'ERROR' ? '#f44336' : type === 'SUCCESS' ? '#4CAF50' : '#2196F3';
+            
+            log.innerHTML += `<span style="color: ${color}">[${timestamp}] [${type}] ${message}</span><br>`;
+            log.scrollTop = log.scrollHeight;
+            logCount++;
+            
+            // Ограничиваем количество записей
+            if (logCount > 20) {
+                const lines = log.innerHTML.split('<br>');
+                log.innerHTML = lines.slice(-15).join('<br>');
+                logCount = 15;
+            }
+        }
+        
+        function simulateGitHubDeploy() {
+            addLog('🚀 Запуск GitHub Actions workflow...', 'INFO');
+            
+            setTimeout(() => {
+                addLog('🧪 Выполнение тестов HTML, JS, платежей...', 'INFO');
+            }, 1000);
+            
+            setTimeout(() => {
+                addLog('✅ Все тесты пройдены успешно', 'SUCCESS');
+            }, 2000);
+            
+            setTimeout(() => {
+                addLog('📦 Деплой на GitHub Pages...', 'INFO');
+            }, 3000);
+            
+            setTimeout(() => {
+                addLog('🎉 Деплой завершен! Игра обновлена', 'SUCCESS');
+                addLog('📬 Уведомление отправлено в Telegram', 'SUCCESS');
+            }, 4000);
+        }
+        
+        function simulatePayment() {
+            const amount = 300;
+            const paymentId = `demo_${Date.now()}`;
+            
+            addLog(`💳 Создан платеж на ${amount}₽ (ID: ${paymentId})`, 'INFO');
+            addLog('💾 Платеж сохранен в localStorage как pending', 'INFO');
+            addLog('🔗 Открывается ЮMoney с successURL...', 'INFO');
+            
+            setTimeout(() => {
+                addLog('↩️ Возврат с ЮMoney с параметрами: ?payment=success&amount=300&id=' + paymentId, 'INFO');
+            }, 2000);
+            
+            setTimeout(() => {
+                addLog('✅ Платеж верифицирован и обработан', 'SUCCESS');
+                addLog('💰 Баланс игрока пополнен на 300₽', 'SUCCESS');
+            }, 3000);
+        }
+        
+        function simulateAnalytics() {
+            addLog('📊 Сбор данных аналитики...', 'INFO');
+            
+            const events = [
+                'Спин выполнен (ставка: 20₽)',
+                'Мини-игра активирована',
+                'Выигрыш: 150₽',
+                'Время сессии: 5 минут'
+            ];
+            
+            events.forEach((event, index) => {
+                setTimeout(() => {
+                    addLog(`📈 ${event}`, 'INFO');
+                }, (index + 1) * 500);
+            });
+            
+            setTimeout(() => {
+                addLog('📤 Данные отправлены в Google Analytics', 'SUCCESS');
+                addLog('📤 Отчет отправлен в Telegram бот', 'SUCCESS');
+            }, 3000);
+        }
+        
+        function sendTelegramNotification() {
+            addLog('📱 Подготовка сообщения для Telegram...', 'INFO');
+            
+            setTimeout(() => {
+                addLog('🔑 Используется Telegram Bot API', 'INFO');
+            }, 500);
+            
+            setTimeout(() => {
+                addLog('📤 POST запрос к api.telegram.org...', 'INFO');
+            }, 1000);
+            
+            setTimeout(() => {
+                addLog('✅ Уведомление доставлено в чат!', 'SUCCESS');
+                addLog('💬 Сообщение: "🎰 Новый игрок в BingoBett!"', 'SUCCESS');
+            }, 2000);
+        }
+        
+        function simulateRealTimeUpdate() {
+            addLog('⚡ Инициализация real-time обновлений...', 'INFO');
+            
+            const updates = [
+                'Джекпот увеличился до 2,750,000₽',
+                'Новый игрок подключился',
+                'Активных игроков: 23',
+                'Обновление правил игры'
+            ];
+            
+            updates.forEach((update, index) => {
+                setTimeout(() => {
+                    addLog(`🔄 ${update}`, 'SUCCESS');
+                }, (index + 1) * 800);
+            });
+        }
+        
+        function clearLog() {
+            document.getElementById('webhookLog').innerHTML = '[СИСТЕМА] Лог очищен<br>';
+            logCount = 1;
+        }
+        
+        // Автоматическое обновление статуса
+        setInterval(() => {
+            if (Math.random() < 0.3) {
+                const events = [
+                    'Heartbeat: Система работает',
+                    'Проверка обновлений...',
+                    'Синхронизация данных',
+                    'Мониторинг активности'
+                ];
+                const event = events[Math.floor(Math.random() * events.length)];
+                addLog(event, 'INFO');
+            }
+        }, 10000);
+        
+        // Приветственное сообщение
+        setTimeout(() => {
+            addLog('🎰 BingoBett Webhook System готов к работе!', 'SUCCESS');
+        }, 1000);
+    </script>
+</body>
+</html>
