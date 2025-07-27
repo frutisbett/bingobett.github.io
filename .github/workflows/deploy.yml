@@ -1,0 +1,216 @@
+name: 🎰 BingoBett Auto Deploy & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: 🧪 Test Game
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: 🧪 Test HTML validity
+        run: |
+          echo "🔍 Проверка HTML синтаксиса..."
+          # Проверяем базовую структуру HTML
+          if grep -q "<!DOCTYPE html>" index.html; then
+            echo "✅ DOCTYPE найден"
+          else
+            echo "❌ DOCTYPE отсутствует"
+            exit 1
+          fi
+          
+          if grep -q "<html" index.html; then
+            echo "✅ HTML тег найден"
+          else
+            echo "❌ HTML тег отсутствует"
+            exit 1
+          fi
+          
+      - name: 🎮 Test JavaScript functions
+        run: |
+          echo "🔍 Проверка ключевых функций игры..."
+          node -e "
+            const fs = require('fs');
+            const content = fs.readFileSync('index.html', 'utf8');
+            
+            const requiredFunctions = [
+              'initiatePayment',
+              'startCoinRainGame', 
+              'startMiniGame',
+              'spin',
+              'updateBalance'
+            ];
+            
+            let allFound = true;
+            requiredFunctions.forEach(func => {
+              if (content.includes('function ' + func)) {
+                console.log('✅ Функция найдена:', func);
+              } else {
+                console.log('❌ Функция отсутствует:', func);
+                allFound = false;
+              }
+            });
+            
+            if (!allFound) {
+              process.exit(1);
+            }
+            
+            console.log('🎉 Все функции найдены!');
+          "
+          
+      - name: 💰 Test payment system
+        run: |
+          echo "🔍 Проверка платежной системы..."
+          node -e "
+            const fs = require('fs');
+            const content = fs.readFileSync('index.html', 'utf8');
+            
+            // Проверяем кошелек ЮMoney
+            if (content.includes('4100118182998706')) {
+              console.log('✅ Кошелек ЮMoney настроен правильно');
+            } else {
+              console.log('❌ Неправильный кошелек ЮMoney');
+              process.exit(1);
+            }
+            
+            // Проверяем наличие successURL
+            if (content.includes('successURL')) {
+              console.log('✅ successURL настроен');
+            } else {
+              console.log('❌ successURL отсутствует');
+              process.exit(1);
+            }
+          "
+          
+      - name: 🎨 Test colors
+        run: |
+          echo "🔍 Проверка желтых цветов..."
+          node -e "
+            const fs = require('fs');
+            const content = fs.readFileSync('index.html', 'utf8');
+            
+            const yellowCount = (content.match(/#ffd700/g) || []).length;
+            console.log('🎨 Найдено желтых цветов:', yellowCount);
+            
+            if (yellowCount >= 5) {
+              console.log('✅ Желтые цвета настроены');
+            } else {
+              console.log('❌ Недостаточно желтых цветов');
+              process.exit(1);
+            }
+          "
+          
+      - name: 🎮 Test mini-games
+        run: |
+          echo "🔍 Проверка мини-игр..."
+          node -e "
+            const fs = require('fs');
+            const content = fs.readFileSync('index.html', 'utf8');
+            
+            // Проверяем шанс мини-игр (должен быть 25%)
+            if (content.includes('Math.random() < 0.25')) {
+              console.log('✅ Шанс мини-игр: 25%');
+            } else {
+              console.log('❌ Неправильный шанс мини-игр');
+              process.exit(1);
+            }
+            
+            // Проверяем наличие дождя монет
+            if (content.includes('startCoinRainGame')) {
+              console.log('✅ Мини-игра \"Дождь монет\" найдена');
+            } else {
+              console.log('❌ Мини-игра \"Дождь монет\" отсутствует');
+              process.exit(1);
+            }
+          "
+
+  deploy:
+    name: 🚀 Deploy to GitHub Pages
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        
+      - name: 📊 Generate build info
+        run: |
+          echo "🔍 Генерация информации о сборке..."
+          cat > build-info.json << EOF
+          {
+            "buildTime": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "commit": "${{ github.sha }}",
+            "branch": "${{ github.ref_name }}",
+            "version": "$(date +%Y.%m.%d.%H%M)",
+            "deployer": "${{ github.actor }}"
+          }
+          EOF
+          
+          echo "📋 Информация о сборке:"
+          cat build-info.json
+        
+      - name: 🔧 Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: 📦 Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+          
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  notify:
+    name: 📬 Send notifications
+    needs: [test, deploy]
+    runs-on: ubuntu-latest
+    if: always() && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: 📬 Notify Telegram on success
+        if: needs.deploy.result == 'success'
+        run: |
+          if [ -n "${{ secrets.TELEGRAM_BOT_TOKEN }}" ] && [ -n "${{ secrets.TELEGRAM_CHAT_ID }}" ]; then
+            curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "chat_id": "${{ secrets.TELEGRAM_CHAT_ID }}",
+                "text": "🎰 *BingoBett успешно обновлен!*\n\n✅ Все тесты пройдены\n🚀 Развертывание завершено\n🔗 [Открыть игру](https://frutisbett.github.io/bingobett.github.io)\n\n📋 Коммит: `${{ github.sha }}`\n👤 Автор: ${{ github.actor }}",
+                "parse_mode": "Markdown"
+              }'
+            echo "✅ Уведомление в Telegram отправлено"
+          else
+            echo "⚠️ Telegram токены не настроены"
+          fi
+          
+      - name: 📬 Notify Telegram on failure
+        if: needs.test.result == 'failure' || needs.deploy.result == 'failure'
+        run: |
+          if [ -n "${{ secrets.TELEGRAM_BOT_TOKEN }}" ] && [ -n "${{ secrets.TELEGRAM_CHAT_ID }}" ]; then
+            curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "chat_id": "${{ secrets.TELEGRAM_CHAT_ID }}",
+                "text": "❌ *Ошибка в BingoBett!*\n\n🚫 Развертывание провалено\n🔗 [Проверить ошибки](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n📋 Коммит: `${{ github.sha }}`\n👤 Автор: ${{ github.actor }}",
+                "parse_mode": "Markdown"
+              }'
+            echo "🚨 Уведомление об ошибке отправлено"
+          fi
