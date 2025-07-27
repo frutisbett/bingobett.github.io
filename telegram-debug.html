@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🔧 Telegram Mini App Debug</title>
+    <script src="https://telegram.org/js/telegram-web-app.js?v=6.9"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            margin: 0;
+            padding: 15px;
+            line-height: 1.4;
+        }
+        
+        .debug-panel {
+            background: #2d2d2d;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #444;
+        }
+        
+        .debug-panel h3 {
+            color: #ffd700;
+            margin-top: 0;
+            font-size: 16px;
+        }
+        
+        .status {
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin: 5px 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .success { background: #1b5e20; color: #4caf50; }
+        .error { background: #b71c1c; color: #f44336; }
+        .warning { background: #e65100; color: #ff9800; }
+        .info { background: #0d47a1; color: #2196f3; }
+        
+        .code {
+            background: #000;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            margin: 8px 0;
+            overflow-x: auto;
+        }
+        
+        .btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        .btn:hover { background: #45a049; }
+        .btn.danger { background: #f44336; }
+        .btn.info { background: #2196f3; }
+        
+        pre {
+            background: #000;
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 11px;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Telegram Mini App Debug</h1>
+    
+    <div class="debug-panel">
+        <h3>🔍 Базовая диагностика</h3>
+        <div id="basicInfo"></div>
+    </div>
+    
+    <div class="debug-panel">
+        <h3>📱 Telegram WebApp SDK</h3>
+        <div id="telegramInfo"></div>
+    </div>
+    
+    <div class="debug-panel">
+        <h3>🌐 Сетевые запросы</h3>
+        <div id="networkInfo"></div>
+        <button class="btn" onclick="testGameLoad()">🎮 Тест загрузки игры</button>
+        <button class="btn info" onclick="testCORS()">🔗 Тест CORS</button>
+    </div>
+    
+    <div class="debug-panel">
+        <h3>💾 LocalStorage & Cookies</h3>
+        <div id="storageInfo"></div>
+        <button class="btn" onclick="testStorage()">💾 Тест Storage</button>
+    </div>
+    
+    <div class="debug-panel">
+        <h3>🎮 Игровые функции</h3>
+        <div id="gameInfo"></div>
+        <button class="btn" onclick="testGameFrame()">🖼️ Тест iframe</button>
+        <button class="btn danger" onclick="forceReload()">🔄 Принудительная перезагрузка</button>
+    </div>
+    
+    <div class="debug-panel">
+        <h3>📋 Детальный лог</h3>
+        <div id="detailLog" class="code" style="max-height: 300px; overflow-y: auto;"></div>
+        <button class="btn info" onclick="exportLog()">📤 Экспорт лога</button>
+        <button class="btn danger" onclick="clearLog()">🗑️ Очистить</button>
+    </div>
+    
+    <div class="debug-panel">
+        <h3>⚡ Быстрые исправления</h3>
+        <button class="btn" onclick="fixTelegramInit()">🔧 Исправить Telegram Init</button>
+        <button class="btn" onclick="enableDebugMode()">🐛 Debug Mode ON</button>
+        <button class="btn info" onclick="simulateTelegram()">📱 Симуляция Telegram</button>
+        <button class="btn danger" onclick="resetAll()">🔄 Сброс всего</button>
+    </div>
+
+    <script>
+        let debugLog = [];
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] [${type.toUpperCase()}] ${message}`;
+            debugLog.push(logEntry);
+            
+            const logElement = document.getElementById('detailLog');
+            const colors = { info: '#2196f3', success: '#4caf50', error: '#f44336', warning: '#ff9800' };
+            logElement.innerHTML += `<span style="color: ${colors[type] || '#fff'}">${logEntry}</span><br>`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function addStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML += `<div class="status ${type}">${message}</div>`;
+        }
+        
+        function runBasicDiagnostics() {
+            log('🔍 Запуск базовой диагностики...', 'info');
+            
+            // User Agent
+            const userAgent = navigator.userAgent;
+            const isTelegram = userAgent.includes('Telegram');
+            addStatus('basicInfo', `📱 User Agent: ${isTelegram ? '✅ Telegram' : '❌ ' + userAgent.substring(0, 50) + '...'}`, isTelegram ? 'success' : 'error');
+            log(`User Agent: ${userAgent}`, isTelegram ? 'success' : 'error');
+            
+            // Viewport
+            const viewport = `${window.innerWidth}×${window.innerHeight}`;
+            addStatus('basicInfo', `📏 Viewport: ${viewport}`, 'info');
+            
+            // Touch support
+            const hasTouch = 'ontouchstart' in window;
+            addStatus('basicInfo', `👆 Touch: ${hasTouch ? '✅ Поддерживается' : '❌ Не поддерживается'}`, hasTouch ? 'success' : 'warning');
+            
+            // Protocol
+            const isHTTPS = location.protocol === 'https:';
+            addStatus('basicInfo', `🔒 HTTPS: ${isHTTPS ? '✅ Да' : '❌ Нет'}`, isHTTPS ? 'success' : 'error');
+            
+            // JavaScript features
+            const features = {
+                'localStorage': typeof localStorage !== 'undefined',
+                'fetch': typeof fetch !== 'undefined',
+                'WebSocket': typeof WebSocket !== 'undefined',
+                'Canvas': !!document.createElement('canvas').getContext,
+                'Audio': typeof Audio !== 'undefined'
+            };
+            
+            for (const [feature, supported] of Object.entries(features)) {
+                addStatus('basicInfo', `🔧 ${feature}: ${supported ? '✅' : '❌'}`, supported ? 'success' : 'error');
+                log(`${feature}: ${supported ? 'Поддерживается' : 'НЕ поддерживается'}`, supported ? 'success' : 'error');
+            }
+        }
+        
+        function diagnoseTelegram() {
+            log('📱 Диагностика Telegram WebApp...', 'info');
+            
+            // Проверка загрузки SDK
+            const sdkLoaded = typeof window.Telegram !== 'undefined';
+            addStatus('telegramInfo', `📦 SDK загружен: ${sdkLoaded ? '✅ Да' : '❌ Нет'}`, sdkLoaded ? 'success' : 'error');
+            
+            if (!sdkLoaded) {
+                addStatus('telegramInfo', '🚨 КРИТИЧЕСКАЯ ОШИБКА: Telegram SDK не загружен!', 'error');
+                addStatus('telegramInfo', '💡 Возможные причины: CORS, блокировка скриптов, медленное соединение', 'warning');
+                log('КРИТИЧЕСКАЯ ОШИБКА: Telegram SDK не загружен', 'error');
+                return;
+            }
+            
+            // Проверка WebApp
+            const webAppAvailable = window.Telegram.WebApp;
+            addStatus('telegramInfo', `🎮 WebApp доступен: ${webAppAvailable ? '✅ Да' : '❌ Нет'}`, webAppAvailable ? 'success' : 'error');
+            
+            if (webAppAvailable) {
+                const tg = window.Telegram.WebApp;
+                
+                // Основная информация
+                addStatus('telegramInfo', `📱 Версия: ${tg.version || 'неизвестна'}`, 'info');
+                addStatus('telegramInfo', `🎨 Тема: ${tg.colorScheme || 'неизвестна'}`, 'info');
+                addStatus('telegramInfo', `📐 Высота: ${tg.viewportHeight || 'неизвестна'}px`, 'info');
+                addStatus('telegramInfo', `👤 Платформа: ${tg.platform || 'неизвестна'}`, 'info');
+                
+                // Пользователь
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    const user = tg.initDataUnsafe.user;
+                    addStatus('telegramInfo', `👤 Пользователь: ${user.first_name || 'неизвестен'}`, 'success');
+                    log(`Пользователь найден: ${user.first_name} (ID: ${user.id})`, 'success');
+                } else {
+                    addStatus('telegramInfo', '👤 Пользователь: ❌ Данные недоступны', 'warning');
+                    log('Данные пользователя недоступны', 'warning');
+                }
+                
+                // Тестируем методы
+                try {
+                    if (typeof tg.ready === 'function') {
+                        tg.ready();
+                        addStatus('telegramInfo', '✅ tg.ready() выполнен', 'success');
+                        log('tg.ready() выполнен успешно', 'success');
+                    }
+                    
+                    if (typeof tg.expand === 'function') {
+                        tg.expand();
+                        addStatus('telegramInfo', '✅ tg.expand() выполнен', 'success');
+                        log('tg.expand() выполнен успешно', 'success');
+                    }
+                    
+                    if (tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
+                        tg.HapticFeedback.impactOccurred('light');
+                        addStatus('telegramInfo', '✅ Haptic feedback работает', 'success');
+                        log('Haptic feedback протестирован', 'success');
+                    }
+                    
+                } catch (error) {
+                    addStatus('telegramInfo', `❌ Ошибка методов: ${error.message}`, 'error');
+                    log(`Ошибка при тестировании методов: ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        async function testGameLoad() {
+            log('🎮 Тестирование загрузки игры...', 'info');
+            addStatus('networkInfo', '⏳ Загрузка игры...', 'info');
+            
+            try {
+                const response = await fetch('https://frutisbett.github.io/bingobett.github.io', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    const html = await response.text();
+                    const gameSize = (html.length / 1024).toFixed(1);
+                    addStatus('networkInfo', `✅ Игра загружена: ${gameSize}KB`, 'success');
+                    log(`Игра успешно загружена, размер: ${gameSize}KB`, 'success');
+                    
+                    // Проверяем ключевые элементы
+                    const hasSpinButton = html.includes('id="spinButton"');
+                    const hasCoinRain = html.includes('startCoinRainGame');
+                    const hasYellowColors = html.includes('#ffd700');
+                    
+                    addStatus('networkInfo', `🎰 Кнопка спина: ${hasSpinButton ? '✅' : '❌'}`, hasSpinButton ? 'success' : 'error');
+                    addStatus('networkInfo', `💰 Дождь монет: ${hasCoinRain ? '✅' : '❌'}`, hasCoinRain ? 'success' : 'error');
+                    addStatus('networkInfo', `🎨 Желтые цвета: ${hasYellowColors ? '✅' : '❌'}`, hasYellowColors ? 'success' : 'error');
+                    
+                } else {
+                    addStatus('networkInfo', `❌ Ошибка загрузки: ${response.status} ${response.statusText}`, 'error');
+                    log(`Ошибка загрузки игры: ${response.status} ${response.statusText}`, 'error');
+                }
+                
+            } catch (error) {
+                addStatus('networkInfo', `❌ Критическая ошибка: ${error.message}`, 'error');
+                log(`Критическая ошибка загрузки: ${error.message}`, 'error');
+                
+                // Дополнительная диагностика
+                if (error.message.includes('CORS')) {
+                    addStatus('networkInfo', '🚨 Проблема с CORS! Telegram блокирует запросы', 'error');
+                    log('Обнаружена проблема с CORS', 'error');
+                }
+                
+                if (error.message.includes('network')) {
+                    addStatus('networkInfo', '🌐 Проблема с сетью или DNS', 'error');
+                    log('Проблема с сетевым соединением', 'error');
+                }
+            }
+        }
+        
+        async function testCORS() {
+            log('🔗 Тестирование CORS...', 'info');
+            
+            const testUrls = [
+                'https://frutisbett.github.io/bingobett.github.io',
+                'https://api.github.com',
+                'https://httpbin.org/headers'
+            ];
+            
+            for (const url of testUrls) {
+                try {
+                    const response = await fetch(url, { method: 'HEAD' });
+                    addStatus('networkInfo', `✅ CORS OK: ${url}`, 'success');
+                    log(`CORS тест пройден: ${url}`, 'success');
+                } catch (error) {
+                    addStatus('networkInfo', `❌ CORS FAIL: ${url}`, 'error');
+                    log(`CORS тест провален: ${url} - ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        function testStorage() {
+            log('💾 Тестирование Storage...', 'info');
+            
+            try {
+                // localStorage
+                localStorage.setItem('telegram_debug_test', 'test_value');
+                const retrieved = localStorage.getItem('telegram_debug_test');
+                if (retrieved === 'test_value') {
+                    addStatus('storageInfo', '✅ localStorage работает', 'success');
+                    localStorage.removeItem('telegram_debug_test');
+                } else {
+                    addStatus('storageInfo', '❌ localStorage не работает', 'error');
+                }
+                
+                // sessionStorage
+                sessionStorage.setItem('telegram_debug_test', 'test_value');
+                const sessionRetrieved = sessionStorage.getItem('telegram_debug_test');
+                if (sessionRetrieved === 'test_value') {
+                    addStatus('storageInfo', '✅ sessionStorage работает', 'success');
+                    sessionStorage.removeItem('telegram_debug_test');
+                } else {
+                    addStatus('storageInfo', '❌ sessionStorage не работает', 'error');
+                }
+                
+                // cookies
+                document.cookie = 'telegram_debug_test=test_value';
+                const hasCookie = document.cookie.includes('telegram_debug_test');
+                addStatus('storageInfo', `${hasCookie ? '✅' : '❌'} Cookies ${hasCookie ? 'работают' : 'не работают'}`, hasCookie ? 'success' : 'error');
+                
+                log('Storage тестирование завершено', 'success');
+                
+            } catch (error) {
+                addStatus('storageInfo', `❌ Ошибка Storage: ${error.message}`, 'error');
+                log(`Ошибка при тестировании Storage: ${error.message}`, 'error');
+            }
+        }
+        
+        function testGameFrame() {
+            log('🖼️ Тестирование iframe загрузки...', 'info');
+            
+            const iframe = document.createElement('iframe');
+            iframe.style.width = '100%';
+            iframe.style.height = '400px';
+            iframe.style.border = '2px solid #ffd700';
+            iframe.style.borderRadius = '8px';
+            iframe.src = 'https://frutisbett.github.io/bingobett.github.io';
+            
+            iframe.onload = () => {
+                addStatus('gameInfo', '✅ Игра загружена в iframe', 'success');
+                log('Игра успешно загружена в iframe', 'success');
+                
+                try {
+                    const gameWindow = iframe.contentWindow;
+                    const gameDocument = iframe.contentDocument;
+                    
+                    if (gameDocument) {
+                        const spinButton = gameDocument.getElementById('spinButton');
+                        addStatus('gameInfo', `🎰 Кнопка спина: ${spinButton ? '✅ Найдена' : '❌ Не найдена'}`, spinButton ? 'success' : 'error');
+                        
+                        const balanceDisplay = gameDocument.getElementById('balanceDisplay');
+                        addStatus('gameInfo', `💰 Баланс: ${balanceDisplay ? '✅ Найден' : '❌ Не найден'}`, balanceDisplay ? 'success' : 'error');
+                    } else {
+                        addStatus('gameInfo', '❌ Доступ к содержимому iframe заблокирован (CORS)', 'error');
+                        log('CORS блокирует доступ к содержимому iframe', 'error');
+                    }
+                } catch (error) {
+                    addStatus('gameInfo', `❌ Ошибка доступа к iframe: ${error.message}`, 'error');
+                    log(`Ошибка при обращении к iframe: ${error.message}`, 'error');
+                }
+            };
+            
+            iframe.onerror = () => {
+                addStatus('gameInfo', '❌ Ошибка загрузки в iframe', 'error');
+                log('Ошибка загрузки игры в iframe', 'error');
+            };
+            
+            document.getElementById('gameInfo').appendChild(iframe);
+        }
+        
+        function fixTelegramInit() {
+            log('🔧 Попытка исправления Telegram инициализации...', 'info');
+            
+            try {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    const tg = window.Telegram.WebApp;
+                    
+                    // Принудительная инициализация
+                    tg.ready();
+                    tg.expand();
+                    tg.enableClosingConfirmation();
+                    
+                    if (tg.setHeaderColor) {
+                        tg.setHeaderColor('#1a1a1a');
+                    }
+                    
+                    if (tg.MainButton) {
+                        tg.MainButton.hide();
+                    }
+                    
+                    addStatus('gameInfo', '✅ Telegram инициализация выполнена', 'success');
+                    log('Telegram принудительно инициализирован', 'success');
+                    
+                    // Перезагружаем игру
+                    setTimeout(() => {
+                        window.location.href = 'https://frutisbett.github.io/bingobett.github.io';
+                    }, 1000);
+                    
+                } else {
+                    addStatus('gameInfo', '❌ Telegram WebApp недоступен для исправления', 'error');
+                    log('Не удалось исправить - Telegram WebApp недоступен', 'error');
+                }
+            } catch (error) {
+                addStatus('gameInfo', `❌ Ошибка исправления: ${error.message}`, 'error');
+                log(`Ошибка при исправлении: ${error.message}`, 'error');
+            }
+        }
+        
+        function enableDebugMode() {
+            log('🐛 Включение режима отладки...', 'info');
+            
+            // Глобальная обработка ошибок
+            window.onerror = function(msg, url, line, col, error) {
+                const errorMsg = `JS Error: ${msg} at ${url}:${line}:${col}`;
+                addStatus('gameInfo', `🚨 ${errorMsg}`, 'error');
+                log(errorMsg, 'error');
+                return false;
+            };
+            
+            window.addEventListener('unhandledrejection', function(event) {
+                const errorMsg = `Unhandled Promise: ${event.reason}`;
+                addStatus('gameInfo', `🚨 ${errorMsg}`, 'error');
+                log(errorMsg, 'error');
+            });
+            
+            // Перехват console
+            const originalLog = console.log;
+            const originalError = console.error;
+            
+            console.log = function(...args) {
+                log(`Console: ${args.join(' ')}`, 'info');
+                originalLog.apply(console, args);
+            };
+            
+            console.error = function(...args) {
+                log(`Console Error: ${args.join(' ')}`, 'error');
+                originalError.apply(console, args);
+            };
+            
+            addStatus('gameInfo', '✅ Режим отладки включен', 'success');
+            log('Debug mode активирован', 'success');
+        }
+        
+        function simulateTelegram() {
+            log('📱 Симуляция Telegram среды...', 'info');
+            
+            if (!window.Telegram) {
+                window.Telegram = {
+                    WebApp: {
+                        version: '6.9',
+                        platform: 'android',
+                        colorScheme: 'dark',
+                        viewportHeight: window.innerHeight,
+                        ready: () => log('Mock: Telegram.WebApp.ready() вызван', 'success'),
+                        expand: () => log('Mock: Telegram.WebApp.expand() вызван', 'success'),
+                        enableClosingConfirmation: () => log('Mock: enableClosingConfirmation() вызван', 'success'),
+                        setHeaderColor: (color) => log(`Mock: setHeaderColor(${color}) вызван`, 'success'),
+                        HapticFeedback: {
+                            impactOccurred: (type) => log(`Mock: Haptic ${type}`, 'success'),
+                            notificationOccurred: (type) => log(`Mock: Notification ${type}`, 'success')
+                        },
+                        MainButton: {
+                            show: () => log('Mock: MainButton.show()', 'success'),
+                            hide: () => log('Mock: MainButton.hide()', 'success'),
+                            setText: (text) => log(`Mock: MainButton.setText("${text}")`, 'success')
+                        },
+                        openLink: (url) => {
+                            log(`Mock: openLink(${url})`, 'success');
+                            window.open(url, '_blank');
+                        },
+                        initDataUnsafe: {
+                            user: {
+                                id: 123456789,
+                                first_name: 'Debug',
+                                last_name: 'User',
+                                username: 'debuguser'
+                            }
+                        }
+                    }
+                };
+                
+                addStatus('gameInfo', '✅ Mock Telegram WebApp создан', 'success');
+                log('Mock Telegram WebApp создан и готов к использованию', 'success');
+                
+                // Автоматически пытаемся перейти к игре
+                setTimeout(() => {
+                    if (confirm('Mock среда создана. Перейти к игре?')) {
+                        window.location.href = 'https://frutisbett.github.io/bingobett.github.io';
+                    }
+                }, 1000);
+                
+            } else {
+                addStatus('gameInfo', 'ℹ️ Telegram WebApp уже доступен', 'info');
+                log('Telegram WebApp уже существует', 'info');
+            }
+        }
+        
+        function forceReload() {
+            log('🔄 Принудительная перезагрузка...', 'info');
+            
+            // Очищаем кеш
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => {
+                        caches.delete(name);
+                    });
+                });
+            }
+            
+            // Очищаем localStorage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Перезагружаем с очисткой кеша
+            window.location.reload(true);
+        }
+        
+        function resetAll() {
+            log('🔄 Полный сброс...', 'info');
+            
+            // Очищаем все
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Удаляем cookies
+            document.cookie.split(";").forEach(cookie => {
+                const eqPos = cookie.indexOf("=");
+                const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+            });
+            
+            addStatus('gameInfo', '✅ Все данные очищены', 'success');
+            log('Полный сброс выполнен', 'success');
+            
+            setTimeout(() => {
+                window.location.href = 'https://frutisbett.github.io/bingobett.github.io';
+            }, 1000);
+        }
+        
+        function exportLog() {
+            const logText = debugLog.join('\n');
+            const blob = new Blob([logText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `telegram-debug-${Date.now()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            log('Лог экспортирован', 'success');
+        }
+        
+        function clearLog() {
+            debugLog = [];
+            document.getElementById('detailLog').innerHTML = '';
+            log('Лог очищен', 'info');
+        }
+        
+        // Автоматический запуск диагностики
+        window.onload = function() {
+            log('🚀 Запуск Telegram Debug Tool', 'success');
+            
+            setTimeout(() => {
+                runBasicDiagnostics();
+                diagnoseTelegram();
+                testStorage();
+                
+                // Автоматически тестируем загрузку игры
+                setTimeout(() => {
+                    testGameLoad();
+                }, 2000);
+                
+            }, 500);
+        };
+    </script>
+</body>
+</html>

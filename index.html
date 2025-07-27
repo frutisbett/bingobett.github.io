@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>🎰 BingoBett - Слот-машина</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js?v=6.9" defer></script>
     <style>
         * {
             box-sizing: border-box;
@@ -786,6 +786,39 @@
     <script>
         (function() {
             'use strict';
+            
+            // ЭКСТРЕННАЯ ДИАГНОСТИКА
+            console.log('🚀 BingoBett загружается...');
+            console.log('🔍 User Agent:', navigator.userAgent);
+            console.log('🌐 URL:', window.location.href);
+            console.log('📱 Viewport:', window.innerWidth + 'x' + window.innerHeight);
+            console.log('🔗 Protocol:', window.location.protocol);
+            
+            // Проверяем доступность ключевых API
+            console.log('💾 localStorage доступен:', typeof localStorage !== 'undefined');
+            console.log('🌐 fetch доступен:', typeof fetch !== 'undefined');
+            console.log('🎨 Canvas доступен:', !!document.createElement('canvas').getContext);
+            
+            // Отслеживаем загрузку Telegram SDK
+            let telegramCheckInterval = setInterval(() => {
+                if (window.Telegram) {
+                    console.log('📱 Telegram объект найден:', window.Telegram);
+                    if (window.Telegram.WebApp) {
+                        console.log('✅ Telegram WebApp доступен:', window.Telegram.WebApp);
+                        clearInterval(telegramCheckInterval);
+                    }
+                } else {
+                    console.log('⏳ Ожидание загрузки Telegram SDK...');
+                }
+            }, 200);
+            
+            // Остановим проверку через 10 секунд
+            setTimeout(() => {
+                clearInterval(telegramCheckInterval);
+                if (!window.Telegram) {
+                    console.error('🚨 CRITICAL: Telegram SDK не загрузился за 10 секунд!');
+                }
+            }, 10000);
 
             // Telegram Web App инициализация
             let tg = null;
@@ -793,42 +826,150 @@
             let tgUser = null;
 
             function initTelegram() {
-                try {
-                    if (window.Telegram && window.Telegram.WebApp) {
-                        tg = window.Telegram.WebApp;
-                        isTelegramApp = true;
-                        
-                        tg.ready();
-                        tg.expand();
-                        tg.enableClosingConfirmation();
-                        
-                        tgUser = tg.initDataUnsafe?.user;
-                        
-                        // Получаем имя пользователя из Telegram
-                        getTelegramUsername();
-                        
-                        // Настройка MainButton
-                        tg.MainButton.setText('🎰 Крутить');
-                        tg.MainButton.show();
-                        tg.MainButton.onClick(() => {
-                            if (!isSpinning && spinButton) {
-                                startSpin();
+                console.log('🔄 Начинаем инициализацию Telegram WebApp...');
+                
+                // Добавляем максимальное ожидание SDK
+                let attempts = 0;
+                const maxAttempts = 50;
+                
+                const tryInit = () => {
+                    attempts++;
+                    console.log(`Попытка ${attempts}/${maxAttempts} инициализации Telegram SDK`);
+                    
+                    try {
+                        if (window.Telegram && window.Telegram.WebApp) {
+                            tg = window.Telegram.WebApp;
+                            isTelegramApp = true;
+                            
+                            console.log('✅ Telegram WebApp найден:', tg);
+                            console.log('📱 Версия:', tg.version);
+                            console.log('🎨 Тема:', tg.colorScheme);
+                            console.log('📐 Высота:', tg.viewportHeight);
+                            
+                            // ПРИНУДИТЕЛЬНАЯ инициализация
+                            tg.ready();
+                            console.log('✅ tg.ready() выполнен');
+                            
+                            tg.expand();
+                            console.log('✅ tg.expand() выполнен');
+                            
+                            if (typeof tg.enableClosingConfirmation === 'function') {
+                                tg.enableClosingConfirmation();
+                                console.log('✅ enableClosingConfirmation() выполнен');
                             }
-                        });
-                        
-                        console.log('✅ Telegram Web App инициализирован');
-                        
-                        // Haptic feedback при загрузке
-                        if (tg.HapticFeedback) {
-                            tg.HapticFeedback.impactOccurred('medium');
+                            
+                            if (typeof tg.setHeaderColor === 'function') {
+                                tg.setHeaderColor('#1a1a1a');
+                                console.log('✅ setHeaderColor() выполнен');
+                            }
+                            
+                            // Получаем данные пользователя
+                            tgUser = tg.initDataUnsafe?.user;
+                            if (tgUser) {
+                                console.log('👤 Пользователь Telegram:', tgUser.first_name, tgUser.id);
+                                getTelegramUsername();
+                            } else {
+                                console.log('⚠️ Данные пользователя недоступны');
+                            }
+                            
+                            // MainButton
+                            if (tg.MainButton) {
+                                tg.MainButton.setText('🎰 Крутить');
+                                tg.MainButton.show();
+                                tg.MainButton.onClick(() => {
+                                    if (!isSpinning && spinButton) {
+                                        startSpin();
+                                    }
+                                });
+                                console.log('✅ MainButton настроена');
+                            }
+                            
+                            // Haptic feedback
+                            if (tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
+                                tg.HapticFeedback.impactOccurred('medium');
+                                console.log('✅ Haptic feedback работает');
+                            }
+                            
+                            // Показываем все доступные методы для отладки
+                            console.log('🔧 Доступные методы Telegram WebApp:', Object.keys(tg));
+                            
+                            console.log('🎉 Telegram Web App полностью инициализирован!');
+                            return true;
+                        } else {
+                            console.log(`❌ Попытка ${attempts}: Telegram WebApp не найден`);
+                            
+                            if (attempts < maxAttempts) {
+                                setTimeout(tryInit, 100);
+                            } else {
+                                console.error('🚨 КРИТИЧЕСКАЯ ОШИБКА: Telegram WebApp не загрузился после 50 попыток!');
+                                console.log('🔍 window.Telegram:', window.Telegram);
+                                console.log('🔍 User Agent:', navigator.userAgent);
+                                
+                                // Последняя попытка - создаем базовую заглушку
+                                createTelegramFallback();
+                            }
+                            return false;
                         }
+                    } catch (error) {
+                        console.error('❌ Ошибка при инициализации Telegram:', error);
+                        console.error('Stack trace:', error.stack);
                         
-                        return true;
+                        if (attempts < maxAttempts) {
+                            setTimeout(tryInit, 100);
+                        }
+                        return false;
                     }
-                } catch (error) {
-                    console.error('❌ Ошибка инициализации Telegram:', error);
-                }
-                return false;
+                };
+                
+                return tryInit();
+            }
+            
+            function createTelegramFallback() {
+                console.log('🔧 Создаем fallback для Telegram WebApp...');
+                
+                window.Telegram = {
+                    WebApp: {
+                        version: '6.9',
+                        platform: 'unknown',
+                        colorScheme: 'dark',
+                        viewportHeight: window.innerHeight,
+                        ready: () => console.log('Fallback: ready()'),
+                        expand: () => console.log('Fallback: expand()'),
+                        enableClosingConfirmation: () => console.log('Fallback: enableClosingConfirmation()'),
+                        setHeaderColor: (color) => console.log('Fallback: setHeaderColor(' + color + ')'),
+                        HapticFeedback: {
+                            impactOccurred: (type) => console.log('Fallback: Haptic ' + type),
+                            notificationOccurred: (type) => console.log('Fallback: Notification ' + type)
+                        },
+                        MainButton: {
+                            show: () => console.log('Fallback: MainButton.show()'),
+                            hide: () => console.log('Fallback: MainButton.hide()'),
+                            setText: (text) => console.log('Fallback: MainButton.setText(' + text + ')'),
+                            onClick: (callback) => {
+                                console.log('Fallback: MainButton.onClick registered');
+                                // Можно добавить реальную кнопку в интерфейс
+                            }
+                        },
+                        openLink: (url) => {
+                            console.log('Fallback: openLink(' + url + ')');
+                            window.open(url, '_blank');
+                        },
+                        initDataUnsafe: {
+                            user: {
+                                id: Date.now(),
+                                first_name: 'Debug User',
+                                username: 'debuguser'
+                            }
+                        }
+                    }
+                };
+                
+                tg = window.Telegram.WebApp;
+                isTelegramApp = true;
+                tgUser = tg.initDataUnsafe.user;
+                
+                console.log('✅ Fallback Telegram WebApp создан');
+                getTelegramUsername();
             }
 
             // Haptic feedback функция
