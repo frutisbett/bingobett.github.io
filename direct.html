@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎰 BingoBett</title>
+    <script src="https://telegram.org/js/telegram-web-app.js?v=6.9"></script>
+</head>
+<body>
+    <script>
+        // Инициализация Telegram без задержек
+        if (window.Telegram && window.Telegram.WebApp) {
+            const tg = window.Telegram.WebApp;
+            tg.ready();
+            tg.expand();
+        }
+        
+        // МГНОВЕННОЕ перенаправление с максимальным обходом кеша
+        const now = Date.now();
+        const random = Math.random().toString(36).substring(2, 15);
+        
+        const params = new URLSearchParams({
+            'cachebust': now,
+            'v': now,
+            'nocache': random,
+            'ts': now,
+            'rnd': Math.random(),
+            'force': '1',
+            'direct': '1'
+        });
+        
+        // НЕМЕДЛЕННОЕ перенаправление
+        window.location.replace(`./index.html?${params.toString()}`);
+    </script>
+</body>
+</html>
