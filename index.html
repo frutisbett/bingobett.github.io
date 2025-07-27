@@ -1230,8 +1230,8 @@
                     }
 
                     // Запуск мини-игры
-                    // *** ИЗМЕНЕНО: Увеличен шанс с 8% до 13% (+5%) ***
-                    if (Math.random() < 0.13 || totalWin >= betAmount * 20) {
+                    // *** ИЗМЕНЕНО: Увеличен шанс с 8% до 25% (+17%) ***
+                    if (Math.random() < 0.25 || totalWin >= betAmount * 20) {
                         setTimeout(() => {
                             // Случайный выбор между мини-играми: 50% коробки, 50% дождь монет
                             if (Math.random() < 0.5) {
@@ -1621,7 +1621,8 @@
                         console.log(`Пополнение на ${amount} ₽ через YooMoney`);
                         
                         // YooMoney ссылка с данными кошелька
-                        const yoomoneyUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118061966198&quickpay-form=shop&targets=Пополнение+баланса+BingoBett&paymentType=AC&sum=${amount}&label=bingobett_${Date.now()}`;
+                        const paymentLabel = `bingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+                        const yoomoneyUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118182998706&quickpay-form=shop&targets=Пополнение+игрового+баланса+${amount}+рублей&paymentType=AC&sum=${amount}&label=${paymentLabel}&successURL=${encodeURIComponent('https://frutisbett.github.io/bingobett.github.io')}`;
                         
                         if (isTelegramApp && tg) {
                             // В Telegram Mini App
