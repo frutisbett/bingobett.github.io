@@ -7,7 +7,7 @@
 <script src="https://telegram.org/js/telegram-web-app.js?v=6.0" async></script>
 <style>
   body {
-    font-family: Arial, sans-serif;
+    font-family: var(--tg-theme-text-font, Arial, sans-serif);
     background: var(--tg-theme-bg-color, linear-gradient(135deg, #1a1a1a, #444));
     color: var(--tg-theme-text-color, #fff);
     margin: 0; 
@@ -21,6 +21,9 @@
     -webkit-user-select: none;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
+    /* Фиксы для Telegram Mini App */
+    touch-action: manipulation;
+    -webkit-overflow-scrolling: touch;
   }
   .modal-bg {
     position: fixed;
@@ -39,13 +42,14 @@
   .modal {
     background: var(--tg-theme-secondary-bg-color, #333);
     padding: 20px;
-    border-radius: 10px;
+    border-radius: var(--tg-theme-border-radius, 10px);
     text-align: center;
     color: var(--tg-theme-text-color, white);
     min-width: 300px;
     max-width: calc(100vw - 40px);
     max-height: calc(100vh - 40px);
     box-sizing: border-box;
+    border: 1px solid var(--tg-theme-section-separator-color, rgba(255,255,255,0.1));
   }
   .modal input {
     margin: 10px 0;
@@ -647,41 +651,71 @@ console.log('Version:', window.Telegram?.WebApp?.version);
 // Проверка загрузки SDK
 if (typeof window.Telegram === 'undefined') {
     console.error('❌ Telegram WebApp SDK не загружен!');
-    // Показываем сообщение пользователю только в режиме разработки
+    // Показываем информацию для диагностики
+    console.log('🔍 Диагностика окружения:');
+    console.log('- Домен:', window.location.hostname);
+    console.log('- Протокол:', window.location.protocol);
+    console.log('- User Agent содержит TelegramBot:', navigator.userAgent.includes('TelegramBot'));
+    console.log('- Referrer:', document.referrer);
+    
+    // В режиме разработки показываем alert
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        alert('Telegram SDK не найден. Возможно, вы открыли игру в обычном браузере.');
+        alert('Telegram SDK не найден. Игра открыта в обычном браузере.');
     }
 }
 
 // --- Telegram WebApp SDK (Compatible with v6.0+) ---
 let tgUser = null;
-if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
-  console.log('✅ Telegram WebApp SDK загружен успешно');
-  window.Telegram.WebApp.ready();
-  window.Telegram.WebApp.expand();
-  
-  // Дополнительные настройки для лучшей совместимости
-  if (typeof window.Telegram.WebApp.enableClosingConfirmation === 'function') {
-    window.Telegram.WebApp.enableClosingConfirmation();
-  }
-  // Get user data if available
-  if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-    tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-  }
-  // Haptic feedback (compatible with all versions)
-  window.triggerHaptic = () => {
-    try {
-      if (window.Telegram.WebApp.HapticFeedback && 
-          typeof window.Telegram.WebApp.HapticFeedback.impactOccurred === 'function') {
-        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-      }
-    } catch (e) {
-      // Ignore haptic errors
+let isTelegramMiniApp = false;
+
+function initializeTelegramWebApp() {
+  if (typeof window.Telegram !== 'undefined' && window.Telegram.WebApp) {
+    console.log('✅ Telegram WebApp SDK загружен успешно');
+    isTelegramMiniApp = true;
+    
+    // Основная инициализация
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+    
+    // Включаем подтверждение закрытия
+    if (typeof window.Telegram.WebApp.enableClosingConfirmation === 'function') {
+      window.Telegram.WebApp.enableClosingConfirmation();
     }
-  };
-} else {
-  window.triggerHaptic = () => {}; // Fallback for browsers
+    
+    // Устанавливаем цвета заголовка
+    if (typeof window.Telegram.WebApp.setHeaderColor === 'function') {
+      window.Telegram.WebApp.setHeaderColor('#1a1a1a');
+    }
+    
+    // Показываем главную кнопку при необходимости
+    if (window.Telegram.WebApp.MainButton) {
+      window.Telegram.WebApp.MainButton.hide();
+    }
+    
+    // Get user data if available
+    if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+      tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+      console.log('👤 Пользователь Telegram получен:', tgUser);
+    }
+    
+    return true;
+  } else {
+    console.log('⚠️ Telegram WebApp SDK недоступен');
+    return false;
+  }
 }
+
+// Haptic feedback (compatible with all versions)
+window.triggerHaptic = () => {
+  try {
+    if (isTelegramMiniApp && window.Telegram.WebApp.HapticFeedback && 
+        typeof window.Telegram.WebApp.HapticFeedback.impactOccurred === 'function') {
+      window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+    }
+  } catch (e) {
+    // Ignore haptic errors
+  }
+};
 // --- Game Parameters ---
 const columns = 5;
 const rows = 4;
@@ -717,24 +751,50 @@ function setUsername(name) {
   localStorage.setItem('slotUsername', name);
   document.getElementById('username').textContent = name;
 }
-// Initialize user
-if (tgUser && tgUser.first_name) {
-  setUsername(tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : ""));
-} else if (!username) {
+// Initialize user with better Telegram integration
+function initializeUser() {
+  if (tgUser && tgUser.first_name) {
+    const fullName = tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : "");
+    console.log('👤 Установка имени из Telegram:', fullName);
+    setUsername(fullName);
+  } else if (!username) {
+    if (isTelegramMiniApp) {
+      // В Telegram Mini App ждем данные пользователя
+      console.log('⏳ Ожидание данных пользователя Telegram...');
+      setTimeout(() => {
+        if (!tgUser) {
+          console.log('⚠️ Данные пользователя недоступны, запрашиваем имя');
+          showUsernameModal();
+        }
+      }, 1000);
+    } else {
+      showUsernameModal();
+    }
+  } else {
+    setUsername(username);
+  }
+}
+
+function showUsernameModal() {
   document.getElementById('usernameModal').style.display = 'flex';
-  document.getElementById('usernameInput').focus();
+  const usernameInput = document.getElementById('usernameInput');
+  
+  // Для Telegram Mini App убираем автофокус
+  if (!isTelegramMiniApp) {
+    usernameInput.focus();
+  }
+  
   document.getElementById('usernameOkBtn').onclick = function() {
-    let val = document.getElementById('usernameInput').value.trim();
+    let val = usernameInput.value.trim();
     if (val.length > 0) {
       setUsername(val);
       document.getElementById('usernameModal').style.display = 'none';
     }
   };
-  document.getElementById('usernameInput').onkeydown = function(e) {
+  
+  usernameInput.onkeydown = function(e) {
     if (e.key === "Enter") document.getElementById('usernameOkBtn').click();
   };
-} else {
-  setUsername(username);
 }
 // --- Free Spins Management ---
 class FreeSpinsManager {
@@ -855,9 +915,14 @@ function initiatePayment(amount) {
   }));
 
   // Открываем ссылку на оплату
-  if (window.Telegram && window.Telegram.WebApp) {
+  if (isTelegramMiniApp && window.Telegram.WebApp.openLink) {
+    console.log('🔗 Открытие ссылки через Telegram WebApp');
     window.Telegram.WebApp.openLink(paymentUrl);
+  } else if (isTelegramMiniApp && window.Telegram.WebApp.openTelegramLink) {
+    console.log('🔗 Открытие ссылки через Telegram Link');
+    window.Telegram.WebApp.openTelegramLink(paymentUrl);
   } else {
+    console.log('🔗 Открытие ссылки в новом окне');
     window.open(paymentUrl, '_blank');
   }
   
@@ -1426,6 +1491,13 @@ function startGame() {
     setTimeout(startGame, 100);
     return;
   }
+  
+  console.log('🚀 Инициализация Telegram WebApp...');
+  initializeTelegramWebApp();
+  
+  console.log('🚀 Инициализация пользователя...');
+  initializeUser();
+  
   console.log('🚀 Запуск игры...');
   initializeGame();
 }
