@@ -45,13 +45,13 @@
         }
         
         .logo {
-            width: 150px;
-            height: 150px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
-            margin: 0 auto 30px;
+            margin: 0 auto 40px;
             background: url('./frutisn_logo.jpg') center/cover;
-            border: 4px solid #ffd700;
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+            border: 5px solid #ffd700;
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.6);
             animation: logoFloat 4s ease-in-out infinite;
         }
         
@@ -74,17 +74,23 @@
             50% { opacity: 0.8; }
         }
         
-        .welcome-message {
-            font-size: 1.4em;
-            margin-bottom: 30px;
-            line-height: 1.4;
-            font-weight: 600;
-            background: linear-gradient(45deg, #fff, #ffd700, #fff);
-            background-size: 200% 200%;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: textShimmer 3s ease-in-out infinite;
+        .main-message {
+            font-size: 2em;
+            margin-bottom: 40px;
+            line-height: 1.3;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+            animation: messageGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes messageGlow {
+            0% { 
+                text-shadow: 2px 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.3);
+            }
+            100% { 
+                text-shadow: 2px 2px 8px rgba(0,0,0,0.8), 0 0 30px rgba(255,215,0,0.6);
+            }
         }
         
         @keyframes textShimmer {
@@ -117,15 +123,17 @@
             background-size: 200% 200%;
             color: #000;
             border: none;
-            padding: 18px 35px;
-            border-radius: 25px;
-            font-size: 1.4em;
+            padding: 20px 50px;
+            border-radius: 30px;
+            font-size: 1.6em;
             font-weight: bold;
             cursor: pointer;
-            margin: 25px 0;
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
             transition: all 0.3s ease;
             animation: buttonShine 2s ease-in-out infinite;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
         
         @keyframes buttonShine {
@@ -165,29 +173,17 @@
 </head>
 <body>
     <div class="welcome-container">
-        <div class="winners-badge">🏆 ЛИГА ПОБЕДИТЕЛЕЙ</div>
-        
         <div class="logo"></div>
         
-        <h1 class="welcome-title">BingoBett</h1>
-        
-        <div class="welcome-message">
+        <div class="main-message">
             Жми на старт и врывайся в лигу победителей!
         </div>
         
-        <div class="features-list">
-            <div class="feature-item">🎰 Реальные выигрыши</div>
-            <div class="feature-item">💰 Вывод через ЮMoney</div>
-            <div class="feature-item">🌧️ Мини-игра "Дождь монет"</div>
-            <div class="feature-item">🎁 55 бесплатных спинов</div>
-            <div class="feature-item">✨ Уникальный дизайн</div>
-        </div>
-        
         <button class="start-button" onclick="startGame()">
-            🚀 НАЧАТЬ ИГРУ
+            🚀 СТАРТ
         </button>
         
-        <div class="countdown">Переход через <span id="counter">2</span> сек...</div>
+        <div class="countdown">Переход через <span id="counter">3</span> сек...</div>
     </div>
 
     <script>
@@ -213,7 +209,7 @@
         });
         
         // Обратный отсчет
-        let counter = 2;
+        let counter = 3;
         const counterElement = document.getElementById('counter');
         
         const countdownInterval = setInterval(() => {
