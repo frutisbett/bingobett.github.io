@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BingoBett Bot Handler</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: #ffd700;
+            padding: 20px;
+            text-align: center;
+        }
+        .status {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid #ffd700;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .command {
+            background: rgba(255, 215, 0, 0.05);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <h1>🤖 BingoBett Bot Handler</h1>
+    <div class="status" id="status">Инициализация...</div>
+    
+    <div class="command">
+        <h3>/start</h3>
+        <p>🎰 Добро пожаловать в BingoBett! Жми на старт и врывайся в лигу победителей!</p>
+    </div>
+    
+    <div class="command">
+        <h3>/play</h3>
+        <p>🎮 Готов играть в BingoBett? Реальные выигрыши через ЮMoney</p>
+    </div>
+    
+    <div class="command">
+        <h3>/help</h3>
+        <p>❓ Помощь по BingoBett - как играть, мини-игры, выплаты</p>
+    </div>
+
+    <script>
+        const BOT_TOKEN = '8019563361:AAGgj70UNEPLLQi1kL-pBwGXD_3VmMHM8mA';
+        const MINI_APP_URL = 'https://frutisbett.github.io/bingobett.github.io/welcome.html';
+        
+        // Проверка статуса бота
+        async function checkBotStatus() {
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getMe`);
+                const data = await response.json();
+                
+                if (data.ok) {
+                    document.getElementById('status').innerHTML = `
+                        ✅ Бот активен: <strong>${data.result.first_name}</strong><br>
+                        Username: @${data.result.username}<br>
+                        ID: ${data.result.id}
+                    `;
+                } else {
+                    document.getElementById('status').innerHTML = '❌ Ошибка подключения к боту';
+                }
+            } catch (error) {
+                document.getElementById('status').innerHTML = '❌ Ошибка: ' + error.message;
+            }
+        }
+        
+        // Отправка сообщения
+        async function sendMessage(chatId, text, replyMarkup = null) {
+            const payload = {
+                chat_id: chatId,
+                text: text,
+                parse_mode: 'Markdown'
+            };
+            
+            if (replyMarkup) {
+                payload.reply_markup = replyMarkup;
+            }
+            
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                return await response.json();
+            } catch (error) {
+                console.error('Error sending message:', error);
+                return null;
+            }
+        }
+        
+        // Обработчик команд
+        function handleCommand(chatId, command) {
+            const webAppButton = {
+                inline_keyboard: [[
+                    {
+                        text: "🎰 ИГРАТЬ В BINGOBETT",
+                        web_app: { url: MINI_APP_URL }
+                    }
+                ]]
+            };
+            
+            switch (command) {
+                case '/start':
+                    sendMessage(chatId, 
+                        `🎰 *Добро пожаловать в BingoBett!*\n\n🏆 *Жми на старт и врывайся в лигу победителей!*\n\n🚀 Нажмите кнопку ниже чтобы запустить игру:`,
+                        webAppButton
+                    );
+                    break;
+                    
+                case '/play':
+                    sendMessage(chatId,
+                        `🎮 *Готов играть в BingoBett?*\n\n✨ Реальные выигрыши через ЮMoney\n🌧️ Мини-игра "Дождь монет"\n🎁 55 бесплатных спинов ежедневно\n💎 Уникальный золотой дизайн\n\n🚀 Запускайте игру:`,
+                        webAppButton
+                    );
+                    break;
+                    
+                case '/help':
+                    sendMessage(chatId,
+                        `❓ *Помощь по BingoBett*\n\n🎯 *Как играть:*\n• Нажмите кнопку "Играть"\n• Крутите барабаны\n• Выигрывайте реальные деньги\n• Выводите через ЮMoney\n\n🎮 *Мини-игры:*\n• 🌧️ Дождь монет (33% шанс)\n• 📦 Выбери коробку (33% шанс)\n\n💰 *Выплаты:*\n• Минимальный вывод: 40,001 ₽\n• Через ЮMoney кошелек\n• Мгновенные переводы\n\n🚀 Начать играть:`,
+                        webAppButton
+                    );
+                    break;
+                    
+                default:
+                    sendMessage(chatId,
+                        `🎰 Привет! Используйте команды:\n/start - Запустить BingoBett\n/play - Играть в слоты\n/help - Получить помощь\n\nИли просто нажмите кнопку ниже:`,
+                        webAppButton
+                    );
+            }
+        }
+        
+        // Инициализация
+        checkBotStatus();
+        
+        // Экспорт функций для внешнего использования
+        window.BingoBettBot = {
+            sendMessage,
+            handleCommand,
+            BOT_TOKEN,
+            MINI_APP_URL
+        };
+        
+        console.log('🤖 BingoBett Bot Handler ready for @FrutisBetBoom_bot');
+    </script>
+</body>
+</html>
