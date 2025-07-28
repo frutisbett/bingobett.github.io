@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Casino Test</title>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        .test-btn {
+            background: #ffd700;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            display: block;
+            width: 80%;
+            max-width: 300px;
+            margin: 10px auto;
+        }
+        .log {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid #ffd700;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Casino Diagnostic Test</h1>
+    
+    <button class="test-btn" onclick="testLobby()">🏛️ Тест Casino Lobby</button>
+    <button class="test-btn" onclick="testBingoBett()">🎰 Тест BingoBett</button>
+    <button class="test-btn" onclick="testBettBoom()">💥 Тест BettBoom</button>
+    <button class="test-btn" onclick="testWelcome()">👋 Тест Welcome</button>
+    <button class="test-btn" onclick="clearLog()">🗑️ Очистить лог</button>
+    
+    <div class="log" id="log">
+        <div>📊 Логи появятся здесь...</div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<div>[${time}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+        
+        function clearLog() {
+            document.getElementById('log').innerHTML = '<div>📊 Лог очищен...</div>';
+        }
+        
+        function testLobby() {
+            log('🏛️ Тестируем переход на casino-lobby.html');
+            try {
+                window.location.href = './casino-lobby.html?test=1&v=' + Date.now();
+            } catch (error) {
+                log('❌ Ошибка: ' + error.message);
+            }
+        }
+        
+        function testBingoBett() {
+            log('🎰 Тестируем переход на index.html (BingoBett)');
+            try {
+                window.location.href = './index.html?test=1&slot=bingobett&v=' + Date.now();
+            } catch (error) {
+                log('❌ Ошибка: ' + error.message);
+            }
+        }
+        
+        function testBettBoom() {
+            log('💥 Тестируем переход на bettboom.html');
+            try {
+                window.location.href = './bettboom.html?test=1&slot=bettboom&v=' + Date.now();
+            } catch (error) {
+                log('❌ Ошибка: ' + error.message);
+            }
+        }
+        
+        function testWelcome() {
+            log('👋 Тестируем переход на welcome.html');
+            try {
+                window.location.href = './welcome.html?test=1&v=' + Date.now();
+            } catch (error) {
+                log('❌ Ошибка: ' + error.message);
+            }
+        }
+        
+        // Диагностика при загрузке
+        window.addEventListener('load', () => {
+            log('✅ Страница загружена');
+            log('📍 URL: ' + window.location.href);
+            log('🌐 User Agent: ' + navigator.userAgent);
+            
+            // Проверяем доступность файлов
+            const files = ['casino-lobby.html', 'index.html', 'bettboom.html', 'welcome.html'];
+            
+            files.forEach(file => {
+                fetch(file)
+                    .then(response => {
+                        if (response.ok) {
+                            log(`✅ ${file} доступен`);
+                        } else {
+                            log(`❌ ${file} недоступен (${response.status})`);
+                        }
+                    })
+                    .catch(error => {
+                        log(`❌ ${file} ошибка: ${error.message}`);
+                    });
+            });
+        });
+        
+        // Обработка ошибок
+        window.addEventListener('error', (event) => {
+            log(`❌ Глобальная ошибка: ${event.error}`);
+        });
+    </script>
+</body>
+</html>
