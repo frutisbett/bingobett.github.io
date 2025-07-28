@@ -264,7 +264,7 @@
     
     <div class="slots-container">
         <!-- BettBoom - Высокие ставки -->
-        <div class="slot-machine bettboom" onclick="playSlot('bettboom')">
+        <div class="slot-machine bettboom">
             <div class="special-badge">🔥 HOT</div>
             <div class="slot-icon">💥</div>
             <div class="slot-name">BettBoom</div>
@@ -294,7 +294,7 @@
         </div>
         
         <!-- BingoBett - Классика -->
-        <div class="slot-machine bingobett" onclick="playSlot('bingobett')">
+        <div class="slot-machine bingobett">
             <div class="special-badge">⭐ VIP</div>
             <div class="slot-icon">🎰</div>
             <div class="slot-name">BingoBett</div>
@@ -326,6 +326,8 @@
     
     <script>
         console.log('🎰 FrutisCasino Lobby загружено!');
+        console.log('📍 URL:', window.location.href);
+        console.log('🌐 User Agent:', navigator.userAgent);
         
         // Telegram WebApp инициализация
         let tg = null;
@@ -352,45 +354,89 @@
         function playSlot(slotType) {
             console.log(`🎰 Запуск ${slotType}`);
             
-            if (tg && tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('heavy');
+            try {
+                if (tg && tg.HapticFeedback) {
+                    tg.HapticFeedback.impactOccurred('heavy');
+                }
+                
+                // Определяем URL игры
+                let gameUrl;
+                if (slotType === 'bettboom') {
+                    gameUrl = './bettboom.html';
+                    console.log('🔥 Переход на BettBoom');
+                } else if (slotType === 'bingobett') {
+                    gameUrl = './index.html';
+                    console.log('🎰 Переход на BingoBett');
+                } else {
+                    console.error('❌ Неизвестный тип слота:', slotType);
+                    gameUrl = './index.html'; // fallback
+                }
+                
+                // Переходим на игру с параметрами
+                const params = new URLSearchParams({
+                    'slot': slotType,
+                    'source': 'casino-lobby',
+                    'v': Date.now(),
+                    'debug': '1'
+                });
+                
+                const fullUrl = `${gameUrl}?${params.toString()}`;
+                console.log('🚀 Переход по URL:', fullUrl);
+                
+                // Принудительный переход
+                window.location.href = fullUrl;
+                
+                // Резервный вариант если что-то пошло не так
+                setTimeout(() => {
+                    if (window.location.href.includes('casino-lobby.html')) {
+                        console.warn('⚠️ Переход не сработал, пробуем replace');
+                        window.location.replace(fullUrl);
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                console.error('❌ Ошибка в playSlot:', error);
+                // Аварийный переход на основную игру
+                window.location.href = './index.html';
             }
-            
-            // Определяем URL игры
-            let gameUrl;
-            if (slotType === 'bettboom') {
-                // Создадим отдельную версию игры с другими настройками
-                gameUrl = './bettboom.html';
-            } else {
-                // Используем существующую BingoBett
-                gameUrl = './index.html';
-            }
-            
-            // Переходим на игру с параметрами
-            const params = new URLSearchParams({
-                'slot': slotType,
-                'source': 'casino-lobby',
-                'v': Date.now()
-            });
-            
-            window.location.href = `${gameUrl}?${params.toString()}`;
         }
         
         // Анимация при загрузке
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('🎰 Casino Lobby загружен');
             loadBalance();
             
-            // Анимированное появление слот-машин
+            // Убираем проблемную анимацию - сразу показываем слоты
             const slots = document.querySelectorAll('.slot-machine');
+            console.log(`🎯 Найдено слотов: ${slots.length}`);
+            
             slots.forEach((slot, index) => {
-                slot.style.opacity = '0';
-                slot.style.transform = 'translateY(30px)';
+                slot.style.opacity = '1';
+                slot.style.transform = 'translateY(0)';
+                slot.style.transition = 'all 0.3s ease';
                 
-                setTimeout(() => {
-                    slot.style.transition = 'all 0.6s ease';
-                    slot.style.opacity = '1';
-                    slot.style.transform = 'translateY(0)';
-                }, index * 200);
+                // Добавляем обработчики клика принудительно
+                slot.addEventListener('click', function() {
+                    const slotType = this.classList.contains('bettboom') ? 'bettboom' : 'bingobett';
+                    console.log(`🎲 Клик по слоту: ${slotType}`);
+                    playSlot(slotType);
+                });
+                
+                console.log(`✅ Слот ${index + 1} готов`);
+            });
+            
+            // Проверка кнопок
+            const playButtons = document.querySelectorAll('.play-button');
+            console.log(`🔘 Найдено кнопок: ${playButtons.length}`);
+            
+            playButtons.forEach((button, index) => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const slotType = this.closest('.slot-machine').classList.contains('bettboom') ? 'bettboom' : 'bingobett';
+                    console.log(`🎯 Клик по кнопке слота: ${slotType}`);
+                    playSlot(slotType);
+                });
+                console.log(`✅ Кнопка ${index + 1} готова`);
             });
         });
         
