@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎰 BingoBett - Лига Победителей</title>
+    <script src="https://telegram.org/js/telegram-web-app.js?v=6.9" defer></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #000, #1a1a1a, #333);
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .welcome-container {
+            background: rgba(255, 215, 0, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 15px 50px rgba(255, 215, 0, 0.4);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            animation: welcomeGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes welcomeGlow {
+            0% { 
+                box-shadow: 0 15px 50px rgba(255, 215, 0, 0.4);
+                transform: scale(1);
+            }
+            100% { 
+                box-shadow: 0 20px 60px rgba(255, 215, 0, 0.6);
+                transform: scale(1.02);
+            }
+        }
+        
+        .logo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            background: url('./frutisn_logo.jpg') center/cover;
+            border: 4px solid #ffd700;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+            animation: logoFloat 4s ease-in-out infinite;
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+        
+        .welcome-title {
+            font-size: 2.2em;
+            color: #ffd700;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            animation: titlePulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes titlePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .welcome-message {
+            font-size: 1.4em;
+            margin-bottom: 30px;
+            line-height: 1.4;
+            font-weight: 600;
+            background: linear-gradient(45deg, #fff, #ffd700, #fff);
+            background-size: 200% 200%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes textShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .features-list {
+            text-align: left;
+            margin: 25px 0;
+            font-size: 1em;
+        }
+        
+        .feature-item {
+            margin: 12px 0;
+            padding: 10px 15px;
+            background: rgba(255, 215, 0, 0.15);
+            border-radius: 12px;
+            border-left: 4px solid #ffd700;
+            animation: featureSlide 0.5s ease-out;
+        }
+        
+        @keyframes featureSlide {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .start-button {
+            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+            background-size: 200% 200%;
+            color: #000;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 25px;
+            font-size: 1.4em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 25px 0;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s ease;
+            animation: buttonShine 2s ease-in-out infinite;
+        }
+        
+        @keyframes buttonShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .start-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(255, 215, 0, 0.6);
+        }
+        
+        .countdown {
+            font-size: 1.1em;
+            color: #ffd700;
+            margin-top: 15px;
+            opacity: 0.8;
+        }
+        
+        .winners-badge {
+            background: linear-gradient(45deg, #ff4444, #ff6666);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: badgePulse 2s infinite;
+        }
+        
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 6px 20px rgba(255, 68, 68, 0.5); }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="winners-badge">🏆 ЛИГА ПОБЕДИТЕЛЕЙ</div>
+        
+        <div class="logo"></div>
+        
+        <h1 class="welcome-title">BingoBett</h1>
+        
+        <div class="welcome-message">
+            Жми на старт и врывайся в лигу победителей!
+        </div>
+        
+        <div class="features-list">
+            <div class="feature-item">🎰 Реальные выигрыши</div>
+            <div class="feature-item">💰 Вывод через ЮMoney</div>
+            <div class="feature-item">🌧️ Мини-игра "Дождь монет"</div>
+            <div class="feature-item">🎁 55 бесплатных спинов</div>
+            <div class="feature-item">✨ Уникальный дизайн</div>
+        </div>
+        
+        <button class="start-button" onclick="startGame()">
+            🚀 НАЧАТЬ ИГРУ
+        </button>
+        
+        <div class="countdown">Переход через <span id="counter">2</span> сек...</div>
+    </div>
+
+    <script>
+        console.log('🏆 Welcome to BingoBett - Лига Победителей!');
+        
+        // Telegram WebApp инициализация
+        let tg = null;
+        if (window.Telegram && window.Telegram.WebApp) {
+            tg = window.Telegram.WebApp;
+            tg.ready();
+            tg.expand();
+            console.log('✅ Telegram WebApp инициализирован');
+            
+            if (tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
+                tg.HapticFeedback.impactOccurred('medium');
+            }
+        }
+        
+        // Анимация появления элементов
+        const features = document.querySelectorAll('.feature-item');
+        features.forEach((feature, index) => {
+            feature.style.animationDelay = `${index * 0.1}s`;
+        });
+        
+        // Обратный отсчет
+        let counter = 2;
+        const counterElement = document.getElementById('counter');
+        
+        const countdownInterval = setInterval(() => {
+            counter--;
+            counterElement.textContent = counter;
+            
+            if (tg && tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+            
+            if (counter <= 0) {
+                clearInterval(countdownInterval);
+                startGame();
+            }
+        }, 1000);
+        
+        function startGame() {
+            console.log('🎮 Запуск BingoBett...');
+            
+            if (tg && tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('heavy');
+            }
+            
+            // Переход на игру с обходом кеша
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 15);
+            
+            const params = new URLSearchParams({
+                'welcome': '1',
+                'league': 'winners',
+                'v': timestamp,
+                'ts': timestamp,
+                'rnd': random
+            });
+            
+            window.location.replace(`./index.html?${params.toString()}`);
+        }
+        
+        // Автоматический запуск если что-то пойдет не так
+        setTimeout(() => {
+            if (window.location.pathname.includes('welcome.html')) {
+                console.log('⚠️ Автоматический запуск игры');
+                startGame();
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
