@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💳 Платежная система BingoBett</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 50px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            color: #ffd700;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .header p {
+            color: #ccc;
+            font-size: 16px;
+        }
+        
+        .payment-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            color: #aaa;
+            font-weight: 500;
+        }
+        
+        .info-value {
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .amount {
+            color: #4caf50;
+            font-size: 18px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status.pending {
+            background: #ff9800;
+            color: #000;
+        }
+        
+        .status.success {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .status.error {
+            background: #f44336;
+            color: white;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #4caf50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .timer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .security-badge {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .security-badge span {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎰 BingoBett Payments</h1>
+            <p>Безопасная платежная система через дилера</p>
+        </div>
+        
+        <div id="paymentInfo" class="payment-info">
+            <div class="info-item">
+                <span class="info-label">Статус:</span>
+                <span id="paymentStatus" class="status pending">Ожидание...</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Сумма:</span>
+                <span id="paymentAmount" class="info-value amount">0 ₽</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">ID транзакции:</span>
+                <span id="transactionId" class="info-value">—</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Игрок:</span>
+                <span id="playerId" class="info-value">—</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Время:</span>
+                <span id="paymentTime" class="info-value">—</span>
+            </div>
+        </div>
+        
+        <div id="actionSection">
+            <div class="action-buttons">
+                <button id="payButton" class="btn btn-primary" onclick="redirectToPayment()">
+                    💳 Перейти к оплате
+                </button>
+                <button class="btn btn-secondary" onclick="cancelPayment()">
+                    ❌ Отмена
+                </button>
+            </div>
+        </div>
+        
+        <div id="loadingSection" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Обработка платежа...</p>
+        </div>
+        
+        <div class="timer">
+            <p>Сессия действительна: <span id="timer">05:00</span></p>
+        </div>
+        
+        <div class="security-badge">
+            <p>🔒 <span>Защищено шифрованием</span> • SSL сертификат</p>
+        </div>
+    </div>
+
+    <script>
+        // Параметры из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const transactionId = urlParams.get('transaction');
+        const paymentId = urlParams.get('payment_id');
+        const amount = urlParams.get('amount');
+        const userId = urlParams.get('user_id');
+        
+        // Элементы DOM
+        const paymentStatus = document.getElementById('paymentStatus');
+        const paymentAmount = document.getElementById('paymentAmount');
+        const transactionIdElement = document.getElementById('transactionId');
+        const playerIdElement = document.getElementById('playerId');
+        const paymentTimeElement = document.getElementById('paymentTime');
+        const actionSection = document.getElementById('actionSection');
+        const loadingSection = document.getElementById('loadingSection');
+        const timerElement = document.getElementById('timer');
+        
+        // Таймер сессии (5 минут)
+        let timeLeft = 300; // 5 минут в секундах
+        let timerInterval;
+        
+        // Инициализация страницы
+        function initPage() {
+            if (amount) {
+                paymentAmount.textContent = parseInt(amount).toLocaleString('ru-RU') + ' ₽';
+            }
+            
+            if (transactionId) {
+                transactionIdElement.textContent = transactionId;
+            }
+            
+            if (paymentId) {
+                transactionIdElement.textContent = paymentId;
+            }
+            
+            if (userId) {
+                playerIdElement.textContent = userId;
+            }
+            
+            paymentTimeElement.textContent = new Date().toLocaleString('ru-RU');
+            
+            // Запускаем таймер
+            startTimer();
+            
+            // Если есть transactionId, проверяем статус платежа
+            if (transactionId) {
+                checkPaymentStatus();
+            }
+        }
+        
+        // Таймер обратного отсчета
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    paymentStatus.textContent = 'Истекло время';
+                    paymentStatus.className = 'status error';
+                    actionSection.style.display = 'none';
+                }
+                
+                if (timeLeft <= 60) {
+                    timerElement.style.color = '#ff6b6b';
+                }
+            }, 1000);
+        }
+        
+        // Перенаправление на страницу оплаты
+        function redirectToPayment() {
+            showLoading();
+            
+            // Здесь будет вызов API дилера для создания платежа
+            // Временная заглушка - прямой переход на YooMoney
+            setTimeout(() => {
+                const yoomoneyUrl = generateYooMoneyUrl();
+                window.location.href = yoomoneyUrl;
+            }, 1000);
+        }
+        
+        // Генерация URL для YooMoney
+        function generateYooMoneyUrl() {
+            const baseUrl = 'https://yoomoney.ru/quickpay/confirm.xml';
+            const params = new URLSearchParams({
+                receiver: '4100118182998706',
+                'quickpay-form': 'shop',
+                targets: `BingoBett пополнение (${transactionId || paymentId || 'dealer_' + Date.now()})`,
+                'paymentType': 'AC',
+                sum: amount || '1000',
+                label: transactionId || paymentId,
+                successURL: `https://frutisbett.github.io/bingobett.github.io/?payment=success&amount=${amount}`,
+                failURL: `https://frutisbett.github.io/bingobett.github.io/?payment=error`
+            });
+            
+            return `${baseUrl}?${params.toString()}`;
+        }
+        
+        // Проверка статуса платежа
+        async function checkPaymentStatus() {
+            try {
+                // Здесь будет вызов API дилера для проверки статуса
+                // Временная заглушка
+                const response = { status: 'pending' };
+                
+                if (response.status === 'completed') {
+                    paymentStatus.textContent = 'Оплачено';
+                    paymentStatus.className = 'status success';
+                    actionSection.style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Ошибка проверки статуса:', error);
+            }
+        }
+        
+        // Отмена платежа
+        function cancelPayment() {
+            if (confirm('Вы уверены, что хотите отменить платеж?')) {
+                window.location.href = 'https://frutisbett.github.io/bingobett.github.io/';
+            }
+        }
+        
+        // Показать загрузку
+        function showLoading() {
+            actionSection.style.display = 'none';
+            loadingSection.style.display = 'block';
+        }
+        
+        // Скрыть загрузку
+        function hideLoading() {
+            actionSection.style.display = 'block';
+            loadingSection.style.display = 'none';
+        }
+        
+        // Запуск при загрузке страницы
+        document.addEventListener('DOMContentLoaded', initPage);
+        
+        // Обработка сообщений от родительского окна
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'payment_data') {
+                const data = event.data;
+                if (data.amount) paymentAmount.textContent = data.amount + ' ₽';
+                if (data.userId) playerIdElement.textContent = data.userId;
+            }
+        });
+    </script>
+</body>
+</html>
