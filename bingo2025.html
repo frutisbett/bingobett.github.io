@@ -645,10 +645,10 @@
     </div>
 
     <div class="replenish-buttons">
-        <button class="replenish-btn" data-amount="50">💳 50 ₽</button>
+        <button class="replenish-btn" data-amount="1000">💳 1 000 ₽</button>
         <button class="replenish-btn" data-amount="300">💳 300 ₽</button>
-        <button class="replenish-btn" data-amount="500">💳 500 ₽</button>
         <button class="replenish-btn" data-amount="800">💳 800 ₽</button>
+        <button class="replenish-btn" data-amount="10000">💳 10 000 ₽</button>
     </div>
 
     <div style="text-align: center;">
@@ -1775,12 +1775,12 @@
                     if (stopAutoSpinButton) stopAutoSpinButton.style.display = 'none';
                 }
 
-                // Кнопки пополнения через YooMoney
+                // Кнопки пополнения через дилера
                 const replenishButtons = document.querySelectorAll('.replenish-btn');
                 replenishButtons.forEach(btn => {
                     btn.onclick = () => {
-                        const amount = btn.getAttribute('data-amount');
-                        console.log(`🛒 Пополнение на ${amount} ₽ через YooMoney`);
+                        const amount = parseInt(btn.getAttribute('data-amount'));
+                        console.log(`🛒 Пополнение на ${amount} ₽ через дилера`);
                         
                         // Генерируем уникальный ID платежа
                         const paymentId = `bingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
@@ -1788,7 +1788,7 @@
                         // Сохраняем информацию о платеже
                         const paymentInfo = {
                             id: paymentId,
-                            amount: parseInt(amount),
+                            amount: amount,
                             timestamp: Date.now(),
                             status: 'pending'
                         };
@@ -1796,9 +1796,13 @@
                         
                         // Формируем URL для YooMoney с возвратом на игру
                         const successURL = `https://frutisbett.github.io/bingobett.github.io?payment=success&amount=${amount}&id=${paymentId}`;
-                        const yoomoneyUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118182998706&quickpay-form=shop&targets=Пополнение+игрового+баланса+BingoBett&paymentType=AC&sum=${amount}&label=${paymentId}&successURL=${encodeURIComponent(successURL)}`;
+                        // Временная заглушка URL дилера - нужно заменить на реальный URL
+                        const dealerUrl = `https://dealer-system.example.com/payment?game=bingo&amount=${amount}&user_id=${tgUser?.id || 'unknown'}&payment_id=${paymentId}&return_url=${encodeURIComponent(successURL)}`;
                         
-                        console.log('💳 YooMoney URL:', yoomoneyUrl);
+                        // Используем URL дилера вместо прямого перехода на ЮMoney
+                        const paymentUrl = dealerUrl;
+
+                        console.log('💳 Дилер URL:', paymentUrl);
                         console.log('💾 Сохранен pending payment:', paymentInfo);
                         
                         // Показываем инструкции пользователю
@@ -1807,17 +1811,36 @@
                         if (isTelegramApp && tg) {
                             // В Telegram Mini App
                             try {
-                                tg.openLink(yoomoneyUrl);
+                                tg.openLink(paymentUrl);
                                 hapticFeedback('light');
                             } catch (error) {
                                 console.error('Ошибка открытия ссылки в Telegram:', error);
-                                window.open(yoomoneyUrl, '_blank');
+                                window.open(paymentUrl, '_blank');
                             }
                         } else {
                             // В обычном браузере
-                            window.open(yoomoneyUrl, '_blank');
+                            window.open(paymentUrl, '_blank');
                         }
                     };
+                });
+
+                // Локальные кнопки пополнения (для тестирования)
+                const localReplenishButtons = document.querySelectorAll('.replenish-btn');
+                localReplenishButtons.forEach(btn => {
+                    btn.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        const amount = parseInt(btn.getAttribute('data-amount'));
+                        console.log(`💎 Локальное пополнение на ${amount} ₽ (правый клик)`);
+                        
+                        balance += amount;
+                        updateUI();
+                        
+                        showMessage(`💰 Баланс пополнен на ${amount}₽!\n\n💡 Для реального пополнения используйте левый клик`);
+                        hapticFeedback('success');
+                        
+                        // Добавляем сообщение в чат
+                        addBotMessage(`${username || 'Игрок'} пополнил баланс на ${amount}₽ (тестовый режим)`);
+                    });
                 });
 
                 // Инициализация модальных окон

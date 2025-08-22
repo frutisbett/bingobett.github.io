@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+     <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -646,10 +646,10 @@
     </div>
 
     <div class="replenish-buttons">
-        <button class="replenish-btn" data-amount="50">💳 50 ₽</button>
+        <button class="replenish-btn" data-amount="1000">💳 1 000 ₽</button>
         <button class="replenish-btn" data-amount="300">💳 300 ₽</button>
-        <button class="replenish-btn" data-amount="500">💳 500 ₽</button>
         <button class="replenish-btn" data-amount="800">💳 800 ₽</button>
+        <button class="replenish-btn" data-amount="10000">💳 10 000 ₽</button>
     </div>
 
     <div style="text-align: center;">
@@ -1776,12 +1776,12 @@
                     if (stopAutoSpinButton) stopAutoSpinButton.style.display = 'none';
                 }
 
-                // Кнопки пополнения через YooMoney
+                // Кнопки пополнения через дилера
                 const replenishButtons = document.querySelectorAll('.replenish-btn');
                 replenishButtons.forEach(btn => {
                     btn.onclick = () => {
-                        const amount = btn.getAttribute('data-amount');
-                        console.log(`🛒 Пополнение на ${amount} ₽ через YooMoney`);
+                        const amount = parseInt(btn.getAttribute('data-amount'));
+                        console.log(`🛒 Пополнение на ${amount} ₽ через дилера`);
                         
                         // Генерируем уникальный ID платежа
                         const paymentId = `bingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
@@ -1789,7 +1789,7 @@
                         // Сохраняем информацию о платеже
                         const paymentInfo = {
                             id: paymentId,
-                            amount: parseInt(amount),
+                            amount: amount,
                             timestamp: Date.now(),
                             status: 'pending'
                         };
@@ -1797,28 +1797,78 @@
                         
                         // Формируем URL для YooMoney с возвратом на игру
                         const successURL = `https://frutisbett.github.io/bingobett.github.io?payment=success&amount=${amount}&id=${paymentId}`;
-                        const yoomoneyUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118182998706&quickpay-form=shop&targets=Пополнение+игрового+баланса+BingoBett&paymentType=AC&sum=${amount}&label=${paymentId}&successURL=${encodeURIComponent(successURL)}`;
+                        // Реальный URL дилера на GitHub Pages
+                        const dealerApiUrl = `https://frutisbett.github.io/bingobett.github.io/api/payment/create`;
                         
-                        console.log('💳 YooMoney URL:', yoomoneyUrl);
-                        console.log('💾 Сохранен pending payment:', paymentInfo);
+                        // Данные для отправки дилеру
+                        const paymentData = {
+                            amount: amount,
+                            user_id: tgUser?.id || 'unknown',
+                            game: 'bingo',
+                            payment_id: paymentId,
+                            return_url: successURL
+                        };
+                        
+                        // Отправляем запрос дилеру
+                        fetch(dealerApiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(paymentData)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                const paymentUrl = data.redirect_url;
+                                console.log('✅ Дилер создал платеж:', data);
+                                console.log('💳 URL для оплаты:', paymentUrl);
+                                
+                                if (isTelegramApp && tg) {
+                                    try {
+                                        tg.openLink(paymentUrl);
+                                        hapticFeedback('light');
+                                    } catch (error) {
+                                        console.error('Ошибка открытия ссылки в Telegram:', error);
+                                        window.open(paymentUrl, '_blank');
+                                    }
+                                } else {
+                                    window.open(paymentUrl, '_blank');
+                                }
+                            } else {
+                                console.error('❌ Ошибка дилера:', data.error);
+                                showMessage('❌ Ошибка создания платежа. Попробуйте позже.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('❌ Ошибка связи с дилером:', error);
+                            // Fallback: прямой переход на YooMoney
+                            const yoomoneyUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118182998706&quickpay-form=shop&targets=BingoBett%20пополнение%20(${paymentId})&paymentType=AC&sum=${amount}&label=${paymentId}&successURL=${encodeURIComponent(successURL)}`;
+                            window.open(yoomoneyUrl, '_blank');
+                        });
                         
                         // Показываем инструкции пользователю
-                        showMessage(`💳 Переход к оплате ${amount}₽\n\n⚡ После оплаты вернитесь в игру\n💰 Баланс пополнится автоматически!`);
-                        
-                        if (isTelegramApp && tg) {
-                            // В Telegram Mini App
-                            try {
-                                tg.openLink(yoomoneyUrl);
-                                hapticFeedback('light');
-                            } catch (error) {
-                                console.error('Ошибка открытия ссылки в Telegram:', error);
-                                window.open(yoomoneyUrl, '_blank');
-                            }
-                        } else {
-                            // В обычном браузере
-                            window.open(yoomoneyUrl, '_blank');
-                        }
+                        showMessage(`💳 Обработка платежа ${amount}₽...\n\n⚡ Создаем безопасное соединение с дилером`);
                     };
+                });
+
+                // Локальные кнопки пополнения (для тестирования)
+                const localReplenishButtons = document.querySelectorAll('.replenish-btn');
+                localReplenishButtons.forEach(btn => {
+                    btn.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        const amount = parseInt(btn.getAttribute('data-amount'));
+                        console.log(`💎 Локальное пополнение на ${amount} ₽ (правый клик)`);
+                        
+                        balance += amount;
+                        updateUI();
+                        
+                        showMessage(`💰 Баланс пополнен на ${amount}₽!\n\n💡 Для реального пополнения используйте левый клик`);
+                        hapticFeedback('success');
+                        
+                        // Добавляем сообщение в чат
+                        addBotMessage(`${username || 'Игрок'} пополнил баланс на ${amount}₽ (тестовый режим)`);
+                    });
                 });
 
                 // Инициализация модальных окон
