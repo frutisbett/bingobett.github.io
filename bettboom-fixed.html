@@ -47,7 +47,7 @@
             max-width: 400px;
             margin-bottom: 8px;
             font-size: 13px;
-            color: #ff4444; /* КРАСНЫЙ ЦВЕТ */
+            color: #ff4444;
         }
 
         .info-item {
@@ -74,13 +74,11 @@
             color: #4caf50;
         }
 
-        /* Специальные стили для улучшения видимости */
         .info-item span {
             color: var(--tg-theme-accent-text-color, #ffd700);
             font-weight: bold;
         }
 
-        /* Выделение важной информации ЖЕЛТЫМ цветом как просил пользователь */
         #usernameDisplay {
             color: var(--tg-theme-accent-text-color, #ffd700) !important;
             font-weight: bold;
@@ -500,7 +498,6 @@
             margin-top: 10px;
         }
 
-        /* Мини-игра "Дождь монет" */
         #coinRainOverlay {
             background: rgba(0, 0, 0, 0.95);
         }
@@ -618,8 +615,6 @@
             .user-info { font-size: 11px; }
             button { font-size: 11px; padding: 10px 12px; }
         }
-
-
     </style>
 </head>
 <body class="loading">
@@ -667,7 +662,7 @@
 
     <div class="bet-controls">
         <button id="betMinus">−</button>
-        <span>Ставка: <span id="betAmountDisplay">1000</span> ₽</span>
+        <span>Ставка: <span id="betAmountDisplay">10</span> ₽</span>
         <button id="betPlus">+</button>
     </div>
 
@@ -708,7 +703,7 @@
     <!-- Модальное окно ввода имени -->
     <div id="usernameModal" class="modal-bg">
         <div class="modal">
-            <h3>🎰 Добро пожаловать в BingoBett!</h3>
+            <h3>🎰 Добро пожаловать в BettBoom!</h3>
             <div>Введите ваше имя для игры:</div>
             <input id="usernameInput" maxlength="20" autocomplete="off" placeholder="Имя игрока">
             <button id="usernameOkBtn">✅ Начать игру</button>
@@ -726,7 +721,7 @@
                 <div>• Минимальный баланс для вывода: <strong>40,001 ₽</strong></div>
                 <div>• К выводу доступна сумма свыше 40,000 ₽</div>
                 <div>• Обязательные 40,000 ₽ остаются на балансе</div>
-                <div>• Обработка заявки: 24 часа</div>
+                <div>• Обработка заявок: 24 часа</div>
                 <div>• Комиссия за вывод: 0%</div>
             </div>
             
@@ -758,7 +753,7 @@
     <!-- Модальное окно правил -->
     <div id="rulesModal" class="modal-bg" style="display:none;">
         <div class="modal" style="text-align: left; max-height: 80vh; overflow-y: auto;">
-            <h3 style="text-align: center; color: gold;">📋 Правила BingoBett</h3>
+            <h3 style="text-align: center; color: gold;">📋 Правила BettBoom</h3>
             <div style="font-size: 13px; line-height: 1.5;">
                 <p><b>🎰 Игра:</b> Слот-машина 5×4, выигрыши по 6 линиям (4 горизонтальные + 2 диагональные)</p>
                 <p><b>💰 Ставки:</b> от 10 до 80 рублей за спин</p>
@@ -791,66 +786,46 @@
     <script>
         (function() {
             'use strict';
-            
-            // ЭКСТРЕННАЯ ДИАГНОСТИКА
-            console.log('🚀 BingoBett загружается...');
-            console.log('🔍 User Agent:', navigator.userAgent);
-            console.log('🌐 URL:', window.location.href);
-            console.log('📱 Viewport:', window.innerWidth + 'x' + window.innerHeight);
-            console.log('🔗 Protocol:', window.location.protocol);
-            
-            // Проверяем доступность ключевых API
-            console.log('💾 localStorage доступен:', typeof localStorage !== 'undefined');
-            console.log('🌐 fetch доступен:', typeof fetch !== 'undefined');
-            console.log('🎨 Canvas доступен:', !!document.createElement('canvas').getContext);
-            
 
-            
-            // Отслеживаем загрузку Telegram SDK
-            let telegramCheckInterval = setInterval(() => {
-                if (window.Telegram) {
-                    console.log('📱 Telegram объект найден:', window.Telegram);
-                    if (window.Telegram.WebApp) {
-                        console.log('✅ Telegram WebApp доступен:', window.Telegram.WebApp);
-                        clearInterval(telegramCheckInterval);
+            // Очистка кеша
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.onEvent('visibilitychanged', function(isVisible) {
+                    if (isVisible) {
+                        console.log('Очистка кеша...');
+                        localStorage.clear(); // Очистка кеша
                     }
-                } else {
-                    console.log('⏳ Ожидание загрузки Telegram SDK...');
-                }
-            }, 200);
-            
-            // Остановим проверку через 10 секунд
-            setTimeout(() => {
-                clearInterval(telegramCheckInterval);
-                if (!window.Telegram) {
-                    console.error('🚨 CRITICAL: Telegram SDK не загрузился за 10 секунд!');
-                }
-            }, 10000);
+                });
+            }
 
-            // Telegram Web App инициализация
-            let tg = null;
-            let isTelegramApp = false;
-            let tgUser = null;
+            // ЭКСТРЕННАЯ ДИАГНОСТИКА
+            console.log('🚀 BettBoom загружается...');
 
-            function initTelegram() {
-                console.log('🔄 Начинаем инициализацию Telegram WebApp...');
-                
-                // Добавляем максимальное ожидание SDK
-                let attempts = 0;
-                const maxAttempts = 50;
-                
-                const tryInit = () => {
-                    attempts++;
-                    console.log(`Попытка ${attempts}/${maxAttempts} инициализации Telegram SDK`);
-                    
-                    try {
-                        if (window.Telegram && window.Telegram.WebApp) {
-                            tg = window.Telegram.WebApp;
-                            isTelegramApp = true;
-                            
-                            console.log('✅ Telegram WebApp найден:', tg);
-                            console.log('📱 Версия:', tg.version);
-                            console.log('🎨 Тема:', tg.colorScheme);
-                            console.log('📐 Высота:', tg.viewportHeight);
-                            
-                            // ПРИНУДИТЕЛЬНАЯ инициали
+            // Обработчик для кнопки "Крутить"
+            document.getElementById('spinButton').addEventListener('click', function() {
+                console.log('Кнопка "Крутить" нажата');
+                // Логика вращения слота
+                spinSlot();
+            });
+
+            // Обработчик для кнопки "Авто"
+            document.getElementById('autoSpinButton').addEventListener('click', function() {
+                console.log('Кнопка "Авто" нажата');
+                // Логика автоматического вращения
+                autoSpin();
+            });
+
+            function spinSlot() {
+                // Логика вращения слота
+                console.log('Вращение слота...');
+                // Здесь добавьте код для анимации и обновления результатов
+            }
+
+            function autoSpin() {
+                // Логика автоматического вращения
+                console.log('Авто вращение...');
+                // Здесь добавьте код для автоматического вращения
+            }
+        })();
+    </script>
+</body>
+</html>

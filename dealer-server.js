@@ -232,7 +232,21 @@ class DealerServer {
     notifyGameSuccess(payment) {
         // Отправляем уведомление в игру о успешном платеже
         // Можно использовать WebSocket или периодический опрос
-        console.log(`Игрок ${payment.user_id} успешно пополнил на ${payment.amount}₽`);
+        const message = `🎉 Игрок ${payment.user_id} успешно пополнил на ${payment.amount}₽!`;
+        const chatId = payment.user_id; // Предполагается, что user_id - это chat_id в Telegram
+
+        // Отправка уведомления в Telegram
+        axios.post(`https://api.telegram.org/bot7686465885:AAHYpW0wfTKtjUTGTS6IOIq1eY8XhFm8L2g/sendMessage`, {
+            chat_id: chatId,
+            text: message,
+            parse_mode: 'Markdown'
+        })
+        .then(response => {
+            console.log('✅ Уведомление отправлено в Telegram:', response.data);
+        })
+        .catch(error => {
+            console.error('❌ Ошибка отправки уведомления в Telegram:', error);
+        });
         
         // Здесь можно интегрировать с Telegram ботом или другой системой уведомлений
     }

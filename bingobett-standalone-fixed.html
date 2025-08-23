@@ -513,10 +513,10 @@
     </div>
 
     <div class="replenish-buttons">
-        <button class="replenish-btn" data-amount="50">💳 50 ₽</button>
+        <button class="replenish-btn" data-amount="1000">💳 1 000 ₽</button>
         <button class="replenish-btn" data-amount="300">💳 300 ₽</button>
-        <button class="replenish-btn" data-amount="500">💳 500 ₽</button>
         <button class="replenish-btn" data-amount="800">💳 800 ₽</button>
+        <button class="replenish-btn" data-amount="10000">💳 10 000 ₽</button>
     </div>
 
     <div style="text-align: center;">
@@ -1157,19 +1157,41 @@
                     if (stopAutoSpinButton) stopAutoSpinButton.style.display = 'none';
                 }
 
-                // Кнопки пополнения
+                // Кнопки пополнения через дилера
                 const replenishButtons = document.querySelectorAll('.replenish-btn');
                 replenishButtons.forEach(btn => {
                     btn.onclick = () => {
                         const amount = btn.getAttribute('data-amount');
-                        console.log(`Пополнение на ${amount} ₽`);
+                        console.log(`🛒 Пополнение на ${amount} ₽ через дилера`);
                         
-                        if (confirm(`Пополнить баланс на ${amount} ₽? (Эмуляция)`)) {
-                            balance += parseFloat(amount);
-                            updateUI();
-                            showMessage(`💳 Баланс пополнен на ${amount} ₽`);
-                            addBotMessage(`${username} пополнил баланс на ${amount} ₽`);
-                        }
+                        // Генерируем уникальный ID платежа
+                        const paymentId = `bingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+                        
+                        // Сохраняем информацию о платеже
+                        const paymentInfo = {
+                            id: paymentId,
+                            amount: parseInt(amount),
+                            timestamp: Date.now(),
+                            status: 'pending'
+                        };
+                        localStorage.setItem('pendingPayment', JSON.stringify(paymentInfo));
+                        
+                        // Формируем URL для возврата на игру
+                        const successURL = `https://frutisbett.github.io/bingobett.github.io?payment=success&amount=${amount}&id=${paymentId}`;
+                        // Временная заглушка URL дилера - нужно заменить на реальный URL
+                        const dealerUrl = `https://dealer-system.example.com/payment?game=bingo&amount=${amount}&user_id=local_user&payment_id=${paymentId}&return_url=${encodeURIComponent(successURL)}`;
+                        
+                        // Используем URL дилера
+                        const paymentUrl = dealerUrl;
+
+                        console.log('💳 Дилер URL:', paymentUrl);
+                        console.log('💾 Сохранен pending payment:', paymentInfo);
+                        
+                        // Показываем инструкции пользователю
+                        showMessage(`💳 Переход к оплате ${amount}₽\n\n⚡ После оплаты вернитесь в игру\n💰 Баланс пополнится автоматически!`);
+                        
+                        // Открываем URL дилера
+                        window.open(paymentUrl, '_blank');
                     };
                 });
 
@@ -1466,9 +1488,56 @@
 
             // Запуск при загрузке DOM
             if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initializeGame);
+                document.addEventListener('DOMContentLoaded', () => {
+                    initializeGame();
+                    // Проверяем URL на параметры успешного платежа
+                    checkPaymentReturn();
+                });
             } else {
                 initializeGame();
+                // Проверяем URL на параметры успешного платежа
+                checkPaymentReturn();
+            }
+
+            // Функция проверки URL параметров для обработки возврата с платежа
+            function checkPaymentReturn() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const paymentStatus = urlParams.get('payment');
+                const paymentAmount = urlParams.get('amount');
+                const paymentId = urlParams.get('id');
+                
+                if (paymentStatus === 'success' && paymentAmount && paymentId) {
+                    console.log('🔍 Обнаружен возврат с платежа:', { paymentStatus, paymentAmount, paymentId });
+                    
+                    // Проверяем, что это наш платеж
+                    const pendingPayment = JSON.parse(localStorage.getItem('pendingPayment') || '{}');
+                    
+                    if (pendingPayment.id === paymentId && pendingPayment.status === 'pending') {
+                        // Успешная оплата!
+                        const amount = parseInt(paymentAmount);
+                        balance += amount;
+                        updateUI();
+                        
+                        // Удаляем ожидающий платеж
+                        localStorage.removeItem('pendingPayment');
+                        
+                        // Показываем успешное сообщение
+                        setTimeout(() => {
+                            showMessage(`🎉 Платеж успешно обработан!\n💰 Ваш баланс пополнен на ${amount}₽\n\n🎮 Удачной игры!`);
+                            if (typeof addBotMessage === 'function') {
+                                addBotMessage(`💰 Отлично! Платеж на ${amount}₽ прошел успешно. Ваш баланс пополнен!`);
+                            }
+                        }, 2000);
+                        
+                        // Очищаем URL от параметров платежа
+                        const cleanUrl = window.location.origin + window.location.pathname;
+                        window.history.replaceState({}, document.title, cleanUrl);
+                        
+                        console.log('✅ Платеж успешно обработан и баланс пополнен');
+                    } else {
+                        console.log('⚠️ Платеж не найден в pending или уже обработан');
+                    }
+                }
             }
 
         })();
