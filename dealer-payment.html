@@ -332,16 +332,92 @@
             }, 1000);
         }
         
-        // Перенаправление на страницу оплаты
-        function redirectToPayment() {
+        // Обработка платежа через iframe (игрок остается в игре)
+        async function redirectToPayment() {
             showLoading();
             
-            // Здесь будет вызов API дилера для создания платежа
-            // Временная заглушка - прямой переход на YooMoney
-            setTimeout(() => {
-                const yoomoneyUrl = generateYooMoneyUrl();
-                window.location.href = yoomoneyUrl;
-            }, 1000);
+            try {
+                // Создаем платеж через API дилера
+                const paymentData = {
+                    amount: amount || '1000',
+                    user_id: userId || 'unknown',
+                    payment_id: paymentId || `manual_${Date.now()}`,
+                    game: 'bingo',
+                    return_url: window.location.href
+                };
+                
+                console.log('Отправка данных для создания платежа:', paymentData);
+                const response = await fetch('https://frutisbett.github.io/bingobett.github.io/api/payment/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(paymentData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Создаем iframe для обработки платежа
+                    const iframe = document.createElement('iframe');
+                    iframe.style.position = 'fixed';
+                    iframe.style.top = '0';
+                    iframe.style.left = '0';
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100%';
+                    iframe.style.border = 'none';
+                    iframe.style.zIndex = '9999';
+                    iframe.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                    document.body.appendChild(iframe);
+                    
+                    // Используем URL от дилера
+                    const yoomoneyUrl = data.redirect_url;
+                    
+                    // Загружаем страницу оплаты в iframe
+                    iframe.src = yoomoneyUrl;
+                    
+                    // Слушаем сообщения от iframe
+                    window.addEventListener('message', function handleIframeMessage(event) {
+                        if (event.data === 'payment_completed') {
+                            // Платеж завершен успешно
+                            document.body.removeChild(iframe);
+                            window.removeEventListener('message', handleIframeMessage);
+                            
+                            paymentStatus.textContent = 'Оплачено';
+                            paymentStatus.className = 'status success';
+                            actionSection.style.display = 'none';
+                            loadingSection.style.display = 'none';
+                            
+                            // Уведомляем родительское окно об успешном платеже
+                            if (window.opener) {
+                                window.opener.postMessage({
+                                    type: 'payment_success',
+                                    amount: amount,
+                                    payment_id: paymentId
+                                }, '*');
+                            }
+                        } else if (event.data === 'payment_failed') {
+                            // Платеж не удался
+                            document.body.removeChild(iframe);
+                            window.removeEventListener('message', handleIframeMessage);
+                            
+                            hideLoading();
+                            alert('❌ Платеж не прошел. Попробуйте еще раз.');
+                        }
+                    });
+                } else {
+                    throw new Error(data.error || 'Ошибка создания платежа');
+                }
+                
+            } catch (error) {
+                console.error('Ошибка обработки платежа:', error);
+                hideLoading();
+                alert('❌ Ошибка при обработке платежа: ' + error.message);
+            }
         }
         
         // Генерация URL для YooMoney
@@ -361,17 +437,34 @@
             return `${baseUrl}?${params.toString()}`;
         }
         
-        // Проверка статуса платежа
+        // Проверка статуса платежа через API дилера
         async function checkPaymentStatus() {
             try {
-                // Здесь будет вызов API дилера для проверки статуса
-                // Временная заглушка
-                const response = { status: 'pending' };
+                if (!transactionId && !paymentId) return;
                 
-                if (response.status === 'completed') {
+                const paymentIdToCheck = paymentId || transactionId;
+                
+                // Вызываем API дилера для проверки статуса
+                const response = await fetch(`https://frutisbett.github.io/bingobett.github.io/api/payment/status/${paymentIdToCheck}`);
+                const data = await response.json();
+                
+                if (data.status === 'completed') {
                     paymentStatus.textContent = 'Оплачено';
                     paymentStatus.className = 'status success';
                     actionSection.style.display = 'none';
+                    loadingSection.style.display = 'none';
+                    
+                    // Уведомляем родительское окно об успешном платеже
+                    if (window.opener) {
+                        window.opener.postMessage({
+                            type: 'payment_success',
+                            amount: data.amount,
+                            payment_id: paymentIdToCheck
+                        }, '*');
+                    }
+                } else if (data.status === 'failed') {
+                    paymentStatus.textContent = 'Ошибка';
+                    paymentStatus.className = 'status error';
                 }
                 
             } catch (error) {

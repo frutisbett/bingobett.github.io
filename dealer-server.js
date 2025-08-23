@@ -1,4 +1,4 @@
-// 🎰 СЕРВЕР ДИЛЕРА ДЛЯ BINGOBETT
+о// 🎰 СЕРВЕР ДИЛЕРА ДЛЯ BINGOBETT
 // Работает на GitHub Pages через GitHub Actions
 
 const express = require('express');
@@ -79,7 +79,7 @@ class DealerServer {
                     payment_id,
                     transaction_id,
                     redirect_url: yoomoneyUrl,
-                    dealer_url: `https://your-username.github.io/bingobett.github.io/dealer-payment.html?transaction=${transaction_id}`
+                    dealer_url: `https://frutisbett.github.io/bingobett.github.io/dealer-payment.html?transaction=${transaction_id}`
                 });
                 
             } catch (error) {
@@ -204,7 +204,7 @@ class DealerServer {
             sum: amount,
             label: transaction_id,
             successURL: return_url || `https://frutisbett.github.io/bingobett.github.io/?payment=success&amount=${amount}`,
-            failURL: `https://your-username.github.io/bingobett.github.io/error`
+            failURL: `https://frutisbett.github.io/bingobett.github.io/error`
         });
         
         return `${baseUrl}?${params.toString()}`;
