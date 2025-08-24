@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🎰 BingoBett - Игровые слоты</title>
+    <title>💥 BettBoom - Экстремальные слоты</title>
     <script src="https://telegram.org/js/telegram-web-app.js?v=6.9" defer></script>
     <style>
         * {
@@ -36,8 +36,8 @@
         .header h1 {
             font-size: 24px;
             margin-bottom: 8px;
-            color: var(--tg-theme-accent-text-color, gold);
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            color: var(--tg-theme-accent-text-color, #ff4444);
+            text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
         }
 
         .user-info {
@@ -630,8 +630,8 @@
     </div>
 
     <div class="header">
-        <h1>🎰 BingoBett</h1>
-        <button onclick="window.location.href='casino-lobby.html'" style="position: absolute; top: 10px; left: 10px; background: rgba(255,215,0,0.2); border: 1px solid #ffd700; color: #ffd700; padding: 8px 15px; border-radius: 10px; font-size: 12px; cursor: pointer;">← Лобби</button>
+        <h1>💥 BettBoom</h1>
+        <button onclick="window.location.href='casino-lobby.html'" style="position: absolute; top: 10px; left: 10px; background: rgba(255,68,68,0.2); border: 1px solid #ff4444; color: #ff4444; padding: 8px 15px; border-radius: 10px; font-size: 12px; cursor: pointer;">← Лобби</button>
         <div class="user-info">
             <div class="info-item">Игрок: <span id="usernameDisplay">Игрок</span></div>
             <div class="info-item freespin-info">Фриспины: <span id="freespinCount">0</span></div>
@@ -646,9 +646,9 @@
     </div>
 
     <div class="replenish-buttons">
-        <button class="replenish-btn" data-amount="1000">💳 1 000 ₽</button>
         <button class="replenish-btn" data-amount="500">💳 500 ₽</button>
         <button class="replenish-btn" data-amount="800">💳 800 ₽</button>
+        <button class="replenish-btn" data-amount="1000">💳 1 000 ₽</button>
         <button class="replenish-btn" data-amount="10000">💳 10 000 ₽</button>
     </div>
 
@@ -671,7 +671,7 @@
         <button id="betPlus">+</button>
     </div>
 
-    <div class="message" id="message">✅ Игра полностью исправлена и готова! Нажмите "Крутить"</div>
+                <div class="message" id="message">💥 Игра полностью исправлена и готова! Нажмите "Крутить"</div>
     <div id="botChat"><b>🔥 Активные игроки:</b><br></div>
 
     <!-- Мини-игра -->
@@ -708,7 +708,7 @@
     <!-- Модальное окно ввода имени -->
     <div id="usernameModal" class="modal-bg">
         <div class="modal">
-            <h3>🎰 Добро пожаловать в BingoBett!</h3>
+            <h3>💥 Добро пожаловать в BettBoom!</h3>
             <div>Введите ваше имя для игры:</div>
             <input id="usernameInput" maxlength="20" autocomplete="off" placeholder="Имя игрока">
             <button id="usernameOkBtn">✅ Начать игру</button>
@@ -758,25 +758,25 @@
     <!-- Модальное окно правил -->
     <div id="rulesModal" class="modal-bg" style="display:none;">
         <div class="modal" style="text-align: left; max-height: 80vh; overflow-y: auto;">
-            <h3 style="text-align: center; color: gold;">📋 Правила BingoBett</h3>
+            <h3 style="text-align: center; color: gold;">📋 Правила BettBoom</h3>
             <div style="font-size: 13px; line-height: 1.5;">
                 <p><b>🎰 Игра:</b> Слот-машина 5×4, выигрыши по 6 линиям (4 горизонтальные + 2 диагональные)</p>
-                <p><b>💰 Ставки:</b> от 10 до 80 рублей за спин</p>
+                <p><b>💰 Ставки:</b> от 100 до 1000 рублей за спин</p>
                 <p><b>🎁 Фриспины:</b> 55 бесплатных вращений на 24 часа</p>
                 <p><b>💳 Вывод:</b> минимальный баланс 40,001 ₽ для вывода</p>
                 <br>
                 <p><b>💎 Выплаты (множитель ×ставка):</b></p>
-                <p>🍒🍋🍊🍉🍇: 3×5, 4×10, 5×20</p>
-                <p>🍓🍍🥝🍌: 3×7, 4×14, 5×28</p>
-                <p>🎁💎⭐🃏: 3×15+, 4×30+, 5×60+</p>
-                <p>👑💰: 3×50+, 4×100+, 5×200+</p>
+                <p>🍒🍋🍊🍉🍇: 3×8, 4×15, 5×30</p>
+                <p>🍓🍍🥝🍌: 3×12, 4×20, 5×40</p>
+                <p>🎁💎⭐🃏: 3×25+, 4×50+, 5×100+</p>
+                <p>👑💰: 3×80+, 4×160+, 5×320+</p>
                 <br>
                 <p><b>🎲 Мини-игры:</b></p>
                 <p>• <b>"Выбери коробку":</b> Выберите одну из 3 коробок для получения бонуса</p>
                 <p>• <b>"Дождь монет":</b> Ловите падающие монеты за 4 секунды! Тапайте по экрану</p>
-                <p>• <b>Шанс запуска:</b> 25% при выигрыше + 8% без выигрыша (всего ~33%)</p>
-                <p>• <b>Частота:</b> В среднем каждые 3-4 спина появляется мини-игра</p>
-                <p>• Бонус от 50% до 200% от ставки в зависимости от успеха</p>
+                <p>• <b>Шанс запуска:</b> 35% при выигрыше + 15% без выигрыша (всего ~50%)</p>
+                <p>• <b>Частота:</b> В среднем каждые 2-3 спина появляется мини-игра</p>
+                <p>• Бонус от 60% до 240% от ставки в зависимости от успеха</p>
                 <br>
                 <p><b>🏆 Выигрышные линии:</b></p>
                 <p>• 4 горизонтальные линии (ряды)</p>
@@ -1022,8 +1022,8 @@
             // Игровые параметры
             const COLUMNS = 5;
             const ROWS = 4;
-            const MIN_BET = 10;
-            const MAX_BET = 80;
+            const MIN_BET = 100;
+            const MAX_BET = 1000;
 
             const REELS = [
                 ["🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍋","🍊","🍉","🍇","🍓","🥥","⭐","🃏","👑"],
@@ -1034,18 +1034,18 @@
             ];
 
             const payTable = {
-                "🍒": {3:5, 4:10, 5:20}, "🍋": {3:5, 4:10, 5:20}, "🍊": {3:5, 4:10, 5:20},
-                "🍉": {3:5, 4:10, 5:20}, "🍇": {3:5, 4:10, 5:20}, "🍓": {3:7, 4:14, 5:28},
-                "🍍": {3:7, 4:14, 5:28}, "🥝": {3:10, 4:20, 5:40}, "🍌": {3:10, 4:20, 5:40},
-                "🥥": {3:12, 4:24, 5:48}, "🎁": {3:15, 4:30, 5:60}, "💎": {3:20, 4:40, 5:80},
-                "⭐": {3:25, 4:50, 5:100}, "🃏": {3:30, 4:60, 5:120}, "👑": {3:50, 4:100, 5:200},
-                "💰": {3:100, 4:200, 5:500}
+                "🍒": {3:8, 4:15, 5:30}, "🍋": {3:8, 4:15, 5:30}, "🍊": {3:8, 4:15, 5:30},
+                "🍉": {3:8, 4:15, 5:30}, "🍇": {3:8, 4:15, 5:30}, "🍓": {3:12, 4:20, 5:40},
+                "🍍": {3:12, 4:20, 5:40}, "🥝": {3:15, 4:30, 5:60}, "🍌": {3:15, 4:30, 5:60},
+                "🥥": {3:20, 4:40, 5:80}, "🎁": {3:25, 4:50, 5:100}, "💎": {3:30, 4:60, 5:120},
+                "⭐": {3:40, 4:80, 5:160}, "🃏": {3:50, 4:100, 5:200}, "👑": {3:80, 4:160, 5:320},
+                "💰": {3:150, 4:300, 5:800}
             };
 
             // Состояние игры
-            let balance = parseFloat(localStorage.getItem('local_slotBalance')) || 1000;
-            let betAmount = parseInt(localStorage.getItem('local_slotBet')) || 10;
-            let jackpot = parseFloat(localStorage.getItem('local_jackpot')) || 2500000;
+            let balance = parseFloat(localStorage.getItem('local_slotBalance')) || 5000;
+            let betAmount = parseInt(localStorage.getItem('local_slotBet')) || 100;
+            let jackpot = parseFloat(localStorage.getItem('local_jackpot')) || 5000000;
             let username = localStorage.getItem('local_slotUsername') || '';
             
             // Получение имени из Telegram если доступно
@@ -1381,14 +1381,14 @@
                     }
 
                     // Запуск мини-игры 
-                    // *** СУПЕР УВЕЛИЧЕН ШАНС: 25% при выигрыше + 8% всегда ***
-                    if (Math.random() < 0.25 || totalWin >= betAmount * 15) {
+                    // *** УВЕЛИЧЕННЫЙ ШАНС: 35% при выигрыше + 15% всегда ***
+                    if (Math.random() < 0.35 || totalWin >= betAmount * 10) {
                         setTimeout(() => {
-                            // Случайный выбор между мини-играми: 30% коробки, 70% дождь монет
-                            if (Math.random() < 0.3) {
-                                startMiniGame(totalWin);
+                            // Случайный выбор между мини-играми: 40% коробки, 60% дождь монет
+                            if (Math.random() < 0.4) {
+                                startMiniGame(totalWin * 1.2);
                             } else {
-                                startCoinRainGame(totalWin);
+                                startCoinRainGame(totalWin * 1.2);
                             }
                         }, 2000);
                     }
@@ -1396,25 +1396,25 @@
                     showMessage("Не повезло. Попробуйте еще раз!");
                     hapticFeedback('light');
                     
-                    // ДОПОЛНИТЕЛЬНЫЙ ШАНС мини-игры даже без выигрыша (8%)
-                    if (Math.random() < 0.08) {
+                    // ДОПОЛНИТЕЛЬНЫЙ ШАНС мини-игры даже без выигрыша (15%)
+                    if (Math.random() < 0.15) {
                         setTimeout(() => {
                             // Чаще дождь монет при проигрыше
-                            if (Math.random() < 0.8) {
-                                startCoinRainGame(betAmount * 0.5); // Небольшая сумма для компенсации
+                            if (Math.random() < 0.7) {
+                                startCoinRainGame(betAmount * 0.8); // Большая сумма для компенсации
                             } else {
-                                startMiniGame(betAmount * 0.3);
+                                startMiniGame(betAmount * 0.6);
                             }
                         }, 1500);
                     }
                 }
 
                 // Проверка джекпота
-                if (Math.random() < 0.001) {
+                if (Math.random() < 0.002) {
                     balance += jackpot;
                     showMessage(`🏆 ДЖЕКПОТ! Вы ВЫИГРАЛИ ${jackpot.toFixed(2)} ₽!`);
                     addBotMessage(`${username || 'Игрок'} сорвал ДЖЕКПОТ ${Math.floor(jackpot).toLocaleString()} ₽!`);
-                    jackpot = 250000;
+                    jackpot = 5000000;
                 }
 
                 updateUI();
@@ -1713,7 +1713,7 @@
                 if (betMinus) {
                     betMinus.onclick = () => {
                         if (betAmount > MIN_BET && !isSpinning) {
-                            betAmount -= 10;
+                            betAmount -= 100;
                             updateUI();
                             hapticFeedback('light');
                         }
@@ -1723,7 +1723,7 @@
                 if (betPlus) {
                     betPlus.onclick = () => {
                         if (betAmount < MAX_BET && !isSpinning) {
-                            betAmount += 10;
+                            betAmount += 100;
                             updateUI();
                             hapticFeedback('light');
                         }
@@ -2227,3 +2227,4 @@
     </script>
 </body>
 </html>
+
