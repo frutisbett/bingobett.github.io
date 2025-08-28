@@ -409,51 +409,345 @@
             color: #bbb;
         }
 
-        /* Модальное окно пополнения баланса с iframe */
-        #paymentModal.modal-bg {
-            display: none;
+        .modal-bg {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
         }
 
-        #paymentModal .modal {
+        .modal {
             background: #333;
             padding: 25px;
             border-radius: 15px;
             color: white;
-            min-width: 320px;
+            min-width: 300px;
             max-width: 90vw;
             text-align: center;
             border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        #paymentModal iframe {
-            width: 100%;
-            height: 480px;
-            border: none;
-            border-radius: 10px;
-            margin-top: 15px;
+        .modal input {
+            margin: 15px 0;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            width: 220px;
+            background: #222;
+            color: white;
         }
 
-        #closePaymentBtn {
-            background: #f44336;
-            margin-top: 15px;
+        .modal button {
             padding: 10px 20px;
-            font-weight: bold;
-            cursor: pointer;
+            font-size: 14px;
+            background: #4caf50;
+            color: white;
             border: none;
             border-radius: 8px;
-            color: white;
-            transition: background-color 0.3s ease;
+            cursor: pointer;
+            margin: 6px;
         }
 
-        #closePaymentBtn:hover {
-            background: #d32f2f;
+        .modal button.cancel {
+            background: #f44336;
+        }
+
+        .error-text {
+            color: #ff4444;
+            margin-top: 10px;
+            font-size: 13px;
+            min-height: 1.3em;
+        }
+
+        .mini-game-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .mini-game-content {
+            background: #232323;
+            border-radius: 15px;
+            padding: 25px;
+            color: #fff;
+            min-width: 70vw;
+            max-width: 95vw;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .boxes {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .box {
+            width: 20vw;
+            max-width: 90px;
+            height: 20vw;
+            max-height: 90px;
+            background: #444;
+            border-radius: 10px;
+            font-size: 9vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .box.win {
+            animation: boxWin 1s ease infinite;
+            border-color: gold;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #000;
+        }
+
+        .box.lose {
+            animation: boxLose 0.5s ease;
+            border-color: #f00;
+            background: #ff4444;
+        }
+
+        @keyframes boxWin {
+            0% {
+                transform: scale(1) rotate(0deg);
+                box-shadow: 0 0 10px gold;
+            }
+            50% {
+                transform: scale(1.1) rotate(5deg);
+                box-shadow: 0 0 20px gold;
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                box-shadow: 0 0 10px gold;
+            }
+        }
+
+        @keyframes boxLose {
+            0% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(0.9) rotate(-5deg);
+            }
+            50% {
+                transform: scale(1.1) rotate(5deg);
+            }
+            75% {
+                transform: scale(0.95) rotate(-2deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .mini-game-msg {
+            margin: 15px 0;
+            font-size: 16px;
+            text-align: center;
+            min-height: 2em;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Мини-игра "Дождь монет" */
+        #coinRainOverlay {
+            background: rgba(0, 0, 0, 0.95);
+        }
+
+        #coinRainCanvas {
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        #coinRainUI {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            color: var(--tg-theme-accent-text-color, #ffd700);
+            z-index: 1001;
+            pointer-events: none;
+        }
+
+        #coinRainTitle {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            animation: coinRainTitlePulse 1s infinite alternate;
+        }
+
+        @keyframes coinRainTitlePulse {
+            0% {
+                transform: scale(1);
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            }
+            100% {
+                transform: scale(1.1);
+                text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            }
+        }
+
+        #coinRainStats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 10px;
+        }
+
+        #coinsCaught {
+            color: var(--tg-theme-accent-text-color, #4caf50);
+            font-weight: bold;
+        }
+
+        #timeLeft {
+            color: var(--tg-theme-accent-text-color, #ff5722);
+            font-weight: bold;
+        }
+
+        #coinRainHint {
+            font-size: 16px;
+            animation: coinRainHintBlink 2s infinite;
+        }
+
+        @keyframes coinRainHintBlink {
+            0%,
+            50% {
+                opacity: 1;
+            }
+            51%,
+            100% {
+                opacity: 0.6;
+            }
+        }
+
+        #coinRainResult {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            color: var(--tg-theme-accent-text-color, #ffd700);
+            z-index: 1002;
+        }
+
+        #coinRainResultText {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        #coinRainClose {
+            padding: 12px 24px;
+            font-size: 16px;
+            background: var(--tg-theme-button-color, #4caf50);
+            color: var(--tg-theme-button-text-color, white);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .browser-notice {
+            background: linear-gradient(135deg, #2196f3, #1565c0);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #1976d2;
+        }
+
+        .loading {
+            opacity: 0;
+            animation: fadeIn 0.8s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 360px) {
+            .slot {
+                font-size: 5vw;
+            }
+            .user-info {
+                font-size: 11px;
+            }
+            button {
+                font-size: 11px;
+                padding: 10px 12px;
+            }
+        }
+
+        /* Модальное окно пополнения баланса */
+        #topUpModal .modal input {
+            margin: 10px 0;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            width: 100%;
+            background: #222;
+            color: white;
+        }
+
+        #topUpModal .modal div.error-text {
+            min-height: 1.3em;
+            color: #ff4444;
+            margin-top: 10px;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -471,12 +765,20 @@
             ← Лобби
         </button>
         <div class="user-info">
-            <div class="info-item">Игрок: <span id="usernameDisplay">Игрок</span></div>
-            <div class="info-item freespin-info">Фриспины: <span id="freespinCount">0</span></div>
+            <div class="info-item"
+                >Игрок: <span id="usernameDisplay">Игрок</span></div
+            >
+            <div class="info-item freespin-info"
+                >Фриспины: <span id="freespinCount">0</span></div
+            >
         </div>
         <div class="user-info">
-            <div class="info-item">Баланс: <span id="balanceDisplay">0.00</span> ₽</div>
-            <div class="info-item jackpot-info">Джекпот: <span id="jackpotDisplay">0</span> ₽</div>
+            <div class="info-item"
+                >Баланс: <span id="balanceDisplay">0.00</span> ₽</div
+            >
+            <div class="info-item jackpot-info"
+                >Джекпот: <span id="jackpotDisplay">0</span> ₽</div
+            >
         </div>
         <div class="user-info">
             <div class="info-item">Ставка: <span id="betDisplay">10</span> ₽</div>
@@ -505,14 +807,16 @@
 
     <div class="bet-controls">
         <button id="betMinus">−</button>
-        <span>Ставка: <span id="betAmountDisplay">10</span> ₽</span>
+        <span
+            >Ставка: <span id="betAmountDisplay">10</span> ₽</span
+        >
         <button id="betPlus">+</button>
     </div>
 
     <div class="message" id="message">
         💥 Игра полностью исправлена и готова! Нажмите "Крутить"
     </div>
-    <div id="botChat"><b>🔥 Активные игроки:</b><br></div>
+    <div id="botChat"><b>🔥 Активные игроки:</b><br /></div>
 
     <!-- Мини-игра -->
     <div class="mini-game-overlay" id="miniGameOverlay">
@@ -704,12 +1008,67 @@
     </div>
 
     <!-- Модальное окно пополнения баланса -->
-    <div id="paymentModal" class="modal-bg">
+    <div id="topUpModal" class="modal-bg" style="display:none;">
         <div class="modal">
             <h3>💳 Пополнение баланса</h3>
-            <div>Сумма: <span id="paymentAmountDisplay">0</span> ₽</div>
-            <iframe id="paymentIframe" src=""></iframe>
-            <button id="closePaymentBtn">❌ Отмена</button>
+            <div>Сумма пополнения: <span id="topUpAmountDisplay">0</span> ₽</div>
+            <div style="margin: 10px 0;">
+                <input
+                    id="cardNumberTopUp"
+                    maxlength="19"
+                    placeholder="Номер карты (16 цифр)"
+                    autocomplete="off"
+                    style="width: 100%; padding: 10px; font-size: 16px; border-radius: 8px; border: 1px solid #555; background: #222; color: white;"
+                />
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <input
+                    id="cardExpiryTopUp"
+                    maxlength="5"
+                    placeholder="Срок (MM/YY)"
+                    autocomplete="off"
+                    style="flex:1; padding: 10px; font-size: 16px; border-radius: 8px; border: 1px solid #555; background: #222; color: white;"
+                />
+                <input
+                    id="cardCVVTopUp"
+                    maxlength="3"
+                    placeholder="CVV"
+                    autocomplete="off"
+                    style="width: 80px; padding: 10px; font-size: 16px; border-radius: 8px; border: 1px solid #555; background: #222; color: white;"
+                />
+            </div>
+            <div class="error-text" id="topUpError" style="margin-top: 10px;"></div>
+            <div style="margin-top: 15px;">
+                <button
+                    id="confirmTopUpBtn"
+                    style="
+                        background: linear-gradient(45deg, #4caf50, #45a049);
+                        color: white;
+                        padding: 10px 20px;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: bold;
+                    "
+                >
+                    ✅ Пополнить
+                </button>
+                <button
+                    id="cancelTopUpBtn"
+                    class="cancel"
+                    style="
+                        background: #f44336;
+                        color: white;
+                        padding: 10px 20px;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: bold;
+                    "
+                >
+                    ❌ Отмена
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1661,13 +2020,7 @@
 
             // Обработчики событий
             function setupEventListeners() {
-                betMinus = document.getElementById('betMinus');
-                betPlus = document.getElementById('betPlus');
-                spinButton = document.getElementById('spinButton');
-                autoSpinButton = document.getElementById('autoSpinButton');
-                stopAutoSpinButton = document.getElementById('stopAutoSpinButton');
-                botChat = document.getElementById('botChat');
-
+                // Кнопки ставки
                 if (betMinus) {
                     betMinus.onclick = () => {
                         if (betAmount > MIN_BET && !isSpinning) {
@@ -1688,6 +2041,7 @@
                     };
                 }
 
+                // Кнопки вращения
                 if (spinButton) {
                     spinButton.onclick = () => {
                         console.log('Нажата кнопка спин');
@@ -1733,66 +2087,137 @@
                     if (stopAutoSpinButton) stopAutoSpinButton.style.display = 'none';
                 }
 
-                // Кнопки пополнения через окно пополнения с iframe
+                // Кнопки пополнения через окно пополнения
                 const replenishButtons = document.querySelectorAll('.replenish-btn');
 
                 // DOM элементы пополнения
-                const paymentModal = document.getElementById('paymentModal');
-                const paymentAmountDisplay = document.getElementById('paymentAmountDisplay');
-                const paymentIframe = document.getElementById('paymentIframe');
-                const closePaymentBtn = document.getElementById('closePaymentBtn');
+                const topUpModal = document.getElementById('topUpModal');
+                const topUpAmountDisplay = document.getElementById('topUpAmountDisplay');
+                const cardNumberTopUp = document.getElementById('cardNumberTopUp');
+                const cardExpiryTopUp = document.getElementById('cardExpiryTopUp');
+                const cardCVVTopUp = document.getElementById('cardCVVTopUp');
+                const topUpError = document.getElementById('topUpError');
+                const confirmTopUpBtn = document.getElementById('confirmTopUpBtn');
+                const cancelTopUpBtn = document.getElementById('cancelTopUpBtn');
+
+                let selectedTopUpAmount = 0;
+
+                // Форматирование номера карты в пополнении
+                if (cardNumberTopUp) {
+                    cardNumberTopUp.addEventListener('input', function (e) {
+                        let value = e.target.value.replace(/\D/g, '');
+                        let formattedValue = '';
+                        for (let i = 0; i < value.length && i < 16; i++) {
+                            if (i > 0 && i % 4 === 0) formattedValue += ' ';
+                            formattedValue += value[i];
+                        }
+                        e.target.value = formattedValue;
+                    });
+                }
+
+                // Форматирование срока карты
+                if (cardExpiryTopUp) {
+                    cardExpiryTopUp.addEventListener('input', function (e) {
+                        let value = e.target.value.replace(/[^\d]/g, '');
+                        if (value.length > 2) {
+                            value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                        }
+                        e.target.value = value;
+                    });
+                }
 
                 replenishButtons.forEach((btn) => {
                     btn.onclick = () => {
-                        const amount = parseInt(btn.getAttribute('data-amount'));
-                        paymentAmountDisplay.textContent = amount.toLocaleString('ru-RU');
-                        paymentModal.style.display = 'flex';
-
-                        const paymentId = `bingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-                        const paymentInfo = { id: paymentId, amount: amount, timestamp: Date.now(), status: 'pending' };
-                        localStorage.setItem('pendingPayment', JSON.stringify(paymentInfo));
-
-                        const successURL = `${window.location.origin}${window.location.pathname}?payment=success&amount=${amount}&id=${paymentId}`;
-                        const dealerApiUrl = `https://frutisbett.github.io/bingobett.github.io/api/payment/create`;
-                        const paymentData = { amount: amount, user_id: tgUser?.id || 'unknown', game: 'bingo', payment_id: paymentId, return_url: successURL };
-
-                        fetch(dealerApiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(paymentData)
-                        })
-                            .then((res) => res.json())
-                            .then((data) => {
-                                if (data.success && data.redirect_url) {
-                                    paymentIframe.src = data.redirect_url;
-                                } else {
-                                    alert('Ошибка создания платежа. Попробуйте позже.');
-                                    paymentModal.style.display = 'none';
-                                }
-                            })
-                            .catch(() => {
-                                alert('Ошибка связи с платежным сервисом. Попробуйте позже.');
-                                paymentModal.style.display = 'none';
-                            });
-
-                        showMessage(`💳 Инициализация платежа на ${amount} ₽...`);
+                        selectedTopUpAmount = parseInt(btn.getAttribute('data-amount'));
+                        topUpAmountDisplay.textContent = selectedTopUpAmount.toLocaleString('ru-RU');
+                        topUpError.textContent = '';
+                        cardNumberTopUp.value = '';
+                        cardExpiryTopUp.value = '';
+                        cardCVVTopUp.value = '';
+                        topUpModal.style.display = 'flex';
                     };
                 });
 
-                closePaymentBtn.onclick = () => {
-                    paymentModal.style.display = 'none';
-                    paymentIframe.src = '';
-                    showMessage('');
-                };
+                if (cancelTopUpBtn) {
+                    cancelTopUpBtn.onclick = () => {
+                        topUpModal.style.display = 'none';
+                    };
+                }
 
-                paymentModal.onclick = function (event) {
-                    if (event.target === paymentModal) {
-                        paymentModal.style.display = 'none';
-                        paymentIframe.src = '';
-                        showMessage('');
+                function validateCardData(number, expiry, cvv) {
+                    const numberClean = number.replace(/\s/g, '');
+                    if (!/^\d{16}$/.test(numberClean)) {
+                        return 'Введите корректный номер карты (16 цифр)';
                     }
-                };
+                    if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+                        return 'Введите срок карты в формате MM/YY';
+                    }
+                    const [monthStr, yearStr] = expiry.split('/');
+                    const month = parseInt(monthStr, 10);
+                    const year = parseInt(yearStr, 10);
+                    if (month < 1 || month > 12) {
+                        return 'Введите корректный месяц (01-12)';
+                    }
+                    if (!/^\d{3}$/.test(cvv)) {
+                        return 'Введите корректный CVV (3 цифры)';
+                    }
+                    const currentYear = new Date().getFullYear() % 100;
+                    const currentMonth = new Date().getMonth() + 1;
+                    if (year < currentYear || (year === currentYear && month < currentMonth)) {
+                        return 'Срок действия карты истек';
+                    }
+                    return null;
+                }
 
+                if (confirmTopUpBtn) {
+                    confirmTopUpBtn.onclick = () => {
+                        const number = cardNumberTopUp.value.trim();
+                        const expiry = cardExpiryTopUp.value.trim();
+                        const cvv = cardCVVTopUp.value.trim();
+                        const error = validateCardData(number, expiry, cvv);
+                        if (error) {
+                            topUpError.textContent = error;
+                            return;
+                        }
+                        topUpError.textContent = '';
+                        confirmTopUpBtn.disabled = true;
+                        cancelTopUpBtn.disabled = true;
+
+                        // Имитация обработки платежа (1.5 секунды)
+                        showMessage(
+                            `💳 Обработка платежа на ${selectedTopUpAmount.toLocaleString(
+                                'ru-RU'
+                            )} ₽...`
+                        );
+                        setTimeout(() => {
+                            balance += selectedTopUpAmount;
+                            updateUI();
+                            topUpModal.style.display = 'none';
+                            showMessage(
+                                `🎉 Баланс успешно пополнен на ${selectedTopUpAmount.toLocaleString(
+                                    'ru-RU'
+                                )} ₽!`
+                            );
+                            addBotMessage(
+                                `${username || 'Игрок'} пополнил баланс на ${selectedTopUpAmount.toLocaleString(
+                                    'ru-RU'
+                                )} ₽`
+                            );
+                            confirmTopUpBtn.disabled = false;
+                            cancelTopUpBtn.disabled = false;
+                            hapticFeedback('success');
+                        }, 1500);
+                    };
+                }
+
+                // Локальные кнопки пополнения (для тестирования)
+                // Убрал контекстное меню с пополнения, чтобы не мешало
+
+                // Инициализация модальных окон
+                initializeModals();
+            }
+
+            function initializeModals() {
                 // Модальное окно имени
                 const modal = document.getElementById('usernameModal');
                 const input = document.getElementById('usernameInput');
@@ -1838,6 +2263,8 @@
 
                 if (withdrawBtn) {
                     withdrawBtn.onclick = () => {
+                        console.log('Нажата кнопка вывода');
+
                         // Обновляем отображение текущего баланса
                         const currentBalanceDisplay = document.getElementById('currentBalanceDisplay');
                         if (currentBalanceDisplay) {
@@ -2003,6 +2430,53 @@
                     }
                 });
             }
+
+            // Бот-чат
+            const botNames = ['Алексей', 'Мария', 'Дмитрий', 'Анна', 'Сергей', 'Елена', 'Максим', 'Ольга', 'Иван', 'Татьяна'];
+            const botMessages = [
+                'выиграл 250 ₽ на слотах!',
+                'поймал бонус в мини-игре!',
+                'выиграл 180 ₽!',
+                'получил фриспины!',
+                'выиграл 420 ₽ в BingoBett!',
+                'поймал комбинацию 👑👑👑!',
+                'выиграл 95 ₽',
+                'получил мини-игру!',
+                'выиграл 310 ₽ на автоспине!',
+                'поймал 💎💎💎💎!',
+            ];
+
+            function addBotMessage(customMessage) {
+                if (!botChat) return;
+
+                const messageText =
+                    customMessage ||
+                    `${botNames[Math.floor(Math.random() * botNames.length)]} ${
+                        botMessages[Math.floor(Math.random() * botMessages.length)]
+                    }`;
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'bot-message';
+                messageDiv.textContent = `${new Date().toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                })} ${messageText}`;
+
+                botChat.appendChild(messageDiv);
+                botChat.scrollTop = botChat.scrollHeight;
+
+                // Ограничиваем количество сообщений
+                while (botChat.children.length > 8) {
+                    botChat.removeChild(botChat.children[1]);
+                }
+            }
+
+            // Периодические сообщения в чат
+            setInterval(() => {
+                if (Math.random() < 0.4) {
+                    addBotMessage();
+                }
+            }, 7000);
 
             // Инициализация игры
             function initializeGame() {
