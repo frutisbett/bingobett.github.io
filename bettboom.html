@@ -1,8 +1,8 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>💥 BettBoom - Экстремальные слоты</title>
     <script src="https://telegram.org/js/telegram-web-app.js?v=6.9" defer></script>
     <style>
@@ -55,7 +55,7 @@
             padding: 6px 12px;
             border-radius: 15px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             color: var(--tg-theme-accent-text-color, #ffd700);
             font-weight: 500;
         }
@@ -66,8 +66,12 @@
         }
 
         @keyframes jackpotGlow {
-            0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
-            100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
+            0% {
+                box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+            }
+            100% {
+                box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            }
         }
 
         .freespin-info {
@@ -124,13 +128,13 @@
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             font-weight: bold;
         }
 
         .replenish-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
         }
 
         .withdraw-btn {
@@ -143,7 +147,7 @@
             cursor: pointer;
             margin: 10px;
             transition: all 0.2s;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
             font-weight: bold;
         }
 
@@ -187,17 +191,38 @@
         }
 
         @keyframes slotSpin {
-            0% { transform: translateY(0%); opacity: 0.8; }
-            25% { transform: translateY(-25%); opacity: 0.4; }
-            50% { transform: translateY(-50%); opacity: 0.2; }
-            75% { transform: translateY(-75%); opacity: 0.4; }
-            100% { transform: translateY(-100%); opacity: 0.8; }
+            0% {
+                transform: translateY(0%);
+                opacity: 0.8;
+            }
+            25% {
+                transform: translateY(-25%);
+                opacity: 0.4;
+            }
+            50% {
+                transform: translateY(-50%);
+                opacity: 0.2;
+            }
+            75% {
+                transform: translateY(-75%);
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(-100%);
+                opacity: 0.8;
+            }
         }
 
         @keyframes backgroundMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .slot.stopping {
@@ -205,9 +230,18 @@
         }
 
         @keyframes slotStop {
-            0% { transform: translateY(-100%); opacity: 0.4; }
-            70% { transform: translateY(10%); opacity: 0.9; }
-            100% { transform: translateY(0%); opacity: 1; }
+            0% {
+                transform: translateY(-100%);
+                opacity: 0.4;
+            }
+            70% {
+                transform: translateY(10%);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(0%);
+                opacity: 1;
+            }
         }
 
         .slot.win {
@@ -219,12 +253,29 @@
         }
 
         @keyframes winPulse {
-            0% { transform: scale(1); box-shadow: 0 0 20px #ffd700; }
-            100% { transform: scale(1.05); box-shadow: 0 0 30px #ffd700; }
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 20px #ffd700;
+            }
+            100% {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px #ffd700;
+            }
         }
 
         .slot.big-win {
-            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background: linear-gradient(
+                45deg,
+                #ff0000,
+                #ff7300,
+                #fffb00,
+                #48ff00,
+                #00ffd5,
+                #002bff,
+                #7a00ff,
+                #ff00c8,
+                #ff0000
+            );
             background-size: 400% 400%;
             animation: rainbowGlow 1s ease infinite, winShake 0.3s infinite;
             color: white;
@@ -232,17 +283,33 @@
         }
 
         @keyframes rainbowGlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         @keyframes winShake {
-            0% { transform: translate(0px, 0px) rotate(0deg); }
-            25% { transform: translate(2px, 1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            75% { transform: translate(1px, -1px) rotate(1deg); }
-            100% { transform: translate(0px, 0px) rotate(0deg); }
+            0% {
+                transform: translate(0px, 0px) rotate(0deg);
+            }
+            25% {
+                transform: translate(2px, 1px) rotate(1deg);
+            }
+            50% {
+                transform: translate(-1px, 2px) rotate(-1deg);
+            }
+            75% {
+                transform: translate(1px, -1px) rotate(1deg);
+            }
+            100% {
+                transform: translate(0px, 0px) rotate(0deg);
+            }
         }
 
         .controls {
@@ -263,7 +330,7 @@
             border: none;
             background: var(--tg-theme-button-color, linear-gradient(45deg, #4caf50, #45a049));
             color: var(--tg-theme-button-text-color, white);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
             transition: all 0.2s;
             min-height: 44px;
             flex: 1;
@@ -274,7 +341,7 @@
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
         }
 
         button:active {
@@ -321,7 +388,7 @@
             max-width: 90vw;
             word-wrap: break-word;
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         #botChat {
@@ -342,296 +409,67 @@
             color: #bbb;
         }
 
-        .modal-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+        /* Модальное окно пополнения баланса с iframe */
+        #paymentModal.modal-bg {
             display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
             align-items: center;
             justify-content: center;
             z-index: 1000;
         }
 
-        .modal {
+        #paymentModal .modal {
             background: #333;
             padding: 25px;
             border-radius: 15px;
             color: white;
-            min-width: 300px;
+            min-width: 320px;
             max-width: 90vw;
             text-align: center;
             border: 2px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .modal input {
-            margin: 15px 0;
-            padding: 12px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 1px solid #555;
-            width: 220px;
-            background: #222;
-            color: white;
-        }
-
-        .modal button {
-            padding: 10px 20px;
-            font-size: 14px;
-            background: #4caf50;
-            color: white;
+        #paymentModal iframe {
+            width: 100%;
+            height: 480px;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 6px;
-        }
-
-        .modal button.cancel {
-            background: #f44336;
-        }
-
-        .error-text {
-            color: #ff4444;
-            margin-top: 10px;
-            font-size: 13px;
-        }
-
-        .mini-game-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-        }
-
-        .mini-game-content {
-            background: #232323;
-            border-radius: 15px;
-            padding: 25px;
-            color: #fff;
-            min-width: 70vw;
-            max-width: 95vw;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-        }
-
-        .boxes {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .box {
-            width: 20vw;
-            max-width: 90px;
-            height: 20vw;
-            max-height: 90px;
-            background: #444;
             border-radius: 10px;
-            font-size: 9vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 3px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            margin-top: 15px;
         }
 
-        .box:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-        }
-
-        .box.win {
-            animation: boxWin 1s ease infinite;
-            border-color: gold;
-            background: linear-gradient(45deg, #ffd700, #ffed4e);
-            color: #000;
-        }
-
-        .box.lose {
-            animation: boxLose 0.5s ease;
-            border-color: #f00;
-            background: #ff4444;
-        }
-
-        @keyframes boxWin {
-            0% { transform: scale(1) rotate(0deg); box-shadow: 0 0 10px gold; }
-            50% { transform: scale(1.1) rotate(5deg); box-shadow: 0 0 20px gold; }
-            100% { transform: scale(1) rotate(0deg); box-shadow: 0 0 10px gold; }
-        }
-
-        @keyframes boxLose {
-            0% { transform: scale(1); }
-            25% { transform: scale(0.9) rotate(-5deg); }
-            50% { transform: scale(1.1) rotate(5deg); }
-            75% { transform: scale(0.95) rotate(-2deg); }
-            100% { transform: scale(1) rotate(0deg); }
-        }
-
-        .mini-game-msg {
-            margin: 15px 0;
-            font-size: 16px;
-            text-align: center;
-            min-height: 2em;
-            font-weight: bold;
-        }
-
-        .close-btn {
+        #closePaymentBtn {
+            background: #f44336;
+            margin-top: 15px;
             padding: 10px 20px;
-            font-size: 14px;
-            background: #4caf50;
-            color: white;
+            font-weight: bold;
+            cursor: pointer;
             border: none;
             border-radius: 8px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        /* Мини-игра "Дождь монет" */
-        #coinRainOverlay {
-            background: rgba(0, 0, 0, 0.95);
-        }
-
-        #coinRainCanvas {
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            touch-action: manipulation;
-        }
-
-        #coinRainUI {
-            position: absolute;
-            top: 20px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 18px;
-            color: var(--tg-theme-accent-text-color, #ffd700);
-            z-index: 1001;
-            pointer-events: none;
-        }
-
-        #coinRainTitle {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            animation: coinRainTitlePulse 1s infinite alternate;
-        }
-
-        @keyframes coinRainTitlePulse {
-            0% { transform: scale(1); text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-            100% { transform: scale(1.1); text-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
-        }
-
-        #coinRainStats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 10px;
-        }
-
-        #coinsCaught {
-            color: var(--tg-theme-accent-text-color, #4caf50);
-            font-weight: bold;
-        }
-
-        #timeLeft {
-            color: var(--tg-theme-accent-text-color, #ff5722);
-            font-weight: bold;
-        }
-
-        #coinRainHint {
-            font-size: 16px;
-            animation: coinRainHintBlink 2s infinite;
-        }
-
-        @keyframes coinRainHintBlink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.6; }
-        }
-
-        #coinRainResult {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.9);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            color: var(--tg-theme-accent-text-color, #ffd700);
-            z-index: 1002;
-        }
-
-        #coinRainResultText {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        #coinRainClose {
-            padding: 12px 24px;
-            font-size: 16px;
-            background: var(--tg-theme-button-color, #4caf50);
-            color: var(--tg-theme-button-text-color, white);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .browser-notice {
-            background: linear-gradient(135deg, #2196f3, #1565c0);
             color: white;
-            padding: 10px;
-            text-align: center;
-            font-size: 12px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: 1px solid #1976d2;
+            transition: background-color 0.3s ease;
         }
 
-        .loading {
-            opacity: 0;
-            animation: fadeIn 0.8s ease-in-out forwards;
+        #closePaymentBtn:hover {
+            background: #d32f2f;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 360px) {
-            .slot { font-size: 5vw; }
-            .user-info { font-size: 11px; }
-            button { font-size: 11px; padding: 10px 12px; }
-        }
-
-
     </style>
 </head>
 <body class="loading">
-
-    
     <div class="browser-notice" style="display: none;">
         🖥️ <strong>Локальная версия для тестирования</strong> • Игра полностью работает в браузере
     </div>
 
     <div class="header">
         <h1>💥 BettBoom</h1>
-        <button onclick="window.location.href='casino-lobby.html'" style="position: absolute; top: 10px; left: 10px; background: rgba(255,68,68,0.2); border: 1px solid #ff4444; color: #ff4444; padding: 8px 15px; border-radius: 10px; font-size: 12px; cursor: pointer;">← Лобби</button>
+        <button
+            onclick="window.location.href='casino-lobby.html'"
+            style="position: absolute; top: 10px; left: 10px; background: rgba(255, 68, 68, 0.2); border: 1px solid #ff4444; color: #ff4444; padding: 8px 15px; border-radius: 10px; font-size: 12px; cursor: pointer;"
+        >
+            ← Лобби
+        </button>
         <div class="user-info">
             <div class="info-item">Игрок: <span id="usernameDisplay">Игрок</span></div>
             <div class="info-item freespin-info">Фриспины: <span id="freespinCount">0</span></div>
@@ -661,7 +499,7 @@
     <div class="controls">
         <button id="spinButton">🎰 Крутить</button>
         <button id="autoSpinButton">⚡ Авто</button>
-        <button id="stopAutoSpinButton" style="display:none;">⏹ Стоп</button>
+        <button id="stopAutoSpinButton" style="display: none;">⏹ Стоп</button>
         <button id="rulesButton">📋 Правила</button>
     </div>
 
@@ -671,7 +509,9 @@
         <button id="betPlus">+</button>
     </div>
 
-                <div class="message" id="message">💥 Игра полностью исправлена и готова! Нажмите "Крутить"</div>
+    <div class="message" id="message">
+        💥 Игра полностью исправлена и готова! Нажмите "Крутить"
+    </div>
     <div id="botChat"><b>🔥 Активные игроки:</b><br></div>
 
     <!-- Мини-игра -->
@@ -683,23 +523,35 @@
                 <div class="box" data-box="2">🎁</div>
                 <div class="box" data-box="3">🎁</div>
             </div>
-            <div class="mini-game-msg" id="miniGameMsg">Выберите одну из коробок - в одной из них приз!</div>
-            <button class="close-btn" id="closeMiniGame" style="display:none;">Закрыть</button>
+            <div class="mini-game-msg" id="miniGameMsg">
+                Выберите одну из коробок - в одной из них приз!
+            </div>
+            <button class="close-btn" id="closeMiniGame" style="display: none;">
+                Закрыть
+            </button>
         </div>
     </div>
 
     <!-- Мини-игра "Дождь монет" -->
-    <div id="coinRainOverlay" class="mini-game-overlay" style="display:none;">
+    <div
+        id="coinRainOverlay"
+        class="mini-game-overlay"
+        style="display: none"
+    >
         <canvas id="coinRainCanvas"></canvas>
         <div id="coinRainUI">
             <div id="coinRainTitle">💰 ДОЖДЬ МОНЕТ! 💰</div>
             <div id="coinRainStats">
-                <div>Поймано: <span id="coinsCaught">0</span> ₽</div>
-                <div>Осталось: <span id="timeLeft">4</span> сек</div>
+                <div>
+                    Поймано: <span id="coinsCaught">0</span> ₽
+                </div>
+                <div>
+                    Осталось: <span id="timeLeft">4</span> сек
+                </div>
             </div>
             <div id="coinRainHint">Тапайте по монетам!</div>
         </div>
-        <div id="coinRainResult" style="display:none;">
+        <div id="coinRainResult" style="display: none">
             <div id="coinRainResultText"></div>
             <button id="coinRainClose">Забрать выигрыш</button>
         </div>
@@ -710,102 +562,173 @@
         <div class="modal">
             <h3>💥 Добро пожаловать в BettBoom!</h3>
             <div>Введите ваше имя для игры:</div>
-            <input id="usernameInput" maxlength="20" autocomplete="off" placeholder="Имя игрока">
+            <input
+                id="usernameInput"
+                maxlength="20"
+                autocomplete="off"
+                placeholder="Имя игрока"
+            />
             <button id="usernameOkBtn">✅ Начать игру</button>
         </div>
     </div>
 
     <!-- Модальное окно вывода -->
-    <div id="withdrawModal" class="modal-bg" style="display:none;">
+    <div id="withdrawModal" class="modal-bg" style="display: none">
         <div class="modal">
             <h3>💰 Вывод средств</h3>
-            
+
             <!-- Правила вывода -->
-            <div style="background: rgba(255, 165, 0, 0.1); border: 1px solid orange; border-radius: 5px; padding: 10px; margin: 10px 0; font-size: 12px;">
-                <div style="font-weight: bold; color: orange; margin-bottom: 5px;">⚠️ ПРАВИЛА ВЫВОДА СРЕДСТВ:</div>
+            <div
+                style="
+                    background: rgba(255, 165, 0, 0.1);
+                    border: 1px solid orange;
+                    border-radius: 5px;
+                    padding: 10px;
+                    margin: 10px 0;
+                    font-size: 12px;
+                "
+            >
+                <div
+                    style="
+                        font-weight: bold;
+                        color: orange;
+                        margin-bottom: 5px;
+                    "
+                >
+                    ⚠️ ПРАВИЛА ВЫВОДА СРЕДСТВ:
+                </div>
                 <div>• Минимальный баланс для вывода: <strong>40,001 ₽</strong></div>
                 <div>• К выводу доступна сумма свыше 40,000 ₽</div>
                 <div>• Обязательные 40,000 ₽ остаются на балансе</div>
                 <div>• Обработка заявок: 24 часа</div>
                 <div>• Комиссия за вывод: 0%</div>
             </div>
-            
+
             <!-- Предупреждающее сообщение -->
-            <div id="withdrawWarning" style="background: rgba(255, 0, 0, 0.1); border: 1px solid red; border-radius: 5px; padding: 10px; margin: 10px 0; display: none;">
-                <div style="font-weight: bold; color: red; margin-bottom: 5px;">🚫 ВЫВОД НЕДОСТУПЕН</div>
+            <div
+                id="withdrawWarning"
+                style="
+                    background: rgba(255, 0, 0, 0.1);
+                    border: 1px solid red;
+                    border-radius: 5px;
+                    padding: 10px;
+                    margin: 10px 0;
+                    display: none;
+                "
+            >
+                <div
+                    style="
+                        font-weight: bold;
+                        color: red;
+                        margin-bottom: 5px;
+                    "
+                >
+                    🚫 ВЫВОД НЕДОСТУПЕН
+                </div>
                 <div id="withdrawWarningText"></div>
             </div>
-            
+
             <!-- Форма вывода -->
             <div id="withdrawForm">
-                <div style="margin: 10px 0;">Номер банковской карты (16 цифр):</div>
-                <input id="cardNumberInput" maxlength="19" placeholder="1234 5678 9012 3456">
-                <div style="margin: 10px 0;">
-                    Ваш баланс: <span id="currentBalanceDisplay">0.00</span> ₽<br>
-                    К выводу: <span id="withdrawAmount" style="color: green; font-weight: bold;">0.00</span> ₽<br>
-                    Останется на балансе: <span style="color: orange;">40,000.00 ₽</span>
+                <div style="margin: 10px 0">Номер банковской карты (16 цифр):</div>
+                <input
+                    id="cardNumberInput"
+                    maxlength="19"
+                    placeholder="1234 5678 9012 3456"
+                />
+                <div style="margin: 10px 0">
+                    Ваш баланс: <span id="currentBalanceDisplay">0.00</span> ₽<br />
+                    К выводу:
+                    <span style="color: green; font-weight: bold" id="withdrawAmount"
+                        >0.00</span
+                    >
+                    ₽<br />
+                    Останется на балансе: <span style="color: orange">40,000.00 ₽</span>
                 </div>
-                <div style="margin-top: 15px;">
+                <div style="margin-top: 15px">
                     <button id="confirmWithdrawBtn">✅ Подтвердить вывод</button>
                     <button class="cancel" id="cancelWithdrawBtn">❌ Отмена</button>
                 </div>
             </div>
-            
+
             <div class="error-text" id="withdrawError"></div>
         </div>
     </div>
 
     <!-- Модальное окно правил -->
-    <div id="rulesModal" class="modal-bg" style="display:none;">
-        <div class="modal" style="text-align: left; max-height: 80vh; overflow-y: auto;">
-            <h3 style="text-align: center; color: gold;">📋 Правила BettBoom</h3>
-            <div style="font-size: 13px; line-height: 1.5;">
-                <p><b>🎰 Игра:</b> Слот-машина 5×4, выигрыши по 6 линиям (4 горизонтальные + 2 диагональные)</p>
+    <div id="rulesModal" class="modal-bg" style="display: none">
+        <div
+            class="modal"
+            style="text-align: left; max-height: 80vh; overflow-y: auto"
+        >
+            <h3 style="text-align: center; color: gold">📋 Правила BettBoom</h3>
+            <div style="font-size: 13px; line-height: 1.5">
+                <p>
+                    <b>🎰 Игра:</b> Слот-машина 5×4, выигрыши по 6 линиям (4
+                    горизонтальные + 2 диагональные)
+                </p>
                 <p><b>💰 Ставки:</b> от 100 до 1000 рублей за спин</p>
                 <p><b>🎁 Фриспины:</b> 55 бесплатных вращений на 24 часа</p>
                 <p><b>💳 Вывод:</b> минимальный баланс 40,001 ₽ для вывода</p>
-                <br>
+                <br />
                 <p><b>💎 Выплаты (множитель ×ставка):</b></p>
                 <p>🍒🍋🍊🍉🍇: 3×8, 4×15, 5×30</p>
                 <p>🍓🍍🥝🍌: 3×12, 4×20, 5×40</p>
                 <p>🎁💎⭐🃏: 3×25+, 4×50+, 5×100+</p>
                 <p>👑💰: 3×80+, 4×160+, 5×320+</p>
-                <br>
+                <br />
                 <p><b>🎲 Мини-игры:</b></p>
-                <p>• <b>"Выбери коробку":</b> Выберите одну из 3 коробок для получения бонуса</p>
-                <p>• <b>"Дождь монет":</b> Ловите падающие монеты за 4 секунды! Тапайте по экрану</p>
-                <p>• <b>Шанс запуска:</b> 35% при выигрыше + 15% без выигрыша (всего ~50%)</p>
+                <p>
+                    • <b>"Выбери коробку":</b> Выберите одну из 3 коробок для получения
+                    бонуса
+                </p>
+                <p>
+                    • <b>"Дождь монет":</b> Ловите падающие монеты за 4 секунды! Тапайте
+                    по экрану
+                </p>
+                <p>
+                    • <b>Шанс запуска:</b> 35% при выигрыше + 15% без выигрыша (всего
+                    ~50%)
+                </p>
                 <p>• <b>Частота:</b> В среднем каждые 2-3 спина появляется мини-игра</p>
                 <p>• Бонус от 60% до 240% от ставки в зависимости от успеха</p>
-                <br>
+                <br />
                 <p><b>🏆 Выигрышные линии:</b></p>
                 <p>• 4 горизонтальные линии (ряды)</p>
                 <p>• 2 диагональные линии (↘ и ↙)</p>
             </div>
-            <div style="text-align: center; margin-top: 20px;">
+            <div style="text-align: center; margin-top: 20px">
                 <button id="closeRulesBtn">Закрыть</button>
             </div>
         </div>
     </div>
 
+    <!-- Модальное окно пополнения баланса -->
+    <div id="paymentModal" class="modal-bg">
+        <div class="modal">
+            <h3>💳 Пополнение баланса</h3>
+            <div>Сумма: <span id="paymentAmountDisplay">0</span> ₽</div>
+            <iframe id="paymentIframe" src=""></iframe>
+            <button id="closePaymentBtn">❌ Отмена</button>
+        </div>
+    </div>
+
     <script>
-        (function() {
+        (function () {
             'use strict';
-            
+
             // ЭКСТРЕННАЯ ДИАГНОСТИКА
             console.log('🚀 BingoBett загружается...');
             console.log('🔍 User Agent:', navigator.userAgent);
             console.log('🌐 URL:', window.location.href);
             console.log('📱 Viewport:', window.innerWidth + 'x' + window.innerHeight);
             console.log('🔗 Protocol:', window.location.protocol);
-            
+
             // Проверяем доступность ключевых API
             console.log('💾 localStorage доступен:', typeof localStorage !== 'undefined');
             console.log('🌐 fetch доступен:', typeof fetch !== 'undefined');
             console.log('🎨 Canvas доступен:', !!document.createElement('canvas').getContext);
-            
 
-            
             // Отслеживаем загрузку Telegram SDK
             let telegramCheckInterval = setInterval(() => {
                 if (window.Telegram) {
@@ -818,7 +741,7 @@
                     console.log('⏳ Ожидание загрузки Telegram SDK...');
                 }
             }, 200);
-            
+
             // Остановим проверку через 10 секунд
             setTimeout(() => {
                 clearInterval(telegramCheckInterval);
@@ -834,42 +757,42 @@
 
             function initTelegram() {
                 console.log('🔄 Начинаем инициализацию Telegram WebApp...');
-                
+
                 // Добавляем максимальное ожидание SDK
                 let attempts = 0;
                 const maxAttempts = 50;
-                
+
                 const tryInit = () => {
                     attempts++;
                     console.log(`Попытка ${attempts}/${maxAttempts} инициализации Telegram SDK`);
-                    
+
                     try {
                         if (window.Telegram && window.Telegram.WebApp) {
                             tg = window.Telegram.WebApp;
                             isTelegramApp = true;
-                            
+
                             console.log('✅ Telegram WebApp найден:', tg);
                             console.log('📱 Версия:', tg.version);
                             console.log('🎨 Тема:', tg.colorScheme);
                             console.log('📐 Высота:', tg.viewportHeight);
-                            
+
                             // ПРИНУДИТЕЛЬНАЯ инициализация
                             tg.ready();
                             console.log('✅ tg.ready() выполнен');
-                            
+
                             tg.expand();
                             console.log('✅ tg.expand() выполнен');
-                            
+
                             if (typeof tg.enableClosingConfirmation === 'function') {
                                 tg.enableClosingConfirmation();
                                 console.log('✅ enableClosingConfirmation() выполнен');
                             }
-                            
+
                             if (typeof tg.setHeaderColor === 'function') {
                                 tg.setHeaderColor('#1a1a1a');
                                 console.log('✅ setHeaderColor() выполнен');
                             }
-                            
+
                             // Получаем данные пользователя
                             tgUser = tg.initDataUnsafe?.user;
                             if (tgUser) {
@@ -878,7 +801,7 @@
                             } else {
                                 console.log('⚠️ Данные пользователя недоступны');
                             }
-                            
+
                             // MainButton
                             if (tg.MainButton) {
                                 tg.MainButton.setText('🎰 Крутить');
@@ -890,28 +813,28 @@
                                 });
                                 console.log('✅ MainButton настроена');
                             }
-                            
+
                             // Haptic feedback
                             if (tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
                                 tg.HapticFeedback.impactOccurred('medium');
                                 console.log('✅ Haptic feedback работает');
                             }
-                            
+
                             // Показываем все доступные методы для отладки
                             console.log('🔧 Доступные методы Telegram WebApp:', Object.keys(tg));
-                            
+
                             console.log('🎉 Telegram Web App полностью инициализирован!');
                             return true;
                         } else {
                             console.log(`❌ Попытка ${attempts}: Telegram WebApp не найден`);
-                            
+
                             if (attempts < maxAttempts) {
                                 setTimeout(tryInit, 100);
                             } else {
                                 console.error('🚨 КРИТИЧЕСКАЯ ОШИБКА: Telegram WebApp не загрузился после 50 попыток!');
                                 console.log('🔍 window.Telegram:', window.Telegram);
                                 console.log('🔍 User Agent:', navigator.userAgent);
-                                
+
                                 // Последняя попытка - создаем базовую заглушку
                                 createTelegramFallback();
                             }
@@ -920,20 +843,20 @@
                     } catch (error) {
                         console.error('❌ Ошибка при инициализации Telegram:', error);
                         console.error('Stack trace:', error.stack);
-                        
+
                         if (attempts < maxAttempts) {
                             setTimeout(tryInit, 100);
                         }
                         return false;
                     }
                 };
-                
+
                 return tryInit();
             }
-            
+
             function createTelegramFallback() {
                 console.log('🔧 Создаем fallback для Telegram WebApp...');
-                
+
                 window.Telegram = {
                     WebApp: {
                         version: '6.9',
@@ -943,10 +866,12 @@
                         ready: () => console.log('Fallback: ready()'),
                         expand: () => console.log('Fallback: expand()'),
                         enableClosingConfirmation: () => console.log('Fallback: enableClosingConfirmation()'),
-                        setHeaderColor: (color) => console.log('Fallback: setHeaderColor(' + color + ')'),
+                        setHeaderColor: (color) =>
+                            console.log('Fallback: setHeaderColor(' + color + ')'),
                         HapticFeedback: {
                             impactOccurred: (type) => console.log('Fallback: Haptic ' + type),
-                            notificationOccurred: (type) => console.log('Fallback: Notification ' + type)
+                            notificationOccurred: (type) =>
+                                console.log('Fallback: Notification ' + type),
                         },
                         MainButton: {
                             show: () => console.log('Fallback: MainButton.show()'),
@@ -955,7 +880,7 @@
                             onClick: (callback) => {
                                 console.log('Fallback: MainButton.onClick registered');
                                 // Можно добавить реальную кнопку в интерфейс
-                            }
+                            },
                         },
                         openLink: (url) => {
                             console.log('Fallback: openLink(' + url + ')');
@@ -965,16 +890,16 @@
                             user: {
                                 id: Date.now(),
                                 first_name: 'Debug User',
-                                username: 'debuguser'
-                            }
-                        }
-                    }
+                                username: 'debuguser',
+                            },
+                        },
+                    },
                 };
-                
+
                 tg = window.Telegram.WebApp;
                 isTelegramApp = true;
                 tgUser = tg.initDataUnsafe.user;
-                
+
                 console.log('✅ Fallback Telegram WebApp создан');
                 getTelegramUsername();
             }
@@ -1026,20 +951,30 @@
             const MAX_BET = 1000;
 
             const REELS = [
-                ["🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍋","🍊","🍉","🍇","🍓","🥥","⭐","🃏","👑"],
-                ["🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏"],
-                ["🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏","💰"],
-                ["🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏"],
-                ["🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","⭐","🃏"]
+                ['🍒', '🍋', '🍊', '🍉', '🍇', '🍓', '🍍', '🥝', '🍌', '🥥', '🎁', '💎', '🍋', '🍊', '🍉', '🍇', '🍓', '🥥', '⭐', '🃏', '👑'],
+                ['🍋', '🍊', '🍉', '🍇', '🍓', '🍍', '🥝', '🍌', '🥥', '🎁', '💎', '🍒', '🍋', '🍊', '🍉', '🍇', '🍓', '🍍', '⭐', '🃏'],
+                ['🍊', '🍉', '🍇', '🍓', '🍍', '🥝', '🍌', '🥥', '🎁', '💎', '🍒', '🍋', '🍊', '🍉', '🍇', '🍓', '🍍', '⭐', '🃏', '💰'],
+                ['🍉', '🍇', '🍓', '🍍', '🥝', '🍌', '🥥', '🎁', '💎', '🍒', '🍋', '🍊', '🍉', '🍇', '🍓', '🍍', '⭐', '🃏'],
+                ['🍇', '🍓', '🍍', '🥝', '🍌', '🥥', '🎁', '💎', '🍒', '🍋', '🍊', '🍉', '🍇', '🍓', '🍍', '🥝', '⭐', '🃏'],
             ];
 
             const payTable = {
-                "🍒": {3:8, 4:15, 5:30}, "🍋": {3:8, 4:15, 5:30}, "🍊": {3:8, 4:15, 5:30},
-                "🍉": {3:8, 4:15, 5:30}, "🍇": {3:8, 4:15, 5:30}, "🍓": {3:12, 4:20, 5:40},
-                "🍍": {3:12, 4:20, 5:40}, "🥝": {3:15, 4:30, 5:60}, "🍌": {3:15, 4:30, 5:60},
-                "🥥": {3:20, 4:40, 5:80}, "🎁": {3:25, 4:50, 5:100}, "💎": {3:30, 4:60, 5:120},
-                "⭐": {3:40, 4:80, 5:160}, "🃏": {3:50, 4:100, 5:200}, "👑": {3:80, 4:160, 5:320},
-                "💰": {3:150, 4:300, 5:800}
+                '🍒': { 3: 8, 4: 15, 5: 30 },
+                '🍋': { 3: 8, 4: 15, 5: 30 },
+                '🍊': { 3: 8, 4: 15, 5: 30 },
+                '🍉': { 3: 8, 4: 15, 5: 30 },
+                '🍇': { 3: 8, 4: 15, 5: 30 },
+                '🍓': { 3: 12, 4: 20, 5: 40 },
+                '🍍': { 3: 12, 4: 20, 5: 40 },
+                '🥝': { 3: 15, 4: 30, 5: 60 },
+                '🍌': { 3: 15, 4: 30, 5: 60 },
+                '🥥': { 3: 20, 4: 40, 5: 80 },
+                '🎁': { 3: 25, 4: 50, 5: 100 },
+                '💎': { 3: 30, 4: 60, 5: 120 },
+                '⭐': { 3: 40, 4: 80, 5: 160 },
+                '🃏': { 3: 50, 4: 100, 5: 200 },
+                '👑': { 3: 80, 4: 160, 5: 320 },
+                '💰': { 3: 150, 4: 300, 5: 800 },
             };
 
             // Состояние игры
@@ -1047,7 +982,7 @@
             let betAmount = parseInt(localStorage.getItem('local_slotBet')) || 100;
             let jackpot = parseFloat(localStorage.getItem('local_jackpot')) || 5000000;
             let username = localStorage.getItem('local_slotUsername') || '';
-            
+
             // Получение имени из Telegram если доступно
             function getTelegramUsername() {
                 if (tgUser && tgUser.first_name) {
@@ -1080,7 +1015,7 @@
                     const registrationTime = Number(localStorage.getItem('local_registrationTimestamp'));
                     const currentTime = Date.now();
                     const twentyFourHours = 24 * 60 * 60 * 1000;
-                    
+
                     if (currentTime - registrationTime > twentyFourHours) {
                         localStorage.setItem('local_freeSpins', '0');
                         this.updateDisplay();
@@ -1118,12 +1053,12 @@
                 if (betDisplay) betDisplay.textContent = betAmount;
                 if (betAmountDisplay) betAmountDisplay.textContent = betAmount;
                 if (usernameDisplay) usernameDisplay.textContent = username || 'Игрок';
-                
+
                 localStorage.setItem('local_slotBalance', balance.toString());
                 localStorage.setItem('local_slotBet', betAmount.toString());
                 localStorage.setItem('local_jackpot', jackpot.toString());
                 localStorage.setItem('local_slotUsername', username);
-                
+
                 freeSpinsManager.updateDisplay();
             }
 
@@ -1144,11 +1079,11 @@
                 slotMachine.innerHTML = '';
                 slotElements = [];
 
-                for(let row = 0; row < ROWS; row++){
-                    for(let col = 0; col < COLUMNS; col++){
+                for (let row = 0; row < ROWS; row++) {
+                    for (let col = 0; col < COLUMNS; col++) {
                         const slot = document.createElement('div');
                         slot.classList.add('slot');
-                        slot.textContent = "🍒";
+                        slot.textContent = '🍒';
                         slotMachine.appendChild(slot);
                         slotElements.push(slot);
                     }
@@ -1161,7 +1096,7 @@
 
             async function startSpin() {
                 if (isSpinning) return;
-                
+
                 console.log('🎰 Начинаем вращение...');
                 hapticFeedback('medium');
                 isSpinning = true;
@@ -1202,9 +1137,9 @@
 
                 // Анимация вращения
                 let finalResults = [];
-                for(let col = 0; col < COLUMNS; col++){
+                for (let col = 0; col < COLUMNS; col++) {
                     finalResults.push([]);
-                    for(let row = 0; row < ROWS; row++){
+                    for (let row = 0; row < ROWS; row++) {
                         const randomPos = Math.floor(Math.random() * REELS[col].length);
                         const symbol = getSymbolFromReel(REELS[col], randomPos);
                         finalResults[col].push(symbol);
@@ -1212,7 +1147,7 @@
                 }
 
                 // Очищаем предыдущие состояния
-                slotElements.forEach(slot => {
+                slotElements.forEach((slot) => {
                     slot.classList.remove('win', 'big-win', 'stopping');
                     slot.classList.add('spinning');
                 });
@@ -1220,15 +1155,32 @@
                 // Быстрая смена символов во время вращения
                 const spinDuration = 2000;
                 const spinInterval = setInterval(() => {
-                    slotElements.forEach((slot, index) => {
-                        const randomSymbols = ["🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","⭐","🃏","👑","💰"];
+                    slotElements.forEach((slot) => {
+                        const randomSymbols = [
+                            '🍒',
+                            '🍋',
+                            '🍊',
+                            '🍉',
+                            '🍇',
+                            '🍓',
+                            '🍍',
+                            '🥝',
+                            '🍌',
+                            '🥥',
+                            '🎁',
+                            '💎',
+                            '⭐',
+                            '🃏',
+                            '👑',
+                            '💰',
+                        ];
                         slot.textContent = randomSymbols[Math.floor(Math.random() * randomSymbols.length)];
                     });
                 }, 100);
 
                 // Ждем завершения анимации
-                await new Promise(resolve => setTimeout(resolve, spinDuration));
-                
+                await new Promise((resolve) => setTimeout(resolve, spinDuration));
+
                 clearInterval(spinInterval);
 
                 // Останавливаем барабаны поочередно
@@ -1236,18 +1188,18 @@
                     for (let row = 0; row < ROWS; row++) {
                         const slotIndex = row * COLUMNS + col;
                         const slot = slotElements[slotIndex];
-                        
+
                         slot.classList.remove('spinning');
                         slot.classList.add('stopping');
                         slot.textContent = finalResults[col][row];
                     }
-                    
-                    await new Promise(resolve => setTimeout(resolve, 300));
+
+                    await new Promise((resolve) => setTimeout(resolve, 300));
                 }
 
                 // Убираем анимацию остановки
                 setTimeout(() => {
-                    slotElements.forEach(slot => {
+                    slotElements.forEach((slot) => {
                         slot.classList.remove('stopping');
                     });
                 }, 500);
@@ -1255,7 +1207,7 @@
                 // Проверяем выигрыши
                 let totalWin = 0;
                 let winningSlots = [];
-                
+
                 // 1. Проверяем горизонтальные линии (4 ряда)
                 for (let row = 0; row < ROWS; row++) {
                     let line = [];
@@ -1263,10 +1215,10 @@
                         const slotIndex = row * COLUMNS + col;
                         line.push(slotElements[slotIndex].textContent);
                     }
-                    
+
                     const firstSymbol = line[0];
                     let count = 1;
-                    
+
                     for (let i = 1; i < line.length; i++) {
                         if (line[i] === firstSymbol) {
                             count++;
@@ -1274,11 +1226,11 @@
                             break;
                         }
                     }
-                    
+
                     if (count >= 3 && payTable[firstSymbol]) {
                         const win = payTable[firstSymbol][count] || 0;
                         totalWin += win * betAmount;
-                        
+
                         // Добавляем выигрышные слоты для подсветки
                         for (let col = 0; col < count; col++) {
                             const index = row * COLUMNS + col;
@@ -1286,21 +1238,21 @@
                         }
                     }
                 }
-                
+
                 // 2. Проверяем диагональ сверху-слева вниз-вправо (↘)
                 let diagonalLine1 = [];
                 for (let i = 0; i < Math.min(ROWS, COLUMNS); i++) {
                     const slotIndex = i * COLUMNS + i;
                     diagonalLine1.push({
                         symbol: slotElements[slotIndex].textContent,
-                        index: slotIndex
+                        index: slotIndex,
                     });
                 }
-                
+
                 if (diagonalLine1.length >= 3) {
                     const firstSymbol = diagonalLine1[0].symbol;
                     let count = 1;
-                    
+
                     for (let i = 1; i < diagonalLine1.length; i++) {
                         if (diagonalLine1[i].symbol === firstSymbol) {
                             count++;
@@ -1308,32 +1260,32 @@
                             break;
                         }
                     }
-                    
+
                     if (count >= 3 && payTable[firstSymbol]) {
                         const win = payTable[firstSymbol][count] || 0;
                         totalWin += win * betAmount;
-                        
+
                         // Добавляем выигрышные слоты для подсветки
                         for (let i = 0; i < count; i++) {
                             winningSlots.push(diagonalLine1[i].index);
                         }
                     }
                 }
-                
+
                 // 3. Проверяем диагональ сверху-справа вниз-влево (↙)
                 let diagonalLine2 = [];
                 for (let i = 0; i < Math.min(ROWS, COLUMNS); i++) {
                     const slotIndex = i * COLUMNS + (COLUMNS - 1 - i);
                     diagonalLine2.push({
                         symbol: slotElements[slotIndex].textContent,
-                        index: slotIndex
+                        index: slotIndex,
                     });
                 }
-                
+
                 if (diagonalLine2.length >= 3) {
                     const firstSymbol = diagonalLine2[0].symbol;
                     let count = 1;
-                    
+
                     for (let i = 1; i < diagonalLine2.length; i++) {
                         if (diagonalLine2[i].symbol === firstSymbol) {
                             count++;
@@ -1341,11 +1293,11 @@
                             break;
                         }
                     }
-                    
+
                     if (count >= 3 && payTable[firstSymbol]) {
                         const win = payTable[firstSymbol][count] || 0;
                         totalWin += win * betAmount;
-                        
+
                         // Добавляем выигрышные слоты для подсветки
                         for (let i = 0; i < count; i++) {
                             winningSlots.push(diagonalLine2[i].index);
@@ -1354,7 +1306,7 @@
                 }
 
                 // Подсвечиваем выигрышные слоты
-                winningSlots.forEach(index => {
+                winningSlots.forEach((index) => {
                     const slot = slotElements[index];
                     if (slot) {
                         if (totalWin >= betAmount * 15) {
@@ -1368,7 +1320,7 @@
                 // Обрабатываем результат
                 if (totalWin > 0) {
                     balance += totalWin;
-                    
+
                     if (totalWin >= betAmount * 50) {
                         showMessage(`🎉 МЕГА ВЫИГРЫШ! Вы выиграли ${totalWin.toFixed(2)} ₽!`);
                         hapticFeedback('heavy');
@@ -1393,9 +1345,9 @@
                         }, 2000);
                     }
                 } else {
-                    showMessage("Не повезло. Попробуйте еще раз!");
+                    showMessage('Не повезло. Попробуйте еще раз!');
                     hapticFeedback('light');
-                    
+
                     // ДОПОЛНИТЕЛЬНЫЙ ШАНС мини-игры даже без выигрыша (15%)
                     if (Math.random() < 0.15) {
                         setTimeout(() => {
@@ -1418,7 +1370,7 @@
                 }
 
                 updateUI();
-                
+
                 // Разблокируем кнопки
                 if (spinButton) spinButton.disabled = false;
                 if (autoSpinButton) autoSpinButton.disabled = false;
@@ -1426,7 +1378,7 @@
                     tg.MainButton.setText('🎰 Крутить');
                     tg.MainButton.enable();
                 }
-                
+
                 isSpinning = false;
                 console.log('✅ Вращение завершено');
             }
@@ -1434,7 +1386,7 @@
             // Мини-игра
             function startMiniGame(winAmount) {
                 console.log('🎲 Запуск мини-игры');
-                
+
                 const overlay = document.getElementById('miniGameOverlay');
                 const boxes = overlay?.querySelectorAll('.box');
                 const msg = document.getElementById('miniGameMsg');
@@ -1446,7 +1398,7 @@
                 }
 
                 // Сброс состояния
-                boxes.forEach(box => {
+                boxes.forEach((box) => {
                     box.classList.remove('win', 'lose');
                     box.onclick = null;
                     box.textContent = '🎁';
@@ -1456,15 +1408,15 @@
                 closeBtn.style.display = 'none';
 
                 const winBoxIndex = Math.floor(Math.random() * 3);
-                msg.textContent = "Выберите коробку для получения бонуса!";
+                msg.textContent = 'Выберите коробку для получения бонуса!';
 
                 boxes.forEach((box, index) => {
-                    box.onclick = function() {
+                    box.onclick = function () {
                         console.log(`Выбрана коробка ${index + 1}`);
-                        
+
                         // Отключаем все клики
-                        boxes.forEach(b => b.onclick = null);
-                        
+                        boxes.forEach((b) => (b.onclick = null));
+
                         setTimeout(() => {
                             if (index === winBoxIndex) {
                                 box.classList.add('win');
@@ -1477,18 +1429,18 @@
                                 box.textContent = '❌';
                                 msg.textContent = `😔 Не повезло! Попробуйте в следующий раз`;
                             }
-                            
+
                             // Показываем правильную коробку
                             boxes[winBoxIndex].classList.add('win');
                             boxes[winBoxIndex].textContent = '💰';
-                            
+
                             updateUI();
                             closeBtn.style.display = 'block';
                         }, 800);
                     };
                 });
 
-                closeBtn.onclick = function() {
+                closeBtn.onclick = function () {
                     overlay.style.display = 'none';
                     console.log('Мини-игра закрыта');
                 };
@@ -1596,7 +1548,8 @@
 
                 // Спавн монет
                 function spawnCoin() {
-                    if (gameActive && coins.length < 20) { // Ограничиваем количество монет на экране
+                    if (gameActive && coins.length < 20) {
+                        // Ограничиваем количество монет на экране
                         coins.push(new Coin());
                     }
                 }
@@ -1665,10 +1618,9 @@
                     balance += totalCaught;
                     updateUI();
 
-                    document.getElementById('coinRainResultText').textContent = 
-                        `🎉 Вы поймали ${totalCaught} ₽!`;
+                    document.getElementById('coinRainResultText').textContent = `🎉 Вы поймали ${totalCaught} ₽!`;
                     document.getElementById('coinRainResult').style.display = 'block';
-                    
+
                     hapticFeedback('success');
 
                     // Добавляем сообщение в чат
@@ -1709,7 +1661,13 @@
 
             // Обработчики событий
             function setupEventListeners() {
-                // Кнопки ставки
+                betMinus = document.getElementById('betMinus');
+                betPlus = document.getElementById('betPlus');
+                spinButton = document.getElementById('spinButton');
+                autoSpinButton = document.getElementById('autoSpinButton');
+                stopAutoSpinButton = document.getElementById('stopAutoSpinButton');
+                botChat = document.getElementById('botChat');
+
                 if (betMinus) {
                     betMinus.onclick = () => {
                         if (betAmount > MIN_BET && !isSpinning) {
@@ -1730,7 +1688,6 @@
                     };
                 }
 
-                // Кнопки вращения
                 if (spinButton) {
                     spinButton.onclick = () => {
                         console.log('Нажата кнопка спин');
@@ -1741,12 +1698,12 @@
                 if (autoSpinButton) {
                     autoSpinButton.onclick = () => {
                         if (autoSpinActive) return;
-                        
+
                         console.log('Запуск автоспина');
                         autoSpinActive = true;
                         autoSpinButton.style.display = 'none';
                         if (stopAutoSpinButton) stopAutoSpinButton.style.display = 'inline-block';
-                        
+
                         autoSpinInterval = setInterval(() => {
                             if (!isSpinning) {
                                 const freeSpins = freeSpinsManager.getFreeSpins();
@@ -1776,106 +1733,66 @@
                     if (stopAutoSpinButton) stopAutoSpinButton.style.display = 'none';
                 }
 
-                // Кнопки пополнения через дилера
+                // Кнопки пополнения через окно пополнения с iframe
                 const replenishButtons = document.querySelectorAll('.replenish-btn');
-                replenishButtons.forEach(btn => {
+
+                // DOM элементы пополнения
+                const paymentModal = document.getElementById('paymentModal');
+                const paymentAmountDisplay = document.getElementById('paymentAmountDisplay');
+                const paymentIframe = document.getElementById('paymentIframe');
+                const closePaymentBtn = document.getElementById('closePaymentBtn');
+
+                replenishButtons.forEach((btn) => {
                     btn.onclick = () => {
                         const amount = parseInt(btn.getAttribute('data-amount'));
-                        console.log(`🛒 Пополнение на ${amount} ₽ через дилера`);
-                        
-                        // Генерируем уникальный ID платежа
+                        paymentAmountDisplay.textContent = amount.toLocaleString('ru-RU');
+                        paymentModal.style.display = 'flex';
+
                         const paymentId = `bingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-                        
-                        // Сохраняем информацию о платеже
-                        const paymentInfo = {
-                            id: paymentId,
-                            amount: amount,
-                            timestamp: Date.now(),
-                            status: 'pending'
-                        };
+                        const paymentInfo = { id: paymentId, amount: amount, timestamp: Date.now(), status: 'pending' };
                         localStorage.setItem('pendingPayment', JSON.stringify(paymentInfo));
-                        
-                        // Формируем URL для YooMoney с возвратом на игру
-                        const successURL = `https://frutisbett.github.io/bingobett.github.io?payment=success&amount=${amount}&id=${paymentId}`;
-                        // Реальный URL дилера на GitHub Pages
+
+                        const successURL = `${window.location.origin}${window.location.pathname}?payment=success&amount=${amount}&id=${paymentId}`;
                         const dealerApiUrl = `https://frutisbett.github.io/bingobett.github.io/api/payment/create`;
-                        
-                        // Данные для отправки дилеру
-                        const paymentData = {
-                            amount: amount,
-                            user_id: tgUser?.id || 'unknown',
-                            game: 'bingo',
-                            payment_id: paymentId,
-                            return_url: successURL
-                        };
-                        
-                        // Отправляем запрос дилеру
+                        const paymentData = { amount: amount, user_id: tgUser?.id || 'unknown', game: 'bingo', payment_id: paymentId, return_url: successURL };
+
                         fetch(dealerApiUrl, {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
+                            headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(paymentData)
                         })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                const paymentUrl = data.redirect_url;
-                                console.log('✅ Дилер создал платеж:', data);
-                                console.log('💳 URL для оплаты:', paymentUrl);
-                                
-                                if (isTelegramApp && tg) {
-                                    try {
-                                        tg.openLink(paymentUrl);
-                                        hapticFeedback('light');
-                                    } catch (error) {
-                                        console.error('Ошибка открытия ссылки в Telegram:', error);
-                                        window.open(paymentUrl, '_blank');
-                                    }
+                            .then((res) => res.json())
+                            .then((data) => {
+                                if (data.success && data.redirect_url) {
+                                    paymentIframe.src = data.redirect_url;
                                 } else {
-                                    window.open(paymentUrl, '_blank');
+                                    alert('Ошибка создания платежа. Попробуйте позже.');
+                                    paymentModal.style.display = 'none';
                                 }
-                            } else {
-                                console.error('❌ Ошибка дилера:', data.error);
-                                showMessage('❌ Ошибка создания платежа. Попробуйте позже.');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('❌ Ошибка связи с дилером:', error);
-                            // Fallback: прямой переход на YooMoney
-                            const yoomoneyUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118182998706&quickpay-form=shop&targets=BingoBett%20пополнение%20(${paymentId})&paymentType=AC&sum=${amount}&label=${paymentId}&successURL=${encodeURIComponent(successURL)}`;
-                            window.open(yoomoneyUrl, '_blank');
-                        });
-                        
-                        // Показываем инструкции пользователю
-                        showMessage(`💳 Обработка платежа ${amount}₽...\n\n⚡ Создаем безопасное соединение с дилером`);
+                            })
+                            .catch(() => {
+                                alert('Ошибка связи с платежным сервисом. Попробуйте позже.');
+                                paymentModal.style.display = 'none';
+                            });
+
+                        showMessage(`💳 Инициализация платежа на ${amount} ₽...`);
                     };
                 });
 
-                // Локальные кнопки пополнения (для тестирования)
-                const localReplenishButtons = document.querySelectorAll('.replenish-btn');
-                localReplenishButtons.forEach(btn => {
-                    btn.addEventListener('contextmenu', (e) => {
-                        e.preventDefault();
-                        const amount = parseInt(btn.getAttribute('data-amount'));
-                        console.log(`💎 Локальное пополнение на ${amount} ₽ (правый клик)`);
-                        
-                        balance += amount;
-                        updateUI();
-                        
-                        showMessage(`💰 Баланс пополнен на ${amount}₽!\n\n💡 Для реального пополнения используйте левый клик`);
-                        hapticFeedback('success');
-                        
-                        // Добавляем сообщение в чат
-                        addBotMessage(`${username || 'Игрок'} пополнил баланс на ${amount}₽ (тестовый режим)`);
-                    });
-                });
+                closePaymentBtn.onclick = () => {
+                    paymentModal.style.display = 'none';
+                    paymentIframe.src = '';
+                    showMessage('');
+                };
 
-                // Инициализация модальных окон
-                initializeModals();
-            }
+                paymentModal.onclick = function (event) {
+                    if (event.target === paymentModal) {
+                        paymentModal.style.display = 'none';
+                        paymentIframe.src = '';
+                        showMessage('');
+                    }
+                };
 
-            function initializeModals() {
                 // Модальное окно имени
                 const modal = document.getElementById('usernameModal');
                 const input = document.getElementById('usernameInput');
@@ -1886,7 +1803,7 @@
                 }
 
                 if (okBtn) {
-                    okBtn.onclick = function() {
+                    okBtn.onclick = function () {
                         const name = input.value.trim();
                         if (name && name.length <= 20) {
                             username = name;
@@ -1908,7 +1825,7 @@
 
                 // Форматирование номера карты
                 if (cardInput) {
-                    cardInput.addEventListener('input', function(e) {
+                    cardInput.addEventListener('input', function (e) {
                         let value = e.target.value.replace(/\D/g, '');
                         let formattedValue = '';
                         for (let i = 0; i < value.length && i < 16; i++) {
@@ -1921,33 +1838,31 @@
 
                 if (withdrawBtn) {
                     withdrawBtn.onclick = () => {
-                        console.log('Нажата кнопка вывода');
-                        
                         // Обновляем отображение текущего баланса
                         const currentBalanceDisplay = document.getElementById('currentBalanceDisplay');
                         if (currentBalanceDisplay) {
                             currentBalanceDisplay.textContent = balance.toFixed(2);
                         }
-                        
+
                         const withdrawWarning = document.getElementById('withdrawWarning');
                         const withdrawWarningText = document.getElementById('withdrawWarningText');
                         const withdrawForm = document.getElementById('withdrawForm');
-                        
+
                         // Очищаем предыдущие ошибки
                         document.getElementById('withdrawError').textContent = '';
-                        
+
                         if (balance <= 40000) {
                             // Показываем предупреждение о недостаточном балансе
                             const needed = 40001 - balance;
                             withdrawWarning.style.display = 'block';
                             withdrawForm.style.display = 'none';
-                            
+
                             let warningMessage = `<div style="margin-bottom: 10px;">
                                 <strong>Ваш баланс: ${balance.toFixed(2)} ₽</strong><br>
                                 <strong>Требуется: 40,001.00 ₽</strong><br>
                                 <strong style="color: red;">Не хватает: ${needed.toFixed(2)} ₽</strong>
                             </div>`;
-                            
+
                             if (balance < 1000) {
                                 warningMessage += `<div style="color: #ff6b6b;">
                                     💡 <strong>Совет:</strong> Попробуйте сделать несколько ставок или пополните баланс кнопками выше.
@@ -1965,20 +1880,20 @@
                                     🎯 <strong>Совсем близко!</strong> Еще ${needed.toFixed(2)} ₽ и вывод будет доступен!
                                 </div>`;
                             }
-                            
+
                             withdrawWarningText.innerHTML = warningMessage;
-                            
+
                             // Также показываем сообщение в игре
                             showMessage(`❌ Вывод недоступен! Минимальный баланс: 40,001 ₽. Не хватает: ${needed.toFixed(2)} ₽`);
                         } else {
                             // Баланс достаточен для вывода
                             withdrawWarning.style.display = 'none';
                             withdrawForm.style.display = 'block';
-                            
+
                             const withdrawableAmount = balance - 40000;
                             document.getElementById('withdrawAmount').textContent = withdrawableAmount.toFixed(2);
                             cardInput.value = '';
-                            
+
                             // Если сумма к выводу очень маленькая, показываем дополнительное предупреждение
                             if (withdrawableAmount < 100) {
                                 document.getElementById('withdrawError').innerHTML = `
@@ -1988,7 +1903,7 @@
                                     </div>`;
                             }
                         }
-                        
+
                         withdrawModal.style.display = 'flex';
                     };
                 }
@@ -1996,7 +1911,7 @@
                 if (confirmBtn) {
                     confirmBtn.onclick = () => {
                         const cardNumber = cardInput.value.replace(/\s/g, '');
-                        
+
                         // Двойная проверка баланса перед выводом
                         if (balance <= 40000) {
                             const needed = 40001 - balance;
@@ -2008,7 +1923,7 @@
                                 </div>`;
                             return;
                         }
-                        
+
                         if (!/^\d{16}$/.test(cardNumber)) {
                             document.getElementById('withdrawError').innerHTML = `
                                 <div style="color: red;">
@@ -2017,28 +1932,38 @@
                                 </div>`;
                             return;
                         }
-                        
+
                         const withdrawSum = balance - 40000;
-                        
+
                         // Дополнительное предупреждение для маленьких сумм
                         if (withdrawSum < 50) {
-                            const confirmed = confirm(`⚠️ ВНИМАНИЕ!\n\nВы хотите вывести всего ${withdrawSum.toFixed(2)} ₽?\n\nЭто очень маленькая сумма. Рекомендуем играть дальше для увеличения выигрыша.\n\nВы уверены, что хотите продолжить вывод?`);
+                            const confirmed = confirm(
+                                `⚠️ ВНИМАНИЕ!\n\nВы хотите вывести всего ${withdrawSum.toFixed(
+                                    2
+                                )} ₽?\n\nЭто очень маленькая сумма. Рекомендуем играть дальше для увеличения выигрыша.\n\nВы уверены, что хотите продолжить вывод?`
+                            );
                             if (!confirmed) {
                                 return;
                             }
                         }
-                        
+
                         // Финальное подтверждение
-                        const finalConfirm = confirm(`💰 ПОДТВЕРЖДЕНИЕ ВЫВОДА\n\nСумма: ${withdrawSum.toFixed(2)} ₽\nКарта: ${cardNumber.substring(0,4)} **** **** ${cardNumber.substring(12)}\nОстанется на балансе: 40,000 ₽\n\nПодтвердить вывод средств?`);
+                        const finalConfirm = confirm(
+                            `💰 ПОДТВЕРЖДЕНИЕ ВЫВОДА\n\nСумма: ${withdrawSum.toFixed(
+                                2
+                            )} ₽\nКарта: ${cardNumber.substring(0, 4)} **** **** ${cardNumber.substring(
+                                12
+                            )}\nОстанется на балансе: 40,000 ₽\n\nПодтвердить вывод средств?`
+                        );
                         if (!finalConfirm) {
                             return;
                         }
-                        
+
                         balance = 40000;
                         updateUI();
                         withdrawModal.style.display = 'none';
-                        
-                        const maskedCard = cardNumber.substring(0,4) + ' **** **** ' + cardNumber.substring(12);
+
+                        const maskedCard = cardNumber.substring(0, 4) + ' **** **** ' + cardNumber.substring(12);
                         showMessage(`✅ Запрос на вывод ${withdrawSum.toFixed(2)} ₽ на карту ${maskedCard} успешно отправлен!`);
                         addBotMessage(`${username} запросил вывод ${withdrawSum.toFixed(2)} ₽`);
                     };
@@ -2068,9 +1993,9 @@
                 }
 
                 // Закрытие модальных окон при клике вне области
-                [withdrawModal, rulesModal].forEach(modal => {
+                [withdrawModal, rulesModal].forEach((modal) => {
                     if (modal) {
-                        modal.onclick = function(event) {
+                        modal.onclick = function (event) {
                             if (event.target === modal) {
                                 modal.style.display = 'none';
                             }
@@ -2079,50 +2004,10 @@
                 });
             }
 
-            // Бот-чат
-            const botNames = ["Алексей", "Мария", "Дмитрий", "Анна", "Сергей", "Елена", "Максим", "Ольга", "Иван", "Татьяна"];
-            const botMessages = [
-                "выиграл 250 ₽ на слотах!", 
-                "поймал бонус в мини-игре!", 
-                "выиграл 180 ₽!", 
-                "получил фриспины!",
-                "выиграл 420 ₽ в BingoBett!",
-                "поймал комбинацию 👑👑👑!",
-                "выиграл 95 ₽",
-                "получил мини-игру!",
-                "выиграл 310 ₽ на автоспине!",
-                "поймал 💎💎💎💎!"
-            ];
-
-            function addBotMessage(customMessage) {
-                if (!botChat) return;
-                
-                const messageText = customMessage || `${botNames[Math.floor(Math.random() * botNames.length)]} ${botMessages[Math.floor(Math.random() * botMessages.length)]}`;
-                
-                const messageDiv = document.createElement('div');
-                messageDiv.className = 'bot-message';
-                messageDiv.textContent = `${new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'})} ${messageText}`;
-                
-                botChat.appendChild(messageDiv);
-                botChat.scrollTop = botChat.scrollHeight;
-                
-                // Ограничиваем количество сообщений
-                while (botChat.children.length > 8) {
-                    botChat.removeChild(botChat.children[1]);
-                }
-            }
-
-            // Периодические сообщения в чат
-            setInterval(() => {
-                if (Math.random() < 0.4) {
-                    addBotMessage();
-                }
-            }, 7000);
-
             // Инициализация игры
             function initializeGame() {
                 console.log('🎰 Инициализация BingoBett (локальная версия)...');
-                
+
                 // Получаем DOM элементы
                 slotMachine = document.getElementById('slotMachine');
                 messageElement = document.getElementById('message');
@@ -2150,12 +2035,12 @@
 
                 // Анимация загрузки
                 document.body.classList.add('loading');
-                
+
                 // Первое сообщение в чат
                 addBotMessage();
-                
+
                 console.log('✅ BingoBett локальная версия инициализирована успешно!');
-                
+
                 // Финальное сообщение
                 setTimeout(() => {
                     showMessage('🎰 Игра полностью исправлена и готова! Все работает идеально!');
@@ -2176,29 +2061,29 @@
                 // Проверяем URL на параметры успешного платежа
                 checkPaymentReturn();
             }
-            
+
             // Функция проверки URL параметров для обработки возврата с ЮMoney
             function checkPaymentReturn() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const paymentStatus = urlParams.get('payment');
                 const paymentAmount = urlParams.get('amount');
                 const paymentId = urlParams.get('id');
-                
+
                 if (paymentStatus === 'success' && paymentAmount && paymentId) {
                     console.log('🔍 Обнаружен возврат с ЮMoney:', { paymentStatus, paymentAmount, paymentId });
-                    
+
                     // Проверяем, что это наш платеж
                     const pendingPayment = JSON.parse(localStorage.getItem('pendingPayment') || '{}');
-                    
+
                     if (pendingPayment.id === paymentId && pendingPayment.status === 'pending') {
                         // Успешная оплата!
                         const amount = parseInt(paymentAmount);
                         balance += amount;
                         updateUI();
-                        
+
                         // Удаляем ожидающий платеж
                         localStorage.removeItem('pendingPayment');
-                        
+
                         // Показываем успешное сообщение
                         setTimeout(() => {
                             showMessage(`🎉 Платеж успешно обработан!\n💰 Ваш баланс пополнен на ${amount}₽\n\n🎮 Удачной игры!`);
@@ -2206,23 +2091,22 @@
                                 addBotMessage(`💰 Отлично! Платеж на ${amount}₽ прошел успешно. Ваш баланс пополнен!`);
                             }
                         }, 2000);
-                        
+
                         // Haptic feedback для Telegram
                         if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
                             window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
                         }
-                        
+
                         // Очищаем URL от параметров платежа
                         const cleanUrl = window.location.origin + window.location.pathname;
                         window.history.replaceState({}, document.title, cleanUrl);
-                        
+
                         console.log('✅ Платеж успешно обработан и баланс пополнен');
                     } else {
                         console.log('⚠️ Платеж не найден в pending или уже обработан');
                     }
                 }
             }
-
         })();
     </script>
 </body>
