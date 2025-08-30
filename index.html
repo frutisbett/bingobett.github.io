@@ -352,7 +352,9 @@
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 999999;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
         }
 
         .modal {
@@ -409,7 +411,7 @@
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 999;
+            z-index: 999998;
         }
 
         .mini-game-content {
@@ -2302,6 +2304,38 @@
                     }
                 }
             }
+            
+            // Глобальные обработчики для модальных окон
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    // Закрываем все открытые модальные окна
+                    const modals = document.querySelectorAll('.modal-bg');
+                    modals.forEach(modal => {
+                        if (modal.style.display === 'flex') {
+                            modal.style.display = 'none';
+                            console.log('🚪 Модальное окно закрыто по Escape');
+                            
+                            // Haptic feedback для Telegram
+                            if (tg && tg.HapticFeedback) {
+                                tg.HapticFeedback.impactOccurred('light');
+                            }
+                        }
+                    });
+                }
+            });
+            
+            // Закрытие по клику вне модального окна
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal-bg')) {
+                    e.target.style.display = 'none';
+                    console.log('🚪 Модальное окно закрыто по клику вне');
+                    
+                    // Haptic feedback для Telegram
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.impactOccurred('light');
+                    }
+                }
+            });
 
         })();
     </script>
