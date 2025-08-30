@@ -343,30 +343,38 @@
         }
 
         .modal-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background: rgba(0, 0, 0, 0.9) !important;
             display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 999999;
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 2147483647 !important;
+            backdrop-filter: blur(3px) !important;
+            -webkit-backdrop-filter: blur(3px) !important;
+            -webkit-transform: translateZ(0) !important;
+            transform: translateZ(0) !important;
         }
 
         .modal {
-            background: #333;
-            padding: 25px;
-            border-radius: 15px;
-            color: white;
-            min-width: 300px;
-            max-width: 90vw;
-            text-align: center;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: #333 !important;
+            padding: 25px !important;
+            border-radius: 15px !important;
+            color: white !important;
+            min-width: 300px !important;
+            max-width: 90vw !important;
+            max-height: 90vh !important;
+            text-align: center !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8) !important;
+            position: relative !important;
+            z-index: 2147483647 !important;
+            overflow-y: auto !important;
+            -webkit-transform: translateZ(0) !important;
+            transform: translateZ(0) !important;
         }
 
         .modal input {
@@ -402,16 +410,20 @@
         }
 
         .mini-game-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.9);
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background: rgba(0,0,0,0.95) !important;
             display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 999998;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 2147483646 !important;
+            -webkit-transform: translateZ(0) !important;
+            transform: translateZ(0) !important;
         }
 
         .mini-game-content {
@@ -603,6 +615,30 @@
             margin-bottom: 15px;
             border-radius: 8px;
             border: 1px solid #1976d2;
+        }
+        
+        /* Дополнительные стили для Telegram WebView */
+        .telegram-modal-fix {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 2147483647 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: rgba(0, 0, 0, 0.9) !important;
+            -webkit-transform: translateZ(0) !important;
+            transform: translateZ(0) !important;
+        }
+        
+        .telegram-modal-content-fix {
+            position: relative !important;
+            z-index: 2147483647 !important;
+            max-width: 90vw !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important;
         }
 
         .loading {
@@ -882,6 +918,12 @@
 
             function initTelegram() {
                 console.log('🔄 Начинаем инициализацию Telegram WebApp...');
+                console.log('📱 User Agent:', navigator.userAgent);
+                console.log('🌐 Current URL:', window.location.href);
+                
+                // Принудительно устанавливаем Telegram-совместимые стили
+                document.documentElement.style.setProperty('--tg-viewport-height', window.innerHeight + 'px');
+                document.body.style.setProperty('overflow-x', 'hidden');
                 
                 // Добавляем максимальное ожидание SDK
                 let attempts = 0;
@@ -907,6 +949,11 @@
                             
                             tg.expand();
                             console.log('✅ tg.expand() выполнен');
+                            
+                            // Устанавливаем размер viewport для корректной работы модальных окон
+                            if (tg.viewportHeight) {
+                                document.documentElement.style.setProperty('--tg-viewport-height', tg.viewportHeight + 'px');
+                            }
                             
                             if (typeof tg.enableClosingConfirmation === 'function') {
                                 tg.enableClosingConfirmation();
@@ -1824,12 +1871,35 @@
                     if (stopAutoSpinButton) stopAutoSpinButton.style.display = 'none';
                 }
 
-                // Кнопки пополнения через дилера (теперь внутри модального окна, без выхода из игры)
+                // Кнопки пополнения через дилера (внутри модального окна)
                 const replenishButtons = document.querySelectorAll('.replenish-btn');
-                replenishButtons.forEach(btn => {
-                    btn.onclick = () => {
-                        const amount = parseInt(btn.getAttribute('data-amount'));
-                        openDepositModal(amount);
+                console.log('💳 Найдено кнопок пополнения:', replenishButtons.length);
+                
+                replenishButtons.forEach((btn, index) => {
+                    const amount = parseInt(btn.getAttribute('data-amount'));
+                    console.log(`🎯 Кнопка ${index + 1}: ${amount}₽`);
+                    
+                    btn.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        console.log(`💳 Клик по кнопке пополнения: ${amount}₽`);
+                        
+                        // Haptic feedback
+                        if (tg && tg.HapticFeedback) {
+                            tg.HapticFeedback.impactOccurred('medium');
+                        }
+                        
+                        try {
+                            console.log('🚀 Попытка открыть модальное окно пополнения...');
+                            openDepositModal(amount);
+                            console.log('✅ openDepositModal выполнена успешно');
+                        } catch (error) {
+                            console.error('❌ КРИТИЧЕСКАЯ ОШИБКА при открытии модального окна:', error);
+                            console.error('Stack trace:', error.stack);
+                            alert(`ОШИБКА ПОПОЛНЕНИЯ: ${error.message}`);
+                            showMessage(`❌ Ошибка: ${error.message}`);
+                        }
                     };
                 });
 
@@ -1856,6 +1926,83 @@
                 initializeModals();
             }
 
+            // ПРИНУДИТЕЛЬНОЕ отображение модальных окон для Telegram
+            function forceShowModal(modalElement) {
+                if (!modalElement) {
+                    console.error('❌ КРИТИЧЕСКАЯ ОШИБКА: modalElement не найден!');
+                    alert('ОШИБКА: Модальное окно не найдено в DOM!');
+                    return false;
+                }
+                
+                console.log('🔧 Принудительное отображение модального окна...');
+                console.log('📍 Modal ID:', modalElement.id);
+                console.log('📍 Modal classes:', modalElement.className);
+                console.log('📍 Current display:', modalElement.style.display);
+                console.log('📍 Current visibility:', modalElement.style.visibility);
+                
+                try {
+                    // Убираем все возможные блокировки
+                    modalElement.style.display = 'flex';
+                    modalElement.style.visibility = 'visible';
+                    modalElement.style.opacity = '1';
+                    modalElement.style.pointerEvents = 'auto';
+                    modalElement.style.position = 'fixed';
+                    modalElement.style.top = '0';
+                    modalElement.style.left = '0';
+                    modalElement.style.width = '100vw';
+                    modalElement.style.height = '100vh';
+                    modalElement.style.zIndex = '2147483647';
+                    modalElement.style.backgroundColor = 'rgba(0,0,0,0.9)';
+                    
+                    console.log('✅ Базовые стили применены');
+                    
+                    // Принудительно показываем содержимое
+                    const modalContent = modalElement.querySelector('.modal');
+                    if (modalContent) {
+                        modalContent.style.display = 'block';
+                        modalContent.style.visibility = 'visible';
+                        modalContent.style.opacity = '1';
+                        modalContent.style.position = 'relative';
+                        modalContent.style.zIndex = '2147483647';
+                        console.log('✅ Содержимое модального окна настроено');
+                    } else {
+                        console.error('❌ Содержимое модального окна (.modal) не найдено!');
+                    }
+                    
+                    // Добавляем в body если не там
+                    if (!document.body.contains(modalElement)) {
+                        document.body.appendChild(modalElement);
+                        console.log('✅ Модальное окно добавлено в body');
+                    }
+                    
+                    // Проверяем финальное состояние
+                    setTimeout(() => {
+                        const computedStyle = window.getComputedStyle(modalElement);
+                        console.log('🔍 ФИНАЛЬНАЯ ПРОВЕРКА:');
+                        console.log('  - display:', computedStyle.display);
+                        console.log('  - visibility:', computedStyle.visibility);
+                        console.log('  - opacity:', computedStyle.opacity);
+                        console.log('  - z-index:', computedStyle.zIndex);
+                        console.log('  - position:', computedStyle.position);
+                        
+                        if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden') {
+                            console.error('🚨 МОДАЛЬНОЕ ОКНО ВСЕ ЕЩЕ СКРЫТО!');
+                            alert(`ОШИБКА: Модальное окно скрыто!\nDisplay: ${computedStyle.display}\nVisibility: ${computedStyle.visibility}`);
+                        } else {
+                            console.log('✅ Модальное окно успешно отображается');
+                        }
+                    }, 100);
+                    
+                    console.log('✅ Модальное окно принудительно показано');
+                    return true;
+                    
+                } catch (error) {
+                    console.error('❌ ОШИБКА при показе модального окна:', error);
+                    alert(`КРИТИЧЕСКАЯ ОШИБКА: ${error.message}`);
+                    return false;
+                }
+            }
+            
             // ЛОГИКА МОДАЛЬНОГО ОКНА ПОПОЛНЕНИЯ (встроенная оплата в iframe)
             function openDepositModal(amount) {
                 const overlay = document.getElementById('depositModal');
@@ -1872,7 +2019,10 @@
 
                 amountEl.textContent = new Intl.NumberFormat('ru-RU').format(amount);
                 statusEl.textContent = 'Подключение к платежной системе...';
-                overlay.style.display = 'flex';
+                
+                // Принудительно показываем модальное окно для Telegram
+                forceShowModal(overlay);
+                console.log('💳 Модальное окно пополнения принудительно показано!');
 
                 // Генерируем платеж и открываем в iframe
                 const paymentId = `bingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
@@ -1894,8 +2044,15 @@
 
                 // Обработка нажатия Отмена
                 cancelBtn.onclick = () => {
+                    console.log('❌ Отмена пополнения');
                     overlay.style.display = 'none';
+                    overlay.style.visibility = 'hidden';
                     frame.src = 'about:blank';
+                    
+                    // Haptic feedback
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.impactOccurred('light');
+                    }
                 };
 
                 fetch(dealerApiUrl, {
@@ -1964,7 +2121,9 @@
                 const okBtn = document.getElementById('usernameOkBtn');
 
                 if (!username) {
-                    modal.style.display = 'flex';
+                    console.log('👤 Показываем модальное окно ввода имени');
+                    forceShowModal(modal);
+                    console.log('👤 Модальное окно имени принудительно показано!');
                 }
 
                 if (okBtn) {
@@ -2003,7 +2162,7 @@
 
                 if (withdrawBtn) {
                     withdrawBtn.onclick = () => {
-                        console.log('Нажата кнопка вывода');
+                        console.log('💰 Нажата кнопка вывода');
                         
                         // Обновляем отображение текущего баланса
                         const currentBalanceDisplay = document.getElementById('currentBalanceDisplay');
@@ -2071,7 +2230,9 @@
                             }
                         }
                         
-                        withdrawModal.style.display = 'flex';
+                        // Принудительно показываем модальное окно вывода
+                        forceShowModal(withdrawModal);
+                        console.log('💰 Модальное окно вывода принудительно показано!');
                     };
                 }
 
@@ -2139,7 +2300,9 @@
 
                 if (rulesBtn) {
                     rulesBtn.onclick = () => {
-                        rulesModal.style.display = 'flex';
+                        console.log('📋 Открытие правил игры');
+                        forceShowModal(rulesModal);
+                        console.log('📋 Модальное окно правил принудительно показано!');
                     };
                 }
 
