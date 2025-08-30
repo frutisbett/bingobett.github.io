@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+ <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -688,22 +688,49 @@
         </div>
     </div>
 
-    <!-- Мини-игра "Дождь монет" -->
-    <div id="coinRainOverlay" class="mini-game-overlay" style="display:none;">
-        <canvas id="coinRainCanvas"></canvas>
-        <div id="coinRainUI">
-            <div id="coinRainTitle">💰 ДОЖДЬ МОНЕТ! 💰</div>
-            <div id="coinRainStats">
-                <div>Поймано: <span id="coinsCaught">0</span> ₽</div>
-                <div>Осталось: <span id="timeLeft">4</span> сек</div>
+        <!-- Мини-игра "Дождь монет" -->
+        <div id="coinRainOverlay" class="mini-game-overlay" style="display:none;">
+            <canvas id="coinRainCanvas"></canvas>
+            <div id="coinRainUI">
+                <div id="coinRainTitle">💰 ДОЖДЬ МОНЕТ! 💰</div>
+                <div id="coinRainStats">
+                    <div>Поймано: <span id="coinsCaught">0</span> ₽</div>
+                    <div>Осталось: <span id="timeLeft">4</span> сек</div>
+                </div>
+                <div id="coinRainHint">Тапайте по монетам!</div>
             </div>
-            <div id="coinRainHint">Тапайте по монетам!</div>
+            <div id="coinRainResult" style="display:none;">
+                <div id="coinRainResultText"></div>
+                <button id="coinRainClose">Забрать выигрыш</button>
+            </div>
         </div>
-        <div id="coinRainResult" style="display:none;">
-            <div id="coinRainResultText"></div>
-            <button id="coinRainClose">Забрать выигрыш</button>
+
+        <!-- Мини-игра "Колесо фортуны" -->
+        <div id="fortuneWheelOverlay" class="mini-game-overlay" style="display:none;">
+            <div class="mini-game-content" style="max-width: 95vw; max-height: 95vh;">
+                <h3 style="color: gold; margin-bottom: 20px; text-shadow: 0 0 10px rgba(255,215,0,0.5);">🎡 КОЛЕСО ФОРТУНЫ 🎡</h3>
+                
+                <div style="position: relative; width: 300px; height: 300px; margin: 0 auto;">
+                    <canvas id="wheelCanvas" width="300" height="300" style="border-radius: 50%; box-shadow: 0 0 30px rgba(255,215,0,0.3);"></canvas>
+                    <div id="wheelPointer" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ffd700; z-index: 10;"></div>
+                </div>
+                
+                <div id="wheelStats" style="margin: 20px 0; text-align: center; font-size: 16px;">
+                    <div>Множитель: <span id="currentMultiplier">1x</span></div>
+                    <div>Выигрыш: <span id="wheelWinAmount">0</span> ₽</div>
+                </div>
+                
+                <button id="spinWheelBtn" style="padding: 15px 30px; font-size: 18px; background: linear-gradient(45deg, #4caf50, #45a049); border: none; border-radius: 10px; color: white; cursor: pointer; margin: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+                    🎡 Крутить колесо
+                </button>
+                
+                <div id="wheelResult" style="margin-top: 20px; font-size: 18px; font-weight: bold; color: #ffd700; text-align: center; min-height: 2em;"></div>
+                
+                <button id="closeWheelBtn" style="padding: 12px 24px; font-size: 16px; background: #f44336; color: white; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; display: none;">
+                    Забрать выигрыш
+                </button>
+            </div>
         </div>
-    </div>
 
     <!-- Модальное окно ввода имени -->
     <div id="usernameModal" class="modal-bg">
@@ -785,10 +812,29 @@
             <div style="text-align: center; margin-top: 20px;">
                 <button id="closeRulesBtn">Закрыть</button>
             </div>
-        </div>
-    </div>
 
-    <script>
+        </div>
+            </div>
+            
+            <!-- Модальное окно пополнения (встроенная оплата в приложении) -->
+            <div id="depositModal" class="modal-bg" style="display:none;">
+            <div class="modal" style="padding:0; max-width: 440px; width: 92vw;">
+            <div style="padding: 16px 16px 10px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left;">
+            <h3 style="margin-bottom: 8px; color: gold;">💳 Пополнение баланса</h3>
+            <div style="font-size: 13px; color: #ddd;">Сумма: <b><span id="depositAmount">0</span> ₽</b></div>
+            <div id="depositStatus" style="margin-top: 6px; font-size: 12px; color: #9cdcfe;">Подключение к платежной системе...</div>
+            <div style="margin-top: 6px; font-size: 12px; color: #aaa;">Введите данные карты в форме ниже. Оплата происходит безопасно, не покидая игру.</div>
+            </div>
+            <div style="height: 420px; background:#111;">
+            <iframe id="paymentFrame" src="about:blank" style="width:100%; height:100%; border:0; display:block; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; background:#111;" allow="payment; clipboard-read; clipboard-write"></iframe>
+            </div>
+            <div style="padding: 10px; display:flex; gap:10px; justify-content:center;">
+            <button class="cancel" id="depositCancelBtn" style="min-width: 140px;">❌ Отмена</button>
+            </div>
+            </div>
+            </div>
+            
+            <script>
         (function() {
             'use strict';
             
@@ -1776,79 +1822,12 @@
                     if (stopAutoSpinButton) stopAutoSpinButton.style.display = 'none';
                 }
 
-                // Кнопки пополнения через дилера
+                // Кнопки пополнения через дилера (теперь внутри модального окна, без выхода из игры)
                 const replenishButtons = document.querySelectorAll('.replenish-btn');
                 replenishButtons.forEach(btn => {
                     btn.onclick = () => {
                         const amount = parseInt(btn.getAttribute('data-amount'));
-                        console.log(`🛒 Пополнение на ${amount} ₽ через дилера`);
-                        
-                        // Генерируем уникальный ID платежа
-                        const paymentId = `bingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-                        
-                        // Сохраняем информацию о платеже
-                        const paymentInfo = {
-                            id: paymentId,
-                            amount: amount,
-                            timestamp: Date.now(),
-                            status: 'pending'
-                        };
-                        localStorage.setItem('pendingPayment', JSON.stringify(paymentInfo));
-                        
-                        // Формируем URL для YooMoney с возвратом на игру
-                        const successURL = `https://frutisbett.github.io/bingobett.github.io?payment=success&amount=${amount}&id=${paymentId}`;
-                        // Реальный URL дилера на GitHub Pages
-                        const dealerApiUrl = `https://frutisbett.github.io/bingobett.github.io/api/payment/create`;
-                        
-                        // Данные для отправки дилеру
-                        const paymentData = {
-                            amount: amount,
-                            user_id: tgUser?.id || 'unknown',
-                            game: 'bingo',
-                            payment_id: paymentId,
-                            return_url: successURL
-                        };
-                        
-                        // Отправляем запрос дилеру
-                        fetch(dealerApiUrl, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(paymentData)
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                const paymentUrl = data.redirect_url;
-                                console.log('✅ Дилер создал платеж:', data);
-                                console.log('💳 URL для оплаты:', paymentUrl);
-                                
-                                if (isTelegramApp && tg) {
-                                    try {
-                                        tg.openLink(paymentUrl);
-                                        hapticFeedback('light');
-                                    } catch (error) {
-                                        console.error('Ошибка открытия ссылки в Telegram:', error);
-                                        window.open(paymentUrl, '_blank');
-                                    }
-                                } else {
-                                    window.open(paymentUrl, '_blank');
-                                }
-                            } else {
-                                console.error('❌ Ошибка дилера:', data.error);
-                                showMessage('❌ Ошибка создания платежа. Попробуйте позже.');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('❌ Ошибка связи с дилером:', error);
-                            // Fallback: прямой переход на YooMoney
-                            const yoomoneyUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118182998706&quickpay-form=shop&targets=BingoBett%20пополнение%20(${paymentId})&paymentType=AC&sum=${amount}&label=${paymentId}&successURL=${encodeURIComponent(successURL)}`;
-                            window.open(yoomoneyUrl, '_blank');
-                        });
-                        
-                        // Показываем инструкции пользователю
-                        showMessage(`💳 Обработка платежа ${amount}₽...\n\n⚡ Создаем безопасное соединение с дилером`);
+                        openDepositModal(amount);
                     };
                 });
 
@@ -1874,6 +1853,107 @@
                 // Инициализация модальных окон
                 initializeModals();
             }
+
+            // ЛОГИКА МОДАЛЬНОГО ОКНА ПОПОЛНЕНИЯ (встроенная оплата в iframe)
+            function openDepositModal(amount) {
+                const overlay = document.getElementById('depositModal');
+                const amountEl = document.getElementById('depositAmount');
+                const statusEl = document.getElementById('depositStatus');
+                const frame = document.getElementById('paymentFrame');
+                const cancelBtn = document.getElementById('depositCancelBtn');
+                
+                if (!overlay || !amountEl || !statusEl || !frame || !cancelBtn) {
+                    console.error('Элементы модального окна пополнения не найдены');
+                    showMessage('❌ Ошибка интерфейса пополнения');
+                    return;
+                }
+
+                amountEl.textContent = new Intl.NumberFormat('ru-RU').format(amount);
+                statusEl.textContent = 'Подключение к платежной системе...';
+                overlay.style.display = 'flex';
+
+                // Генерируем платеж и открываем в iframe
+                const paymentId = `bingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+                const paymentInfo = { id: paymentId, amount, timestamp: Date.now(), status: 'pending' };
+                localStorage.setItem('pendingPayment', JSON.stringify(paymentInfo));
+
+                // Формируем callback URL на эту же витрину (та же директория), но на отдельную страницу-колбэк
+                const baseDir = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
+                const successURL = `${baseDir}payment-callback.html?payment=success&amount=${encodeURIComponent(amount)}&id=${encodeURIComponent(paymentId)}`;
+
+                const dealerApiUrl = `https://frutisbett.github.io/bingobett.github.io/api/payment/create`;
+                const payload = {
+                    amount: amount,
+                    user_id: tgUser?.id || 'unknown',
+                    game: 'bingo',
+                    payment_id: paymentId,
+                    return_url: successURL
+                };
+
+                // Обработка нажатия Отмена
+                cancelBtn.onclick = () => {
+                    overlay.style.display = 'none';
+                    frame.src = 'about:blank';
+                };
+
+                fetch(dealerApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.redirect_url) {
+                        console.log('✅ Дилер создал платеж:', data);
+                        statusEl.textContent = 'Готово. Введите данные карты и подтвердите оплату.';
+                        frame.src = data.redirect_url; // загружаем платежную страницу в iframe
+                        if (isTelegramApp && tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+                    } else {
+                        console.warn('❌ Ошибка дилера, используем fallback YooMoney:', data?.error);
+                        const yoomoneyUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118182998706&quickpay-form=shop&targets=BingoBett%20пополнение%20(${paymentId})&paymentType=AC&sum=${encodeURIComponent(amount)}&label=${encodeURIComponent(paymentId)}&successURL=${encodeURIComponent(successURL)}`;
+                        statusEl.textContent = 'Загружена защищенная форма оплаты.';
+                        frame.src = yoomoneyUrl;
+                    }
+                })
+                .catch(err => {
+                    console.error('❌ Ошибка связи с дилером:', err);
+                    const yoomoneyUrl = `https://yoomoney.ru/quickpay/confirm.xml?receiver=4100118182998706&quickpay-form=shop&targets=BingoBett%20пополнение%20(${paymentId})&paymentType=AC&sum=${encodeURIComponent(amount)}&label=${encodeURIComponent(paymentId)}&successURL=${encodeURIComponent(successURL)}`;
+                    statusEl.textContent = 'Загружена защищенная форма оплаты.';
+                    frame.src = yoomoneyUrl;
+                });
+            }
+
+            // Прием статуса оплаты от страницы-колбэка (та же доменная зона)
+            window.addEventListener('message', (event) => {
+                try {
+                    // Безопасность: принимаем сообщения только от нашего же origin
+                    if (event.origin !== window.location.origin) return;
+                    const data = event.data || {};
+                    if (data.type === 'PAYMENT_STATUS' && data.status === 'success') {
+                        const pending = JSON.parse(localStorage.getItem('pendingPayment') || '{}');
+                        if (pending && pending.id && pending.id === data.id) {
+                            const credited = parseInt(data.amount || pending.amount || 0);
+                            if (!isNaN(credited) && credited > 0) {
+                                balance += credited;
+                                updateUI();
+                                localStorage.removeItem('pendingPayment');
+                                showMessage(`🎉 Платеж успешно обработан! Баланс +${credited}₽`);
+                                if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+                                const overlay = document.getElementById('depositModal');
+                                const frame = document.getElementById('paymentFrame');
+                                if (overlay) overlay.style.display = 'none';
+                                if (frame) frame.src = 'about:blank';
+                                // Сообщение в бот-чат
+                                if (typeof addBotMessage === 'function') {
+                                    addBotMessage(`💰 Отлично! Платеж на ${credited}₽ прошел успешно. Ваш баланс пополнен!`);
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Сообщение оплаты проигнорировано:', e);
+                }
+            });
 
             function initializeModals() {
                 // Модальное окно имени
