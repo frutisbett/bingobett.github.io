@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>💥 BettBoom - Экстремальные слоты</title>
     <style>
+        /* Все стили остаются прежними */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -1528,25 +1529,25 @@
                     btn.onclick = () => {
                         const amount = parseInt(btn.getAttribute('data-amount'));
                         console.log(`🛒 Открытие модалки оплаты на ${amount} ₽`);
-                        // Сохраняем информацию о платеже для обработки возврата
+                        
+                        // Создаем уникальный ID платежа
                         const paymentId = `bettboom_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-                        const paymentInfo = {
-                            id: paymentId,
-                            amount: amount,
-                            timestamp: Date.now(),
-                            status: 'pending'
-                        };
-                        localStorage.setItem('pendingPayment', JSON.stringify(paymentInfo));
-                        // Открываем модальное окно оплаты
-                        if (typeof window.openDepositModal === 'function') {
-                            window.openDepositModal(amount);
-                        } else {
-                            console.error('Функция openDepositModal не найдена');
-                            // Fallback на старый метод
-                            const successURL = window.location.origin + window.location.pathname + `?payment=success&amount=${amount}&id=${paymentId}`;
-                            const dealerUrl = `https://dealer-system.example.com/payment?game=bettboom&amount=${amount}&user_id=local_user&payment_id=${paymentId}&return_url=${encodeURIComponent(successURL)}`;
-                            window.open(dealerUrl, '_blank');
-                        }
+                        
+                        // Формируем URL для ЮMoney
+                        const yoomoneyUrl = `https://yoomoney.ru/quickpay/confirm.xml?` +
+                            `receiver=4100118182998706&` +
+                            `quickpay-form=shop&` +
+                            `targets=BettBoom%20пополнение%20(${paymentId})&` +
+                            `paymentType=AC&` +
+                            `sum=${amount}&` +
+                            `label=${paymentId}&` +
+                            `successURL=${encodeURIComponent(window.location.origin + window.location.pathname + `?payment=success&amount=${amount}&id=${paymentId}`)}`;
+                        
+                        // Открываем форму оплаты в новой вкладке
+                        window.open(yoomoneyUrl, '_blank');
+                        
+                        // Показываем сообщение пользователю
+                        showMessage(`🔄 Открывается форма оплаты на ${amount} ₽...`);
                     };
                 });
                 // Инициализация модальных окон
