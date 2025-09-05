@@ -215,6 +215,15 @@
             box-shadow: 0 15px 40px rgba(68, 255, 68, 0.4);
         }
         
+        .thunder-slots {
+            border-color: rgba(0, 191, 255, 0.3);
+        }
+        
+        .thunder-slots:hover {
+            border-color: #00bfff;
+            box-shadow: 0 15px 40px rgba(0, 191, 255, 0.4);
+        }
+        
         .balance-info {
             background: rgba(255, 215, 0, 0.1);
             border: 1px solid rgba(255, 215, 0, 0.3);
@@ -229,6 +238,30 @@
             font-size: 1.5em;
             color: #ffd700;
             font-weight: bold;
+        }
+        
+        /* Кнопка возврата в лобби */
+        .lobby-button {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .lobby-button:hover {
+            background: rgba(255, 68, 68, 0.3);
+            transform: scale(1.05);
         }
         
         @media (max-width: 768px) {
@@ -257,6 +290,11 @@
         <h1 class="casino-title">🎰 FrutisCasino</h1>
         <p class="casino-subtitle">Жми на старт и врывайся в лигу победителей!</p>
     </div>
+    
+    <!-- Кнопка возврата в лобби -->
+    <button onclick="window.location.href='casino-lobby.html'" class="lobby-button">
+        ← Лобби
+    </button>
     
     <div class="balance-info">
         <div>💰 Баланс: <span class="balance-amount" id="balance">тут выводят выигрыш</span></div>
@@ -322,6 +360,36 @@
             </div>
             <button class="play-button">🎯 Играть</button>
         </div>
+        
+        <!-- Thunder Slots - Улучшенная версия -->
+        <div class="slot-machine thunder-slots">
+            <div class="special-badge">⚡ NEW</div>
+            <div class="slot-icon">⚡</div>
+            <div class="slot-name">Thunder Slots</div>
+            <div class="slot-description">
+                Современная слот-машина с улучшенным дизайном и функционалом.
+                Более высокие выигрыши и улучшенные мини-игры.
+            </div>
+            <div class="slot-stats">
+                <div class="stat-item">
+                    <div class="stat-label">Шанс выигрыша</div>
+                    <div class="stat-value">40%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Мини-игры</div>
+                    <div class="stat-value">45%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Макс. выигрыш</div>
+                    <div class="stat-value">x100</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Мин. ставка</div>
+                    <div class="stat-value">5 ₽</div>
+                </div>
+            </div>
+            <button class="play-button">⚡ Играть</button>
+        </div>
     </div>
     
     <script>
@@ -367,6 +435,9 @@
                 } else if (slotType === 'bingobett') {
                     gameUrl = './index.html';
                     console.log('🎰 Переход на BingoBett');
+                } else if (slotType === 'thunder-slots') {
+                    gameUrl = './thunder-slots.html';
+                    console.log('⚡ Переход на Thunder Slots');
                 } else {
                     console.error('❌ Неизвестный тип слота:', slotType);
                     gameUrl = './index.html'; // fallback
@@ -417,7 +488,8 @@
                 
                 // Добавляем обработчики клика принудительно
                 slot.addEventListener('click', function() {
-                    const slotType = this.classList.contains('bettboom') ? 'bettboom' : 'bingobett';
+                    const slotType = this.classList.contains('bettboom') ? 'bettboom' : 
+                                   this.classList.contains('bingobett') ? 'bingobett' : 'thunder-slots';
                     console.log(`🎲 Клик по слоту: ${slotType}`);
                     playSlot(slotType);
                 });
@@ -432,7 +504,8 @@
             playButtons.forEach((button, index) => {
                 button.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    const slotType = this.closest('.slot-machine').classList.contains('bettboom') ? 'bettboom' : 'bingobett';
+                    const slotType = this.closest('.slot-machine').classList.contains('bettboom') ? 'bettboom' : 
+                                   this.closest('.slot-machine').classList.contains('bingobett') ? 'bingobett' : 'thunder-slots';
                     console.log(`🎯 Клик по кнопке слота: ${slotType}`);
                     playSlot(slotType);
                 });
