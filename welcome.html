@@ -32,7 +32,7 @@
             height: 120px;
             border-radius: 50%;
             margin: 0 auto 20px;
-            background: url('./frutisn_logo.jpg') center/cover;
+            background: url('https://frutisbett.github.io/bingobett.github.io/frutisn_logo.jpg') center/cover;
             border: 4px solid #ffd700;
             box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
             animation: logoFloat 4s ease-in-out infinite;
@@ -401,17 +401,17 @@
                 // Определяем URL игры
                 let gameUrl;
                 if (slotType === 'bettboom') {
-                    gameUrl = './bettboom.html';
+                    gameUrl = 'https://frutisbett.github.io/bingobett.github.io/bettboom.html';
                     console.log('🔥 Переход на BettBoom');
                 } else if (slotType === 'bingobett') {
-                    gameUrl = './index.html';
+                    gameUrl = 'https://frutisbett.github.io/bingobett.github.io/index.html';
                     console.log('🎰 Переход на BingoBett');
                 } else if (slotType === 'thunder-slots') {
-                    gameUrl = './thunder-slots.html';
+                    gameUrl = 'https://frutisbett.github.io/bingobett.github.io/thunder-slots.html';
                     console.log('⚡ Переход на Thunder Slots');
                 } else {
                     console.error('❌ Неизвестный тип слота:', slotType);
-                    gameUrl = './index.html'; // fallback
+                    gameUrl = 'https://frutisbett.github.io/bingobett.github.io/index.html'; // fallback
                 }
                 
                 // Переходим на игру с параметрами
@@ -439,7 +439,7 @@
             } catch (error) {
                 console.error('❌ Ошибка в playSlot:', error);
                 // Аварийный переход на основную игру
-                window.location.href = './index.html';
+                window.location.href = 'https://frutisbett.github.io/bingobett.github.io/index.html';
             }
         }
         
