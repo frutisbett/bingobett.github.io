@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>⚡ Thunder Slots - Экстремальные слоты</title>
+    <title>🎰 FrutisBingoBett - Лига Победителей</title>
+    <script src="https://telegram.org/js/telegram-web-app.js?v=6.9" defer></script>
     <style>
         * {
             box-sizing: border-box;
@@ -14,7 +15,7 @@
             touch-action: manipulation;
         }
         body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background: linear-gradient(135deg, #1a1a1a, #333);
             color: #fff;
             display: flex;
             flex-direction: column;
@@ -23,38 +24,17 @@
             padding: 10px;
             overflow-x: hidden;
             font-size: 14px;
-            position: relative;
-            overflow-y: auto;
-        }
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 20%),
-                        radial-gradient(circle at 90% 80%, rgba(0, 191, 255, 0.1) 0%, transparent 20%);
-            z-index: -1;
         }
         .header {
             text-align: center;
             margin-bottom: 15px;
             width: 100%;
-            position: relative;
-            z-index: 10;
         }
         .header h1 {
-            font-size: 28px;
+            font-size: 24px;
             margin-bottom: 8px;
             color: gold;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
-            letter-spacing: 1px;
-            animation: glow 2s infinite alternate;
-        }
-        @keyframes glow {
-            from { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5), 0 0 10px rgba(255, 215, 0, 0.3); }
-            to { text-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 0 0 25px rgba(255, 215, 0, 0.6); }
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
         .user-info {
             display: flex;
@@ -63,21 +43,13 @@
             max-width: 400px;
             margin-bottom: 8px;
             font-size: 13px;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px 12px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
         .info-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .info-item span {
-            color: gold;
-            font-weight: bold;
-            font-size: 14px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 6px 12px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
         .jackpot-info {
             color: gold;
@@ -85,7 +57,7 @@
         }
         @keyframes jackpotGlow {
             0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
-            100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+            100% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); }
         }
         .freespin-info {
             color: #4caf50;
@@ -94,85 +66,68 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 8px;
-            margin: 12px 0;
+            gap: 6px;
+            margin: 10px 0;
             width: 100%;
             max-width: 400px;
         }
         .replenish-btn {
-            padding: 10px 15px;
-            font-size: 13px;
+            padding: 8px 12px;
+            font-size: 12px;
             background: linear-gradient(45deg, #e53935, #d32f2f);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+        .replenish-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+        .withdraw-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            background: linear-gradient(45deg, #ff9800, #f57c00);
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            margin: 10px;
+            transition: all 0.2s;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
             font-weight: bold;
-            min-width: 80px;
-        }
-        .replenish-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
-            background: linear-gradient(45deg, #f44336, #ef5350);
-        }
-        .replenish-btn:active {
-            transform: translateY(1px);
-        }
-        .withdraw-btn {
-            padding: 12px 20px;
-            font-size: 15px;
-            background: linear-gradient(45deg, #ff9800, #f57c00);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin: 12px 0;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            font-weight: bold;
-            width: 200px;
-        }
-        .withdraw-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-            background: linear-gradient(45deg, #ffa726, #ffb74d);
-        }
-        .withdraw-btn:active {
-            transform: translateY(1px);
         }
         .slot-machine {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 4px;
+            gap: 3px;
             width: 90vw;
             max-width: 400px;
             aspect-ratio: 5 / 4;
             margin: 15px 0;
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border-radius: 15px;
+            background: #333;
+            border-radius: 12px;
             overflow: hidden;
-            border: 4px solid gold;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-            position: relative;
-            z-index: 5;
+            border: 3px solid gold;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
         }
         .slot {
-            background: linear-gradient(145deg, #0f0c29, #302b63);
+            background: #222;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 6vw;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid #444;
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
-            border-radius: 8px;
         }
         @media (min-width: 600px) {
             .slot {
-                font-size: 36px;
+                font-size: 32px;
             }
         }
         .slot.spinning {
@@ -203,14 +158,13 @@
         .slot.win {
             background: linear-gradient(45deg, #ffd700, #ffed4e);
             color: #000;
-            box-shadow: 0 0 25px #ffd700;
+            box-shadow: 0 0 20px #ffd700;
             animation: winPulse 0.8s ease-in-out infinite alternate;
             border: 2px solid #ffd700;
-            z-index: 2;
         }
         @keyframes winPulse {
             0% { transform: scale(1); box-shadow: 0 0 20px #ffd700; }
-            100% { transform: scale(1.05); box-shadow: 0 0 35px #ffd700; }
+            100% { transform: scale(1.05); box-shadow: 0 0 30px #ffd700; }
         }
         .slot.big-win {
             background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
@@ -218,7 +172,6 @@
             animation: rainbowGlow 1s ease infinite, winShake 0.3s infinite;
             color: white;
             font-weight: bold;
-            z-index: 3;
         }
         @keyframes rainbowGlow {
             0% { background-position: 0% 50%; }
@@ -237,30 +190,29 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
             max-width: 400px;
         }
         button {
-            padding: 14px 18px;
-            font-size: 14px;
+            padding: 12px 16px;
+            font-size: 13px;
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 10px;
             border: none;
             background: linear-gradient(45deg, #4caf50, #45a049);
             color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: all 0.3s;
-            min-height: 50px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            min-height: 44px;
             flex: 1;
-            min-width: 100px;
-            max-width: 150px;
+            min-width: 90px;
+            max-width: 140px;
             font-weight: bold;
         }
         button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-            background: linear-gradient(45deg, #66bb6a, #558b2f);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.4);
         }
         button:active {
             transform: translateY(1px);
@@ -273,64 +225,50 @@
         .bet-controls {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin: 12px 0;
+            gap: 10px;
+            margin: 10px 0;
             width: 100%;
             max-width: 400px;
             justify-content: center;
         }
         .bet-controls button {
-            padding: 10px 15px;
-            font-size: 16px;
-            min-width: 45px;
-            max-width: 55px;
+            padding: 8px 12px;
+            font-size: 14px;
+            min-width: 40px;
+            max-width: 50px;
         }
         .bet-controls span {
-            min-width: 100px;
+            min-width: 80px;
             text-align: center;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px 15px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .message {
             margin: 15px 0;
-            min-height: 2.5em;
+            min-height: 2em;
             text-align: center;
             color: #ffeb3b;
-            font-size: 15px;
+            font-size: 14px;
             max-width: 90vw;
             word-wrap: break-word;
             font-weight: bold;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-            background: rgba(0, 0, 0, 0.4);
-            padding: 10px 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
         #botChat {
             width: 90%;
             max-width: 400px;
-            height: 100px;
+            height: 80px;
             background: rgba(0, 0, 0, 0.7);
-            border-radius: 12px;
-            padding: 12px;
-            margin-top: 12px;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 10px;
             overflow-y: auto;
-            font-size: 12px;
+            font-size: 11px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         .bot-message {
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             color: #bbb;
-            animation: fadeIn 0.3s;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         .modal-bg {
             position: fixed;
@@ -338,72 +276,50 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.8);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            backdrop-filter: blur(5px);
         }
         .modal {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            background: #333;
             padding: 25px;
-            border-radius: 20px;
+            border-radius: 15px;
             color: white;
             min-width: 300px;
             max-width: 90vw;
             text-align: center;
-            border: 2px solid rgba(255, 215, 0, 0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            position: relative;
-            transform: scale(0.9);
-            animation: modalAppear 0.3s forwards;
-        }
-        @keyframes modalAppear {
-            to { transform: scale(1); }
-        }
-        .modal h3 {
-            color: gold;
-            margin-bottom: 15px;
-            font-size: 22px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .modal input {
             margin: 15px 0;
-            padding: 14px;
+            padding: 12px;
             font-size: 16px;
-            border-radius: 10px;
+            border-radius: 8px;
             border: 1px solid #555;
-            width: 240px;
-            background: rgba(0, 0, 0, 0.5);
+            width: 220px;
+            background: #222;
             color: white;
-            text-align: center;
         }
         .modal button {
-            padding: 12px 20px;
-            font-size: 15px;
-            background: linear-gradient(45deg, #4caf50, #45a049);
+            padding: 10px 20px;
+            font-size: 14px;
+            background: #4caf50;
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            margin: 8px;
-            transition: all 0.3s;
-        }
-        .modal button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            margin: 6px;
         }
         .modal button.cancel {
-            background: linear-gradient(45deg, #f44336, #d32f2f);
-        }
-        .modal button.cancel:hover {
-            background: linear-gradient(45deg, #ef5350, #f44336);
+            background: #f44336;
         }
         .error-text {
             color: #ff4444;
-            margin-top: 12px;
-            font-size: 14px;
-            font-weight: 500;
+            margin-top: 10px;
+            font-size: 13px;
         }
         .mini-game-overlay {
             position: fixed;
@@ -411,77 +327,64 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0,0,0,0.9);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 999;
-            backdrop-filter: blur(5px);
         }
         .mini-game-content {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            border-radius: 20px;
-            padding: 30px;
+            background: #232323;
+            border-radius: 15px;
+            padding: 25px;
             color: #fff;
             min-width: 70vw;
             max-width: 95vw;
-            border: 2px solid rgba(255, 215, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.3);
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
-            animation: gameAppear 0.4s forwards;
-        }
-        @keyframes gameAppear {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
         }
         .boxes {
             display: flex;
-            gap: 15px;
-            margin: 25px 0;
-            flex-wrap: wrap;
-            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
         }
         .box {
-            width: 22vw;
-            max-width: 100px;
-            height: 22vw;
-            max-height: 100px;
-            background: linear-gradient(145deg, #2c3e50, #1a1a2e);
-            border-radius: 15px;
-            font-size: 10vw;
+            width: 20vw;
+            max-width: 90px;
+            height: 20vw;
+            max-height: 90px;
+            background: #444;
+            border-radius: 10px;
+            font-size: 9vw;
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 4px solid transparent;
+            border: 3px solid transparent;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
         .box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-            border-color: rgba(255, 215, 0, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
         .box.win {
             animation: boxWin 1s ease infinite;
             border-color: gold;
             background: linear-gradient(45deg, #ffd700, #ffed4e);
             color: #000;
-            z-index: 5;
         }
         .box.lose {
             animation: boxLose 0.5s ease;
             border-color: #f00;
             background: #ff4444;
-            z-index: 4;
         }
         @keyframes boxWin {
             0% { transform: scale(1) rotate(0deg); box-shadow: 0 0 10px gold; }
-            50% { transform: scale(1.1) rotate(5deg); box-shadow: 0 0 25px gold; }
+            50% { transform: scale(1.1) rotate(5deg); box-shadow: 0 0 20px gold; }
             100% { transform: scale(1) rotate(0deg); box-shadow: 0 0 10px gold; }
         }
         @keyframes boxLose {
@@ -492,40 +395,31 @@
             100% { transform: scale(1) rotate(0deg); }
         }
         .mini-game-msg {
-            margin: 20px 0;
-            font-size: 18px;
+            margin: 15px 0;
+            font-size: 16px;
             text-align: center;
-            min-height: 2.5em;
+            min-height: 2em;
             font-weight: bold;
-            color: gold;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
         .close-btn {
-            padding: 12px 25px;
-            font-size: 15px;
-            background: linear-gradient(45deg, #4caf50, #45a049);
+            padding: 10px 20px;
+            font-size: 14px;
+            background: #4caf50;
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.3s;
-        }
-        .close-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            margin-top: 10px;
         }
         .browser-notice {
             background: linear-gradient(135deg, #2196f3, #1565c0);
             color: white;
-            padding: 12px;
+            padding: 10px;
             text-align: center;
-            font-size: 13px;
+            font-size: 12px;
             margin-bottom: 15px;
-            border-radius: 10px;
+            border-radius: 8px;
             border: 1px solid #1976d2;
-            width: 90%;
-            max-width: 400px;
         }
         .loading {
             opacity: 0;
@@ -537,14 +431,13 @@
         }
         @media (max-width: 360px) {
             .slot { font-size: 5vw; }
-            .user-info { font-size: 12px; }
-            button { font-size: 12px; padding: 12px 10px; }
-            .replenish-btn { padding: 8px 12px; font-size: 12px; }
+            .user-info { font-size: 11px; }
+            button { font-size: 11px; padding: 10px 12px; }
         }
         /* Стили для модального окна оплаты */
         .deposit-modal {
             background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
-            border-radius: 20px;
+            border-radius: 16px;
             border: 2px solid rgba(255, 215, 0, 0.3);
             box-shadow: 0 15px 35px rgba(0,0,0,0.6);
             max-width: 450px;
@@ -572,11 +465,11 @@
         .modal-header h3 {
             margin: 0;
             color: gold;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
             text-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
-        .close-btn-modal {
+        .close-btn {
             background: rgba(255, 255, 255, 0.1);
             border: none;
             color: #ccc;
@@ -590,7 +483,7 @@
             justify-content: center;
             transition: all 0.2s ease;
         }
-        .close-btn-modal:hover {
+        .close-btn:hover {
             background: rgba(255, 100, 100, 0.2);
             color: #ff6b6b;
             transform: scale(1.1);
@@ -600,34 +493,34 @@
             padding: 15px 25px;
             background: rgba(0, 0, 0, 0.2);
             margin: 0 25px 15px 25px;
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .amount-label {
             color: #ccc;
-            font-size: 15px;
+            font-size: 14px;
             margin-right: 8px;
         }
         .amount-value {
             color: gold;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             text-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
         .payment-status {
             text-align: center;
-            padding: 12px 25px;
-            min-height: 35px;
+            padding: 10px 25px;
+            min-height: 30px;
         }
         .status-text {
             color: #4caf50;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
         }
         .payment-frame-container {
             height: 420px;
             background: #111;
-            border-radius: 0 0 18px 18px;
+            border-radius: 0 0 14px 14px;
             overflow: hidden;
             position: relative;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -644,8 +537,8 @@
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top: 4px solid gold;
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
             margin-bottom: 15px;
         }
@@ -654,7 +547,7 @@
             100% { transform: rotate(360deg); }
         }
         .loading-text {
-            font-size: 15px;
+            font-size: 14px;
         }
         .modal-actions {
             padding: 15px 25px 25px 25px;
@@ -665,10 +558,10 @@
             background: #f44336;
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 14px;
         }
         /* Стили для дождя монет */
         #coinRainOverlay {
@@ -677,84 +570,57 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.8);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
-            backdrop-filter: blur(3px);
         }
         #coinRainCanvas {
             background: rgba(0,0,0,0.7);
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            border-radius: 10px;
         }
         #coinRainResult {
             text-align: center;
             margin-top: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid gold;
-        }
-        #coinRainResultText {
-            font-size: 24px;
-            color: gold;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-        #coinRainClose {
-            padding: 12px 25px;
-            font-size: 16px;
-            background: linear-gradient(45deg, #4caf50, #45a049);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        #coinRainClose:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
         /* Стили для лобби кнопки */
         .lobby-button {
             position: absolute;
-            top: 15px;
-            left: 15px;
+            top: 10px;
+            left: 10px;
             background: rgba(255, 68, 68, 0.2);
             border: 1px solid #ff4444;
             color: #ff4444;
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-size: 14px;
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-size: 12px;
             cursor: pointer;
-            z-index: 20;
-            transition: all 0.3s;
         }
-        .lobby-button:hover {
-            background: rgba(255, 68, 68, 0.3);
-            transform: scale(1.05);
+        /* Выделение важной информации ЖЕЛТЫМ цветом */
+        #usernameDisplay {
+            color: var(--tg-theme-accent-text-color, #ffd700) !important;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
         }
-        /* Анимация для звезд */
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 3s infinite;
+        #balanceDisplay {
+            color: var(--tg-theme-accent-text-color, #ffd700) !important;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
         }
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 1; }
+        #betDisplay {
+            color: var(--tg-theme-accent-text-color, #ffd700) !important;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
         }
-        /* Эффекты для выигрышей */
-        .win-animation {
-            animation: winEffect 0.5s ease-in-out;
+        #betAmountDisplay {
+            color: var(--tg-theme-accent-text-color, #ffd700) !important;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
         }
-        @keyframes winEffect {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        .info-item span {
+            color: var(--tg-theme-accent-text-color, #ffd700);
+            font-weight: bold;
         }
     </style>
 </head>
@@ -763,7 +629,7 @@
         🖥️ <strong>Локальная версия для тестирования</strong> • Игра полностью работает в браузере
     </div>
     <div class="header">
-        <h1>⚡ Thunder Slots</h1>
+        <h1>🎰 FrutisBingoBett</h1>
         <button onclick="window.location.href='casino-lobby.html'" class="lobby-button">← Лобби</button>
         <div class="user-info">
             <div class="info-item">Игрок: <span id="usernameDisplay">Игрок</span></div>
@@ -774,14 +640,14 @@
             <div class="info-item jackpot-info">Джекпот: <span id="jackpotDisplay">0</span> ₽</div>
         </div>
         <div class="user-info">
-            <div class="info-item">Ставка: <span id="betDisplay">10</span> ₽</div>
+            <div class="info-item">Ставка: <span id="betDisplay">100</span> ₽</div>
         </div>
     </div>
     <div class="replenish-buttons">
-        <button class="replenish-btn" data-amount="100">💳 100 ₽</button>
-        <button class="replenish-btn" data-amount="500">💳 500 ₽</button>
-        <button class="replenish-btn" data-amount="1000">💳 1000 ₽</button>
-        <button class="replenish-btn" data-amount="5000">💳 5000 ₽</button>
+        <button class="replenish-btn" data-amount="1000">💳 1 000 ₽</button>
+        <button class="replenish-btn" data-amount="5000">💳 5 000 ₽</button>
+        <button class="replenish-btn" data-amount="10000">💳 10 000 ₽</button>
+        <button class="replenish-btn" data-amount="50000">💳 50 000 ₽</button>
     </div>
     <div style="text-align: center;">
         <button class="withdraw-btn" id="withdrawBtn">💰 Вывести выигрыш</button>
@@ -795,10 +661,10 @@
     </div>
     <div class="bet-controls">
         <button id="betMinus">−</button>
-        <span>Ставка: <span id="betAmountDisplay">10</span> ₽</span>
+        <span>Ставка: <span id="betAmountDisplay">100</span> ₽</span>
         <button id="betPlus">+</button>
     </div>
-    <div class="message" id="message">⚡ Добро пожаловать в Thunder Slots! Сделайте ставку и начните играть!</div>
+    <div class="message" id="message">✅ Игра полностью исправлена и готова! Нажмите "Крутить"</div>
     <div id="botChat"><b>🔥 Активные игроки:</b><br></div>
     <!-- Мини-игра -->
     <div class="mini-game-overlay" id="miniGameOverlay">
@@ -824,7 +690,7 @@
     <!-- Модальное окно ввода имени -->
     <div id="usernameModal" class="modal-bg">
         <div class="modal">
-            <h3>⚡ Добро пожаловать в Thunder Slots!</h3>
+            <h3>🎰 Добро пожаловать в FrutisBingoBett!</h3>
             <div>Введите ваше имя для игры:</div>
             <input id="usernameInput" maxlength="20" autocomplete="off" placeholder="Имя игрока">
             <button id="usernameOkBtn">✅ Начать игру</button>
@@ -835,8 +701,8 @@
         <div class="modal">
             <h3>💰 Вывод средств</h3>
             <!-- Правила вывода -->
-            <div style="background: rgba(255, 165, 0, 0.1); border: 1px solid orange; border-radius: 8px; padding: 12px; margin: 12px 0; font-size: 13px;">
-                <div style="font-weight: bold; color: orange; margin-bottom: 8px;">⚠️ ПРАВИЛА ВЫВОДА СРЕДСТВ:</div>
+            <div style="background: rgba(255, 165, 0, 0.1); border: 1px solid orange; border-radius: 5px; padding: 10px; margin: 10px 0; font-size: 12px;">
+                <div style="font-weight: bold; color: orange; margin-bottom: 5px;">⚠️ ПРАВИЛА ВЫВОДА СРЕДСТВ:</div>
                 <div>• Минимальный баланс для вывода: <strong>40,001 ₽</strong></div>
                 <div>• К выводу доступна сумма свыше 40,000 ₽</div>
                 <div>• Обязательные 40,000 ₽ остаются на балансе</div>
@@ -844,15 +710,15 @@
                 <div>• Комиссия за вывод: 0%</div>
             </div>
             <!-- Предупреждающее сообщение -->
-            <div id="withdrawWarning" style="background: rgba(255, 0, 0, 0.1); border: 1px solid red; border-radius: 8px; padding: 12px; margin: 12px 0; display: none;">
-                <div style="font-weight: bold; color: red; margin-bottom: 8px;">🚫 ВЫВОД НЕДОСТУПЕН</div>
+            <div id="withdrawWarning" style="background: rgba(255, 0, 0, 0.1); border: 1px solid red; border-radius: 5px; padding: 10px; margin: 10px 0; display: none;">
+                <div style="font-weight: bold; color: red; margin-bottom: 5px;">🚫 ВЫВОД НЕДОСТУПЕН</div>
                 <div id="withdrawWarningText"></div>
             </div>
             <!-- Форма вывода -->
             <div id="withdrawForm">
-                <div style="margin: 12px 0;">Номер банковской карты (16 цифр):</div>
+                <div style="margin: 10px 0;">Номер банковской карты (16 цифр):</div>
                 <input id="cardNumberInput" maxlength="19" placeholder="1234 5678 9012 3456">
-                <div style="margin: 12px 0;">
+                <div style="margin: 10px 0;">
                     Ваш баланс: <span id="currentBalanceDisplay">0.00</span> ₽<br>
                     К выводу: <span id="withdrawAmount" style="color: green; font-weight: bold;">0.00</span> ₽<br>
                     Останется на балансе: <span style="color: orange;">40,000.00 ₽</span>
@@ -868,28 +734,27 @@
     <!-- Модальное окно правил -->
     <div id="rulesModal" class="modal-bg" style="display:none;">
         <div class="modal" style="text-align: left; max-height: 80vh; overflow-y: auto;">
-            <h3 style="text-align: center; color: gold;">📋 Правила Thunder Slots</h3>
-            <div style="font-size: 14px; line-height: 1.6;">
+            <h3 style="text-align: center; color: gold;">📋 Правила FrutisBingoBett</h3>
+            <div style="font-size: 13px; line-height: 1.5;">
                 <p><b>🎰 Игра:</b> Слот-машина 5×4, выигрыши по 6 линиям (4 горизонтальные + 2 диагональные)</p>
-                <p><b>💰 Ставки:</b> от 10 до 80 рублей за спин</p>
+                <p><b>💰 Ставки:</b> от 100 до 1000 рублей за спин</p>
                 <p><b>🎁 Фриспины:</b> 55 бесплатных вращений на 24 часа</p>
                 <p><b>💳 Вывод:</b> минимальный баланс 40,001 ₽ для вывода</p>
                 <br>
                 <p><b>💎 Выплаты (множитель ×ставка):</b></p>
-                <p>🍒🍋🍊🍉🍇: 3×5, 4×10, 5×20</p>
-                <p>🍓🍍🥝🍌: 3×7, 4×14, 5×28</p>
-                <p>🎁💎⭐🃏: 3×15+, 4×30+, 5×60+</p>
-                <p>👑💰: 3×50+, 4×100+, 5×200+</p>
+                <p>🍒🍋🍊🍉🍇: 3×8, 4×15, 5×30</p>
+                <p>🍓🍍🥝🍌: 3×12, 4×20, 5×40</p>
+                <p>🎁💎⭐🃏: 3×25+, 4×50+, 5×100+</p>
+                <p>👑💰: 3×80+, 4×160+, 5×320+</p>
                 <br>
                 <p><b>🎲 Мини-игры:</b></p>
                 <p>• <b>"Выбери коробку":</b> Выберите одну из 3 коробок для получения бонуса</p>
-                <p>• Запускаются случайно при выигрышах (7% шанс)</p>
+                <p>• Запускаются случайно при выигрышах (13% шанс)</p>
                 <p>• Бонус равен основному выигрышу</p>
                 <br>
                 <p><b>🏆 Выигрышные линии:</b></p>
                 <p>• 4 горизонтальные линии (ряды)</p>
                 <p>• 2 диагональные линии (↘ и ↙)</p>
-                <p>• Специальные символы дают бонусные выигрыши</p>
             </div>
             <div style="text-align: center; margin-top: 20px;">
                 <button id="closeRulesBtn">Закрыть</button>
@@ -901,7 +766,7 @@
         <div class="modal deposit-modal">
             <div class="modal-header">
                 <h3>💳 Пополнение баланса</h3>
-                <button class="close-btn-modal" id="depositCloseBtn" title="Закрыть">×</button>
+                <button class="close-btn" id="depositCloseBtn" title="Закрыть">×</button>
             </div>
             <div class="modal-content">
                 <div class="amount-display">
@@ -928,7 +793,7 @@
         (function() {
             'use strict';
             // ЭКСТРЕННАЯ ДИАГНОСТИКА
-            console.log('🚀 Thunder Slots загружается...');
+            console.log('🚀 FrutisBingoBett загружается...');
             console.log('🔍 User Agent:', navigator.userAgent);
             console.log('🌐 URL:', window.location.href);
             console.log('📱 Viewport:', window.innerWidth + 'x' + window.innerHeight);
@@ -937,22 +802,6 @@
             console.log('💾 localStorage доступен:', typeof localStorage !== 'undefined');
             console.log('🌐 fetch доступен:', typeof fetch !== 'undefined');
             console.log('🎨 Canvas доступен:', !!document.createElement('canvas').getContext);
-            
-            // Генерация звезд на фоне
-            function createStars() {
-                const starsContainer = document.body;
-                for (let i = 0; i < 100; i++) {
-                    const star = document.createElement('div');
-                    star.classList.add('star');
-                    star.style.width = Math.random() * 3 + 'px';
-                    star.style.height = star.style.width;
-                    star.style.left = Math.random() * 100 + '%';
-                    star.style.top = Math.random() * 100 + '%';
-                    star.style.animationDelay = Math.random() * 5 + 's';
-                    starsContainer.appendChild(star);
-                }
-            }
-            createStars();
             
             // DOM элементы
             let slotMachine = null;
@@ -973,28 +822,27 @@
             // Игровые параметры
             const COLUMNS = 5;
             const ROWS = 4;
-            const MIN_BET = 10;
-            const MAX_BET = 80;
+            const MIN_BET = 100;
+            const MAX_BET = 1000;
             const REELS = [
-                ["🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍋","🍊","🍉","🍇","🍓","🥥","⭐","🃏","👑","⚡","🔥","💥"],
-                ["🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏","⚡","🔥","💥"],
-                ["🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏","💰","⚡","🔥","💥"],
-                ["🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏","⚡","🔥","💥"],
-                ["🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","⭐","🃏","⚡","🔥","💥"]
+                ["🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍋","🍊","🍉","🍇","🍓","🥥","⭐","🃏","👑"],
+                ["🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏"],
+                ["🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏","💰"],
+                ["🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","⭐","🃏"],
+                ["🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","⭐","🃏"]
             ];
             const payTable = {
-                "🍒": {3:5, 4:10, 5:20}, "🍋": {3:5, 4:10, 5:20}, "🍊": {3:5, 4:10, 5:20},
-                "🍉": {3:5, 4:10, 5:20}, "🍇": {3:5, 4:10, 5:20}, "🍓": {3:7, 4:14, 5:28},
-                "🍍": {3:7, 4:14, 5:28}, "🥝": {3:10, 4:20, 5:40}, "🍌": {3:10, 4:20, 5:40},
-                "🥥": {3:12, 4:24, 5:48}, "🎁": {3:15, 4:30, 5:60}, "💎": {3:20, 4:40, 5:80},
-                "⭐": {3:25, 4:50, 5:100}, "🃏": {3:30, 4:60, 5:120}, "👑": {3:50, 4:100, 5:200},
-                "💰": {3:100, 4:200, 5:500}, "⚡": {3:150, 4:300, 5:600}, "🔥": {3:200, 4:400, 5:800},
-                "💥": {3:300, 4:600, 5:1200}
+                "🍒": {3:8, 4:15, 5:30}, "🍋": {3:8, 4:15, 5:30}, "🍊": {3:8, 4:15, 5:30},
+                "🍉": {3:8, 4:15, 5:30}, "🍇": {3:8, 4:15, 5:30}, "🍓": {3:12, 4:20, 5:40},
+                "🍍": {3:12, 4:20, 5:40}, "🥝": {3:15, 4:25, 5:50}, "🍌": {3:15, 4:25, 5:50},
+                "🥥": {3:18, 4:30, 5:60}, "🎁": {3:25, 4:50, 5:100}, "💎": {3:30, 4:60, 5:120},
+                "⭐": {3:35, 4:70, 5:140}, "🃏": {3:40, 4:80, 5:160}, "👑": {3:80, 4:160, 5:320},
+                "💰": {3:100, 4:200, 5:400}
             };
             // Состояние игры
             let balance = parseFloat(localStorage.getItem('local_slotBalance')) || 1000;
-            let betAmount = parseInt(localStorage.getItem('local_slotBet')) || 10;
-            let jackpot = parseFloat(localStorage.getItem('local_jackpot')) || 250000;
+            let betAmount = parseInt(localStorage.getItem('local_slotBet')) || 100;
+            let jackpot = parseFloat(localStorage.getItem('local_jackpot')) || 5000000;
             let username = localStorage.getItem('local_slotUsername') || '';
             let isSpinning = false;
             let autoSpinActive = false;
@@ -1084,7 +932,7 @@
                     messageElement.textContent = text;
                     setTimeout(() => {
                         if (messageElement.textContent === text) {
-                            messageElement.textContent = '⚡ Игра работает идеально! Попробуйте еще раз';
+                            messageElement.textContent = '✅ Игра работает идеально! Попробуйте еще раз';
                         }
                     }, 4000);
                 }
@@ -1239,7 +1087,7 @@
                 const spinDuration = 2000;
                 const spinInterval = setInterval(() => {
                     slotElements.forEach((slot, index) => {
-                        const randomSymbols = ["🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","⭐","🃏","👑","💰","⚡","🔥","💥"];
+                        const randomSymbols = ["🍒","🍋","🍊","🍉","🍇","🍓","🍍","🥝","🍌","🥥","🎁","💎","⭐","🃏","👑","💰"];
                         slot.textContent = randomSymbols[Math.floor(Math.random() * randomSymbols.length)];
                     });
                 }, 100);
@@ -1389,9 +1237,10 @@
                         // Чтобы не перегружать чат
                     }
                     // Запуск мини-игры
-                    // *** ИЗМЕНЕНО: Увеличен шанс с 8% до 13% (+5%) ***
+                    // Ограничение количества фриспинов до 24
+                    const freeSpins = freeSpinsManager.getFreeSpins();
                     if (Math.random() < 0.13 || totalWin >= betAmount * 20) {
-                        if (freeSpinsManager.getFreeSpins() < 24) {
+                        if (freeSpins < 24) {
                             setTimeout(() => startMiniGame(totalWin), 2000);
                         }
                     }
@@ -1414,7 +1263,7 @@
                     balance += jackpot;
                     showMessage(`🏆 ДЖЕКПОТ! Вы ВЫИГРАЛИ ${jackpot.toFixed(2)} ₽!`);
                     addBotMessage(`${username || 'Игрок'} сорвал ДЖЕКПОТ ${Math.floor(jackpot).toLocaleString()} ₽!`);
-                    jackpot = 250000;
+                    jackpot = 5000000;
                 }
                 updateUI();
                 // Разблокируем кнопки
@@ -1486,8 +1335,8 @@
                     return;
                 }
                 // Установка размеров canvas
-                canvas.width = window.innerWidth * 0.9;
-                canvas.height = window.innerHeight * 0.6;
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
                 // Игровые переменные
                 const GAME_DURATION = 4000; // 4 секунды
                 const COIN_VALUE = 5; // 5 рублей за монету
@@ -1500,7 +1349,7 @@
                 // Класс монеты
                 class Coin {
                     constructor() {
-                        this.radius = 10 + Math.random() * 15;
+                        this.radius = 15 + Math.random() * 10;
                         this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
                         this.y = -this.radius;
                         this.speedY = 2 + Math.random() * 3;
@@ -1508,7 +1357,6 @@
                         this.value = COIN_VALUE;
                         this.rotation = 0;
                         this.rotationSpeed = (Math.random() - 0.5) * 0.2;
-                        this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
                     }
                     update() {
                         this.y += this.speedY;
@@ -1527,66 +1375,55 @@
                         // Рисуем монету
                         ctx.beginPath();
                         ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
-                        ctx.fillStyle = this.color;
+                        ctx.fillStyle = '#FFD700';
                         ctx.fill();
-                        ctx.strokeStyle = '#FFD700';
+                        ctx.strokeStyle = '#FFA500';
                         ctx.lineWidth = 2;
                         ctx.stroke();
                         // Рисуем значение монеты
                         ctx.font = 'bold 12px Arial';
-                        ctx.fillStyle = '#FFF';
+                        ctx.fillStyle = '#000';
                         ctx.textAlign = 'center';
                         ctx.textBaseline = 'middle';
                         ctx.fillText(this.value + '₽', 0, 0);
                         ctx.restore();
                     }
-                    isClicked(mouseX, mouseY) {
-                        const distance = Math.sqrt((mouseX - this.x) ** 2 + (mouseY - this.y) ** 2);
-                        return distance <= this.radius;
-                    }
                 }
                 // Создание монет
                 function createCoins() {
-                    if (gameActive && coins.length < 20) { // Ограничиваем количество монет на экране
+                    if (coins.length < MAX_COINS && Math.random() < 0.7) {
                         coins.push(new Coin());
                     }
                 }
-                // Обработка кликов
-                function handleClick(event) {
-                    if (!gameActive) return;
+                // Обработка столкновений
+                function checkCollisions() {
                     const rect = canvas.getBoundingClientRect();
-                    const x = (event.clientX || event.touches[0].clientX) - rect.left;
-                    const y = (event.clientY || event.touches[0].clientY) - rect.top;
+                    const mouseX = event.clientX - rect.left;
+                    const mouseY = event.clientY - rect.top;
                     for (let i = coins.length - 1; i >= 0; i--) {
-                        if (coins[i].isClicked(x, y)) {
-                            totalCaught += coins[i].value;
-                            createCatchEffect(coins[i].x, coins[i].y);
+                        const coin = coins[i];
+                        const dx = mouseX - coin.x;
+                        const dy = mouseY - coin.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance < coin.radius) {
                             coins.splice(i, 1);
+                            totalCaught += coin.value;
                             coinsCaughtElement.textContent = totalCaught;
-                            break;
                         }
                     }
                 }
-                // Создание эффекта поймания
-                function createCatchEffect(x, y) {
-                    ctx.save();
-                    ctx.fillStyle = '#4caf50';
-                    ctx.font = '20px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('+' + COIN_VALUE + '₽', x, y);
-                    ctx.restore();
-                }
-                // Анимационный цикл
+                // Анимация
                 function animate() {
                     if (!gameActive) return;
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    // Обновляем и рисуем монеты
+                    // Создание новых монет
+                    createCoins();
+                    // Обновление и рисование монет
                     for (let i = coins.length - 1; i >= 0; i--) {
-                        coins[i].update();
-                        coins[i].draw();
-                        // Удаляем монеты, которые упали за пределы экрана
-                        if (coins[i].y - coins[i].radius > canvas.height) {
+                        if (coins[i].update()) {
                             coins.splice(i, 1);
+                        } else {
+                            coins[i].draw();
                         }
                     }
                     requestAnimationFrame(animate);
@@ -1613,34 +1450,19 @@
                     updateUI();
                     document.getElementById('coinRainResultText').textContent = `🎉 Вы поймали ${totalCaught} ₽!`;
                     document.getElementById('coinRainResult').style.display = 'block';
-                    // Добавляем сообщение в чат
-                    if (typeof addBotMessage === 'function') {
-                        addBotMessage(`${username || 'Игрок'} заработал ${totalCaught} ₽ в мини-игре "Дождь монет"!`);
-                    }
+                    document.getElementById('coinRainClose').onclick = function() {
+                        overlay.style.display = 'none';
+                        showMessage(`🎉 Вы поймали ${totalCaught} ₽!`);
+                    };
                 }
-                // Инициализация
-                coins = [];
-                totalCaught = 0;
-                timeLeft = 4;
-                gameActive = true;
-                // События
-                canvas.addEventListener('click', handleClick);
-                canvas.addEventListener('touchstart', function(e) {
-                    e.preventDefault();
-                    handleClick(e.touches[0]);
-                });
-                // Спавн монет
-                const spawnInterval = setInterval(createCoins, 300);
-                // Анимация
-                animate();
-                // Таймер
-                startTimer();
-                // Отображение
+                // Обработка кликов мыши
+                canvas.addEventListener('mousemove', checkCollisions);
+                // Начало игры
+                coinsCaughtElement.textContent = totalCaught;
+                timeLeftElement.textContent = timeLeft;
                 overlay.style.display = 'flex';
-                // Очистка интервала после завершения игры
-                setTimeout(() => {
-                    clearInterval(spawnInterval);
-                }, GAME_DURATION);
+                animate();
+                startTimer();
             }
             // Обработчики событий
             function setupEventListeners() {
@@ -1648,7 +1470,7 @@
                 if (betMinus) {
                     betMinus.onclick = () => {
                         if (betAmount > MIN_BET && !isSpinning) {
-                            betAmount -= 10;
+                            betAmount -= 100;
                             updateUI();
                         }
                     };
@@ -1656,7 +1478,7 @@
                 if (betPlus) {
                     betPlus.onclick = () => {
                         if (betAmount < MAX_BET && !isSpinning) {
-                            betAmount += 10;
+                            betAmount += 100;
                             updateUI();
                         }
                     };
@@ -1708,7 +1530,7 @@
                         const amount = parseInt(btn.getAttribute('data-amount'));
                         console.log(`🛒 Открытие модалки оплаты на ${amount} ₽`);
                         // Сохраняем информацию о платеже для обработки возврата
-                        const paymentId = `thunderslots_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+                        const paymentId = `frutisbingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
                         const paymentInfo = {
                             id: paymentId,
                             amount: amount,
@@ -1723,7 +1545,7 @@
                             console.error('Функция openDepositModal не найдена');
                             // Fallback на старый метод
                             const successURL = window.location.origin + window.location.pathname + `?payment=success&amount=${amount}&id=${paymentId}`;
-                            const dealerUrl = `https://dealer-system.example.com/payment?game=thunder&amount=${amount}&user_id=local_user&payment_id=${paymentId}&return_url=${encodeURIComponent(successURL)}`;
+                            const dealerUrl = `https://dealer-system.example.com/payment?game=bingo&amount=${amount}&user_id=local_user&payment_id=${paymentId}&return_url=${encodeURIComponent(successURL)}`;
                             window.open(dealerUrl, '_blank');
                         }
                     };
@@ -1911,20 +1733,6 @@
                         };
                     }
                 });
-                // Модальное окно оплаты
-                const depositModal = document.getElementById('depositModal');
-                const depositCloseBtn = document.getElementById('depositCloseBtn');
-                const depositCancelBtn = document.getElementById('depositCancelBtn');
-                if (depositCloseBtn) {
-                    depositCloseBtn.onclick = () => {
-                        depositModal.style.display = 'none';
-                    };
-                }
-                if (depositCancelBtn) {
-                    depositCancelBtn.onclick = () => {
-                        depositModal.style.display = 'none';
-                    };
-                }
             }
             // Бот-чат
             const botNames = [
@@ -1939,15 +1747,12 @@
                 "поймал бонус в мини-игре!", 
                 "выиграл 180 ₽!", 
                 "получил фриспины!",
-                "выиграл 420 ₽ в Thunder Slots!",
+                "выиграл 420 ₽ в FrutisBingoBett!",
                 "поймал комбинацию 👑👑👑!",
                 "выиграл 95 ₽",
                 "получил мини-игру!",
                 "выиграл 310 ₽ на автоспине!",
-                "поймал 💎💎💎💎!",
-                "выиграл 1000 ₽ в мини-игре!",
-                "поймал специальный символ ⚡!",
-                "выиграл 2500 ₽!"
+                "поймал 💎💎💎💎!"
             ];
             function addBotMessage(customMessage) {
                 if (!botChat) return;
@@ -2001,7 +1806,7 @@
                 
                 // Добавляем немного сообщений в чат для демонстрации
                 setTimeout(() => {
-                    addBotMessage("Добро пожаловать в Thunder Slots!");
+                    addBotMessage("Добро пожаловать в FrutisBingoBett!");
                     addBotMessage("Сделайте ставку и начните играть!");
                 }, 1000);
             }
