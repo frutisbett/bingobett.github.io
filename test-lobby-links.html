@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 Тест переходов из лобби</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #1a1a1a; 
+            color: #fff;
+        }
+        .test-result { 
+            margin: 10px 0; 
+            padding: 10px; 
+            border-radius: 5px;
+        }
+        .success { background: #4CAF50; }
+        .error { background: #f44336; }
+        .info { background: #2196F3; }
+        button { 
+            padding: 10px 20px; 
+            margin: 5px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+            background: #007acc;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Тест переходов из лобби welcome.html</h1>
+    
+    <h2>📋 Результаты проверки:</h2>
+    <div id="results"></div>
+    
+    <h2>🔗 Генерируемые URL:</h2>
+    <button onclick="testUrl('bettboom')">Тест BettBoom</button>
+    <button onclick="testUrl('bingobett')">Тест BingoBett</button>
+    <button onclick="testUrl('frutis-liga')">Тест FrutisLiga</button>
+    
+    <h2>🚀 Прямые переходы:</h2>
+    <button onclick="directOpen('https://frutisbett.github.io/bingobett.github.io/bettboom.html')">→ BettBoom</button>
+    <button onclick="directOpen('https://frutisbett.github.io/bingobett.github.io/index.html')">→ BingoBett</button>
+    <button onclick="directOpen('https://frutisbett.github.io/bingobett.github.io/ftutiss.html')">→ FrutisLiga</button>
+    
+    <script>
+        // Копируем логику из welcome.html
+        function playSlot(slotType) {
+            console.log(`🎰 Запуск ${slotType}`);
+            
+            try {
+                // Определяем URL игры
+                let gameUrl;
+                if (slotType === 'bettboom') {
+                    gameUrl = 'https://frutisbett.github.io/bingobett.github.io/bettboom.html';
+                    console.log('🔥 Переход на BettBoom');
+                } else if (slotType === 'bingobett') {
+                    gameUrl = 'https://frutisbett.github.io/bingobett.github.io/index.html';
+                    console.log('🎰 Переход на BingoBett');
+                } else if (slotType === 'frutis-liga') {
+                    gameUrl = 'https://frutisbett.github.io/bingobett.github.io/ftutiss.html';
+                    console.log('🏆 Переход на FrutisLiga');
+                } else {
+                    console.error('❌ Неизвестный тип слота:', slotType);
+                    gameUrl = 'https://frutisbett.github.io/bingobett.github.io/index.html'; // fallback
+                }
+                
+                // Переходим на игру с параметрами
+                const params = new URLSearchParams({
+                    'slot': slotType,
+                    'source': 'casino-lobby',
+                    'v': Date.now(),
+                    'debug': '1'
+                });
+                
+                const fullUrl = `${gameUrl}?${params.toString()}`;
+                console.log('🚀 Переход по URL:', fullUrl);
+                
+                return fullUrl;
+                
+            } catch (error) {
+                console.error('❌ Ошибка в playSlot:', error);
+                return null;
+            }
+        }
+        
+        function testUrl(slotType) {
+            const url = playSlot(slotType);
+            const results = document.getElementById('results');
+            
+            if (url) {
+                results.innerHTML += `<div class="test-result success">
+                    ✅ ${slotType}: ${url}
+                </div>`;
+            } else {
+                results.innerHTML += `<div class="test-result error">
+                    ❌ ${slotType}: Ошибка генерации URL
+                </div>`;
+            }
+        }
+        
+        function directOpen(url) {
+            window.open(url, '_blank');
+        }
+        
+        // Автоматическая проверка при загрузке
+        window.addEventListener('load', () => {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="test-result info">🔄 Запуск автоматической проверки...</div>';
+            
+            const testTypes = ['bettboom', 'bingobett', 'frutis-liga'];
+            testTypes.forEach(type => testUrl(type));
+            
+            results.innerHTML += '<div class="test-result info">✅ Автоматическая проверка завершена</div>';
+        });
+    </script>
+</body>
+</html>
