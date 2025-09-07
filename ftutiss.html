@@ -1810,6 +1810,39 @@
                     addBotMessage("Добро пожаловать в FrutisBingoBett!");
                     addBotMessage("Сделайте ставку и начните играть!");
                 }, 1000);
+                
+                // Telegram WebApp инициализация
+                if (window.Telegram && window.Telegram.WebApp) {
+                    const tg = window.Telegram.WebApp;
+                    console.log('✅ Telegram WebApp найден в FrutisLiga');
+                    
+                    tg.ready();
+                    tg.expand();
+                    
+                    // Получаем данные пользователя из Telegram
+                    const initData = tg.initDataUnsafe;
+                    if (initData && initData.user) {
+                        username = initData.user.first_name || initData.user.username || 'Игрок';
+                        console.log('👤 Пользователь Telegram:', username);
+                        localStorage.setItem('local_slotUsername', username);
+                        updateUI();
+                        
+                        // Скрываем модальное окно имени для пользователей Telegram
+                        const modal = document.getElementById('usernameModal');
+                        if (modal) modal.style.display = 'none';
+                    }
+                    
+                    // Haptic feedback для кнопок
+                    const originalStartSpin = startSpin;
+                    startSpin = async function() {
+                        if (tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
+                            tg.HapticFeedback.impactOccurred('medium');
+                        }
+                        return await originalStartSpin();
+                    };
+                } else {
+                    console.log('❌ Telegram WebApp не найден - работа в браузере');
+                }
             }
             
             // Запуск приложения

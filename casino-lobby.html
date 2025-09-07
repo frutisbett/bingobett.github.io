@@ -59,10 +59,17 @@
         
         .slots-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            max-width: 800px;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            max-width: 1200px;
             margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .slots-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
         }
         
         .slot-machine {
@@ -332,34 +339,34 @@
             <button class="play-button">🎯 Играть</button>
         </div>
         
-        <!-- BingoWin - Улучшенная версия -->
-        <div class="slot-machine thunder-slots">
-            <div class="special-badge">⚡ NEW</div>
-            <div class="slot-icon">⚡</div>
-            <div class="slot-name">Thunder Slots</div>
+        <!-- FrutisLiga - Лига Победителей -->
+        <div class="slot-machine frutis-liga">
+            <div class="special-badge">🏆 ЛИГА</div>
+            <div class="slot-icon">🎰</div>
+            <div class="slot-name">FrutisLiga</div>
             <div class="slot-description">
-                Современная слот-машина с улучшенным дизайном и функционалом.
-                Более высокие выигрыши и улучшенные мини-игры.
+                Эксклюзивная игра для чемпионов!
+                Повышенные выплаты и особые бонусы.
             </div>
             <div class="slot-stats">
                 <div class="stat-item">
                     <div class="stat-label">Шанс выигрыша</div>
-                    <div class="stat-value">40%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-label">Мини-игры</div>
                     <div class="stat-value">45%</div>
                 </div>
                 <div class="stat-item">
+                    <div class="stat-label">Мини-игры</div>
+                    <div class="stat-value">50%</div>
+                </div>
+                <div class="stat-item">
                     <div class="stat-label">Макс. выигрыш</div>
-                    <div class="stat-value">x100</div>
+                    <div class="stat-value">x200</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-label">Мин. ставка</div>
-                    <div class="stat-value">5 ₽</div>
+                    <div class="stat-value">100 ₽</div>
                 </div>
             </div>
-            <button class="play-button">⚡ Играть</button>
+            <button class="play-button">🏆 Играть</button>
         </div>
     </div>
     
@@ -406,9 +413,9 @@
                 } else if (slotType === 'bingobett') {
                     gameUrl = './index.html';
                     console.log('🎰 Переход на BingoBett');
-                } else if (slotType === 'thunder-slots') {
-                    gameUrl = './thunder-slots.html';
-                    console.log('⚡ Переход на Thunder Slots');
+                } else if (slotType === 'frutis-liga') {
+                    gameUrl = './ftutiss.html';
+                    console.log('🏆 Переход на FrutisLiga');
                 } else {
                     console.error('❌ Неизвестный тип слота:', slotType);
                     gameUrl = './index.html'; // fallback
@@ -460,7 +467,8 @@
                 // Добавляем обработчики клика принудительно
                 slot.addEventListener('click', function() {
                     const slotType = this.classList.contains('bettboom') ? 'bettboom' : 
-                                   this.classList.contains('bingobett') ? 'bingobett' : 'thunder-slots';
+                                   this.classList.contains('bingobett') ? 'bingobett' : 
+                                   this.classList.contains('frutis-liga') ? 'frutis-liga' : 'unknown';
                     console.log(`🎲 Клик по слоту: ${slotType}`);
                     playSlot(slotType);
                 });
@@ -476,7 +484,8 @@
                 button.addEventListener('click', function(e) {
                     e.stopPropagation();
                     const slotType = this.closest('.slot-machine').classList.contains('bettboom') ? 'bettboom' : 
-                                   this.closest('.slot-machine').classList.contains('bingobett') ? 'bingobett' : 'thunder-slots';
+                                   this.closest('.slot-machine').classList.contains('bingobett') ? 'bingobett' : 
+                                   this.closest('.slot-machine').classList.contains('frutis-liga') ? 'frutis-liga' : 'unknown';
                     console.log(`🎯 Клик по кнопке слота: ${slotType}`);
                     playSlot(slotType);
                 });
