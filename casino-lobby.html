@@ -276,6 +276,9 @@
     
     <div class="balance-info">
         <div>💰 Баланс: <span class="balance-amount" id="balance">тут выводят выигрыш</span></div>
+        <div style="margin-top: 10px;">
+            <button onclick="window.location.href='./ftutiss.html'" style="padding: 5px 10px; background: #ff4444; color: white; border: none; border-radius: 5px; cursor: pointer;">🔴 Тест: Прямой переход</button>
+        </div>
     </div>
     
     <div class="slots-container">
@@ -432,14 +435,31 @@
                 const fullUrl = `${gameUrl}?${params.toString()}`;
                 console.log('🚀 Переход по URL:', fullUrl);
                 
-                // Принудительный переход
-                window.location.href = fullUrl;
+                // Отладка: проверяем URL перед переходом
+                console.log('🔍 Отладка перехода:');
+                console.log('   slotType:', slotType);
+                console.log('   gameUrl:', gameUrl);
+                console.log('   fullUrl:', fullUrl);
+                console.log('   currentURL:', window.location.href);
+                
+                // Для ftutiss.html делаем простой переход без параметров
+                if (slotType === 'frutis-liga') {
+                    console.log('🏆 Особый переход на FrutisLiga');
+                    window.location.href = './ftutiss.html';
+                } else {
+                    // Принудительный переход с параметрами
+                    window.location.href = fullUrl;
+                }
                 
                 // Резервный вариант если что-то пошло не так
                 setTimeout(() => {
                     if (window.location.href.includes('casino-lobby.html')) {
-                        console.warn('⚠️ Переход не сработал, пробуем replace');
-                        window.location.replace(fullUrl);
+                        console.warn('⚠️ Переход не сработал, пробуем прямой переход');
+                        if (slotType === 'frutis-liga') {
+                            window.location.replace('./ftutiss.html');
+                        } else {
+                            window.location.replace(fullUrl);
+                        }
                     }
                 }, 1000);
                 
