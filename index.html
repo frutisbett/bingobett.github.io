@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -82,6 +83,8 @@
             transition: all 0.2s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
         }
         .replenish-btn:hover {
             transform: translateY(-2px);
@@ -434,135 +437,6 @@
             .user-info { font-size: 11px; }
             button { font-size: 11px; padding: 10px 12px; }
         }
-        /* Стили для модального окна оплаты */
-        .deposit-modal {
-            background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
-            border-radius: 16px;
-            border: 2px solid rgba(255, 215, 0, 0.3);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            max-width: 450px;
-            width: 95vw;
-            animation: modalSlideIn 0.3s ease-out;
-        }
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-50px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 25px 15px 25px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
-        }
-        .modal-header h3 {
-            margin: 0;
-            color: gold;
-            font-size: 20px;
-            font-weight: bold;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-        }
-        .close-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: #ccc;
-            font-size: 24px;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-        .close-btn:hover {
-            background: rgba(255, 100, 100, 0.2);
-            color: #ff6b6b;
-            transform: scale(1.1);
-        }
-        .amount-display {
-            text-align: center;
-            padding: 15px 25px;
-            background: rgba(0, 0, 0, 0.2);
-            margin: 0 25px 15px 25px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .amount-label {
-            color: #ccc;
-            font-size: 14px;
-            margin-right: 8px;
-        }
-        .amount-value {
-            color: gold;
-            font-size: 18px;
-            font-weight: bold;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-        }
-        .payment-status {
-            text-align: center;
-            padding: 10px 25px;
-            min-height: 30px;
-        }
-        .status-text {
-            color: #4caf50;
-            font-size: 13px;
-            font-weight: 500;
-        }
-        .payment-frame-container {
-            height: 420px;
-            background: #111;
-            border-radius: 0 0 14px 14px;
-            overflow: hidden;
-            position: relative;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .loading-indicator {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: #ccc;
-        }
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 4px solid gold;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .loading-text {
-            font-size: 14px;
-        }
-        .modal-actions {
-            padding: 15px 25px 25px 25px;
-            display: flex;
-            justify-content: center;
-        }
-        .cancel-btn {
-            background: #f44336;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-        }
         /* Стили для дождя монет */
         #coinRainOverlay {
             position: fixed;
@@ -643,11 +517,16 @@
             <div class="info-item">Ставка: <span id="betDisplay">100</span> ₽</div>
         </div>
     </div>
+    <!-- Прямые ссылки на ЮMoney без модальных окон -->
     <div class="replenish-buttons">
-        <button class="replenish-btn" data-amount="1000">💳 1 000 ₽</button>
-        <button class="replenish-btn" data-amount="5000">💳 5 000 ₽</button>
-        <button class="replenish-btn" data-amount="10000">💳 10 000 ₽</button>
-        <button class="replenish-btn" data-amount="50000">💳 50 000 ₽</button>
+        <a href="https://yoomoney.ru/quickpay/quick-pay-form.xml?receiver=4100118182998706&quickpay-form=donate&sum=1000&paymentType=SB&label=bingobett_1000" 
+           class="replenish-btn" target="_blank">💳 1 000 ₽</a>
+        <a href="https://yoomoney.ru/quickpay/quick-pay-form.xml?receiver=4100118182998706&quickpay-form=donate&sum=5000&paymentType=SB&label=bingobett_5000" 
+           class="replenish-btn" target="_blank">💳 5 000 ₽</a>
+        <a href="https://yoomoney.ru/quickpay/quick-pay-form.xml?receiver=4100118182998706&quickpay-form=donate&sum=10000&paymentType=SB&label=bingobett_10000" 
+           class="replenish-btn" target="_blank">💳 10 000 ₽</a>
+        <a href="https://yoomoney.ru/quickpay/quick-pay-form.xml?receiver=4100118182998706&quickpay-form=donate&sum=50000&paymentType=SB&label=bingobett_50000" 
+           class="replenish-btn" target="_blank">💳 50 000 ₽</a>
     </div>
     <div style="text-align: center;">
         <button class="withdraw-btn" id="withdrawBtn">💰 Вывести выигрыш</button>
@@ -664,7 +543,7 @@
         <span>Ставка: <span id="betAmountDisplay">100</span> ₽</span>
         <button id="betPlus">+</button>
     </div>
-    <div class="message" id="message">✅ Игра полностью исправлена и готова! Нажмите "Крутить"</div>
+    <div class="message" id="message">✅ Игра исправлена! Прямые ссылки на ЮMoney активированы</div>
     <div id="botChat"><b>🔥 Активные игроки:</b><br></div>
     <!-- Мини-игра -->
     <div class="mini-game-overlay" id="miniGameOverlay">
@@ -761,34 +640,7 @@
             </div>
         </div>
     </div>
-    <!-- Модальное окно оплаты -->
-    <div id="depositModal" class="modal-bg" style="display:none;">
-        <div class="modal deposit-modal">
-            <div class="modal-header">
-                <h3>💳 Пополнение баланса</h3>
-                <button class="close-btn" id="depositCloseBtn" title="Закрыть">×</button>
-            </div>
-            <div class="modal-content">
-                <div class="amount-display">
-                    <span class="amount-label">Сумма:</span>
-                    <span class="amount-value" id="depositAmount">0</span> ₽
-                </div>
-                <div class="payment-status" id="paymentStatus">
-                    <div class="status-text">Подготовка платежной формы...</div>
-                </div>
-            </div>
-            <div class="payment-frame-container">
-                <iframe id="paymentFrame" src="about:blank" title="Платежная форма" style="display:none;"></iframe>
-                <div class="loading-indicator" id="loadingIndicator">
-                    <div class="spinner"></div>
-                    <div class="loading-text">Загрузка платежной формы...</div>
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="cancel-btn" id="depositCancelBtn">❌ Отмена</button>
-            </div>
-        </div>
-    </div>
+    <!-- УДАЛЕНЫ: модальное окно оплаты и все связанные стили -->
     <script>
         (function() {
             'use strict';
@@ -1328,9 +1180,7 @@
                 const overlay = document.getElementById('coinRainOverlay');
                 const canvas = document.getElementById('coinRainCanvas');
                 const ctx = canvas.getContext('2d');
-                const coinsCaughtElement = document.getElementById('coinsCaught');
-                const timeLeftElement = document.getElementById('timeLeft');
-                if (!overlay || !canvas || !ctx || !coinsCaughtElement || !timeLeftElement) {
+                if (!overlay || !canvas || !ctx) {
                     console.warn("Элементы мини-игры 'Дождь монет' не найдены.");
                     return;
                 }
@@ -1396,7 +1246,7 @@
                     }
                 }
                 // Обработка столкновений
-                function checkCollisions() {
+                function checkCollisions(event) {
                     const rect = canvas.getBoundingClientRect();
                     const mouseX = event.clientX - rect.left;
                     const mouseY = event.clientY - rect.top;
@@ -1408,7 +1258,6 @@
                         if (distance < coin.radius) {
                             coins.splice(i, 1);
                             totalCaught += coin.value;
-                            coinsCaughtElement.textContent = totalCaught;
                         }
                     }
                 }
@@ -1436,7 +1285,6 @@
                             return;
                         }
                         timeLeft--;
-                        timeLeftElement.textContent = timeLeft;
                         if (timeLeft <= 0) {
                             endGame();
                             clearInterval(timer);
@@ -1458,8 +1306,6 @@
                 // Обработка кликов мыши
                 canvas.addEventListener('mousemove', checkCollisions);
                 // Начало игры
-                coinsCaughtElement.textContent = totalCaught;
-                timeLeftElement.textContent = timeLeft;
                 overlay.style.display = 'flex';
                 animate();
                 startTimer();
@@ -1523,33 +1369,7 @@
                     if (autoSpinButton) autoSpinButton.style.display = 'inline-block';
                     if (stopAutoSpinButton) stopAutoSpinButton.style.display = 'none';
                 }
-                // Кнопки пополнения через модальное окно оплаты
-                const replenishButtons = document.querySelectorAll('.replenish-btn');
-                replenishButtons.forEach(btn => {
-                    btn.onclick = () => {
-                        const amount = parseInt(btn.getAttribute('data-amount'));
-                        console.log(`🛒 Открытие модалки оплаты на ${amount} ₽`);
-                        // Сохраняем информацию о платеже для обработки возврата
-                        const paymentId = `bingobett_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-                        const paymentInfo = {
-                            id: paymentId,
-                            amount: amount,
-                            timestamp: Date.now(),
-                            status: 'pending'
-                        };
-                        localStorage.setItem('pendingPayment', JSON.stringify(paymentInfo));
-                        // Открываем модальное окно оплаты
-                        if (typeof window.openDepositModal === 'function') {
-                            window.openDepositModal(amount);
-                        } else {
-                            console.error('Функция openDepositModal не найдена');
-                            // Fallback на старый метод
-                            const successURL = window.location.origin + window.location.pathname + `?payment=success&amount=${amount}&id=${paymentId}`;
-                            const dealerUrl = `https://dealer-system.example.com/payment?game=bingo&amount=${amount}&user_id=local_user&payment_id=${paymentId}&return_url=${encodeURIComponent(successURL)}`;
-                            window.open(dealerUrl, '_blank');
-                        }
-                    };
-                });
+                // УДАЛЕНЫ: обработчики кнопок пополнения через модальное окно - заменены на прямые ссылки
                 // Инициализация модальных окон
                 initializeModals();
             }
@@ -1809,6 +1629,39 @@
                     addBotMessage("Добро пожаловать в BingoBett!");
                     addBotMessage("Сделайте ставку и начните играть!");
                 }, 1000);
+                
+                // Telegram WebApp инициализация
+                if (window.Telegram && window.Telegram.WebApp) {
+                    const tg = window.Telegram.WebApp;
+                    console.log('✅ Telegram WebApp найден в BingoBett');
+                    
+                    tg.ready();
+                    tg.expand();
+                    
+                    // Получаем данные пользователя из Telegram
+                    const initData = tg.initDataUnsafe;
+                    if (initData && initData.user) {
+                        username = initData.user.first_name || initData.user.username || 'Игрок';
+                        console.log('👤 Пользователь Telegram:', username);
+                        localStorage.setItem('local_slotUsername', username);
+                        updateUI();
+                        
+                        // Скрываем модальное окно имени для пользователей Telegram
+                        const modal = document.getElementById('usernameModal');
+                        if (modal) modal.style.display = 'none';
+                    }
+                    
+                    // Haptic feedback для кнопок
+                    const originalStartSpin = startSpin;
+                    startSpin = async function() {
+                        if (tg.HapticFeedback && typeof tg.HapticFeedback.impactOccurred === 'function') {
+                            tg.HapticFeedback.impactOccurred('medium');
+                        }
+                        return await originalStartSpin();
+                    };
+                } else {
+                    console.log('❌ Telegram WebApp не найден - работа в браузере');
+                }
             }
             
             // Запуск приложения
